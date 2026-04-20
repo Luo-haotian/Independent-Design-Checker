@@ -1,45 +1,42 @@
-# KIMI API 设置指南
+# Grok API Setup Guide
 
-## ❌ 错误来源
+Use this guide to prepare the `.env` file for IDC.
 
-你目前访问的是 **KIMI 网页版** (kimi.com)
-- 这是给普通用户聊天用的
-- 生成的 Key 不能用于 API 调用
+## 1. Get an API Key
 
-## ✅ 正确步骤
+1. Open the xAI platform.
+2. Create or sign in to your account.
+3. Generate an API key.
+4. Copy the key and keep it private.
 
-### 1. 访问 API 平台
-打开：https://platform.moonshot.cn/
+## 2. Create the `.env` File
 
-### 2. 注册/登录
-- 使用手机号注册
-- 完成实名认证（需要身份证）
+Copy `.env.example` to `.env` and update it with your real key:
 
-### 3. 获取 API Key
-1. 登录后点击左侧 **"API Key 管理"**
-2. 点击 **"创建 API Key"**
-3. 输入名称（如：IDC-Project）
-4. 复制生成的 Key（格式：`sk-...`）
-
-### 4. 充值（新用户有免费额度）
-- 新用户通常有 15元 免费额度
-- 或点击 "充值" 添加余额
-
-### 5. 更新到项目
-将新的 Key 粘贴到 `.env` 文件：
-```
-KIMI_API_KEY=sk-你的新key
+```env
+GROK_API_KEY=your-grok-api-key-here
+GROK_API_URL=https://api.x.ai/v1/chat/completions
+MODEL_NAME=grok-4-1-fast-non-reasoning
 ```
 
-## 🔍 区别说明
+## 3. Where to Put the File
 
-| 平台 | URL | 用途 |
-|------|-----|------|
-| KIMI 网页版 | kimi.com | 普通聊天 |
-| Moonshot API | platform.moonshot.cn | 开发者 API |
+For source runs:
 
-## 📞 帮助
+- place `.env` in the project root
 
-如果遇到问题：
-1. 查看文档：https://platform.moonshot.cn/docs
-2. 联系客服：平台右下角在线客服
+For packaged `.exe` runs:
+
+- place `.env` next to the executable
+
+You can also set:
+
+```text
+IDC_ENV_FILE=C:\path\to\.env
+```
+
+## 4. Security Rules
+
+- Never commit `.env`.
+- Never paste a real API key into source files or markdown docs.
+- Rotate the key if it is exposed.

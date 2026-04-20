@@ -1,11 +1,10 @@
 @echo off
 chcp 65001 >nul
-title IDC - Structural Design Checker (GUI)
+title IDC v0.11 - Structural Design Checker (GUI)
 
 echo Starting IDC GUI...
 echo.
 
-REM Check if Python is available
 where python >nul 2>nul
 if %errorlevel% neq 0 (
     echo ERROR: Python not found in PATH!
@@ -18,7 +17,7 @@ python gui.py
 
 if %errorlevel% neq 0 (
     echo.
-    echo ERROR: GUI failed to start!
+    echo ERROR: GUI failed to start.
     echo Check idc.log for details.
     pause
 )

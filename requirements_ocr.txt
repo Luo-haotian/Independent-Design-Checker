@@ -1,31 +1,10 @@
-# IDC - Independent Design Checker with OCR Support
-# OCR-enabled version requirements
+# IDC v0.11 OCR requirements
+# Install Tesseract separately:
+# https://github.com/UB-Mannheim/tesseract/wiki
 
-# ========== Standard Dependencies ==========
-# PDF processing
 PyMuPDF>=1.23.0
-
-# HTTP requests
 requests>=2.31.0
-
-# Environment variables
-python-dotenv>=1.0.0
-
-# Build tool
 pyinstaller>=6.0.0
-
-# ========== OCR Dependencies ==========
-# OCR Engine - PaddleOCR (better Chinese recognition)
-paddleocr>=2.7.0
-
-# PaddlePaddle CPU version (smaller, no GPU required)
-paddlepaddle>=2.5.0
-
-# Image processing (usually included with paddleocr)
 Pillow>=10.0.0
 numpy>=1.24.0
-
-# ========== Optional: Alternative OCR ==========
-# If PaddleOCR has installation issues, you can use pytesseract:
-# pytesseract>=0.3.10
-# (Requires Tesseract OCR installed separately)
+pytesseract>=0.3.10

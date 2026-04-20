@@ -1,158 +1,126 @@
-# Independent Design Checker (IDC) - Structural Verification System
+# Independent Design Checker (IDC) v0.11
 
-An AI-powered structural design verification tool that uses the **KIMI API (Moonshot AI)** to analyze building and temporary structure designs.
+IDC is a structural design review tool that reads PDF submissions and produces a text report for building or temporary works review.
 
-## Features
+This `v0.11` cleanup release standardizes the project around the Grok API, removes legacy multi-provider references, and aligns the OCR workflow with `Tesseract + pytesseract`.
 
-- PDF parsing for design reports, calculations, and drawings
-- Building design verification following structural engineering standards
-- Temporary structure analysis with focus on construction safety
-- Automated compliance checking against building codes
-- Detailed analysis reports with recommendations
-- Token consumption tracking with 137x multiplier for computational resource estimation
+## Quick Start
 
-## Requirements
+For most users, start with the standard GUI:
 
-- Python 3.8+
-- KIMI API key (get from https://platform.moonshot.cn/)
-
-## Installation
-
-1. Clone or download this repository
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Create `.env` file from template:
-   ```
-   cp .env.example .env
-   ```
-4. Edit `.env` file and add your KIMI API key:
-   ```
-   KIMI_API_KEY=your_actual_api_key_here
-   ```
-
-## Usage
-
-### GUI Version (Recommended)
-
-Run the graphical interface:
+```text
+IDC_GUI.exe
 ```
+
+Or run from source:
+
+```powershell
 python gui.py
 ```
 
-Or use the compiled executable:
-```
-dist\IDC_GUI.exe
-```
+Basic workflow:
 
-### CLI Version
+1. Open `IDC_GUI`.
+2. Choose the PDF file.
+3. Select `Building` or `Temporary`.
+4. Confirm the output folder.
+5. Click `Check Design`.
 
-Basic usage:
-```
-python main.py path/to/design.pdf --type building
-```
+Reports are saved to `./reports` by default.
 
-For temporary structures:
-```
-python main.py path/to/design.pdf --type temporary
-```
+## Runtime Setup
 
-Specify output directory:
-```
-python main.py path/to/design.pdf --type building --output-dir ./my_reports
+Create a `.env` file from `.env.example` and add your Grok API key:
+
+```env
+GROK_API_KEY=your-grok-api-key-here
+GROK_API_URL=https://api.x.ai/v1/chat/completions
+MODEL_NAME=grok-4-1-fast-non-reasoning
 ```
 
-### Using Compiled Executable
+You can also point to a different env file with:
 
-```
-dist\IDC_CLI.exe path/to/design.pdf --type building
-```
-
-## Configuration
-
-The `config.py` file contains:
-- API settings (loaded from environment variables)
-- Analysis parameters
-- File processing settings
-- Token multiplier settings (137x for business model)
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-```
-KIMI_API_KEY=your_kimi_api_key_here
+```text
+IDC_ENV_FILE=C:\path\to\.env
 ```
 
-Or set as system environment variable:
-- Windows: `set KIMI_API_KEY=your_key`
-- Linux/Mac: `export KIMI_API_KEY=your_key`
+## Advanced Options
 
-## Building Executable
+### OCR GUI
 
-To create a standalone executable:
+Use `IDC_GUI_OCR.exe` or:
+
+```powershell
+python gui_ocr.py
 ```
-python build_exe.py
+
+Recommended when the PDF is scanned, image-based, or only partly searchable.
+
+### CLI
+
+Standard CLI:
+
+```powershell
+python main.py "C:\path\to\design.pdf" --type building
 ```
 
-The executables will be created in the `dist/` folder.
+OCR CLI:
 
-**Note**: Make sure your `.env` file with API key is in the same directory as the executable when running.
+```powershell
+python main_ocr.py "C:\path\to\design.pdf" --type building --force-ocr
+```
 
-## Supported File Types
+## Installation
 
-- PDF files containing design reports, calculations, and drawings
+Standard version:
 
-## Analysis Categories
+```powershell
+pip install -r requirements.txt
+```
 
-The system checks for:
-- Structural loading calculations
-- Material specifications
-- Safety factors
-- Code compliance
-- Potential structural weaknesses
-- Missing critical information
-- **Calculation verification** (mathematical consistency check)
+OCR version:
 
-For temporary structures, additional checks include:
-- Construction sequencing
-- Weather resistance
-- Safety measures
-- Demolition planning
+```powershell
+pip install -r requirements_ocr.txt
+```
 
-## Token Consumption
+OCR runtime also requires Tesseract:
 
-The system displays token consumption statistics before and during analysis:
-- Input tokens: (characters ÷ 4) × 137 multiplier
-- Output tokens: estimated or actual from API response
-- Total computational resources consumed
+[UB Mannheim Tesseract build](https://github.com/UB-Mannheim/tesseract/wiki)
 
-This helps understand the computational cost of each analysis.
+## Build Executables
 
-## Logs
+Build all executables:
 
-Application logs are saved to `idc.log` for debugging and monitoring.
+```powershell
+python build_exe.py --all
+```
 
-## API Provider
+Build only the standard version:
 
-This project uses **KIMI AI (Moonshot)** for structural analysis:
-- Website: https://www.moonshot.cn/
-- API Documentation: https://platform.moonshot.cn/docs
+```powershell
+python build_exe.py --standard
+```
+
+Build only OCR executables:
+
+```powershell
+python build_exe.py --ocr
+```
+
+## Project Structure
+
+- `gui.py`: standard desktop GUI
+- `gui_ocr.py`: OCR desktop GUI
+- `main.py`: standard CLI engine
+- `main_ocr.py`: OCR CLI engine
+- `config.py`: runtime configuration
+- `docs/USER_GUIDE.md`: end-user guide
+- `API_SETUP_GUIDE.md`: Grok API setup steps
+- `README_OCR.md`: OCR notes
 
 ## Security Notes
 
-- **Never commit your `.env` file** containing API keys to version control
-- The `.gitignore` file is configured to exclude `.env` and other sensitive files
-- API keys should be rotated regularly
-- Keep your API keys private and do not share them
-
-## License
-
-[Your License Here]
-
-## Support
-
-For issues or questions:
-1. Check the logs in `idc.log`
-2. Verify your API key is valid
-3. Ensure PDF files are not encrypted or corrupted
+- Do not commit `.env`.
+- Do not embed real API keys into code, logs, or docs.
+- Put the real `.env` next to the executable only on trusted machines.
