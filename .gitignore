@@ -1,0 +1,35 @@
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Build and distribution
+build/
+dist/
+spec_files/
+*.spec
+
+# Logs
+*.log
+idc.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Reports (optional - if you don't want to commit generated reports)
+reports/

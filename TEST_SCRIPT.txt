@@ -1,0 +1,41 @@
+# Sample test script for IDC (Independent Design Checker)
+# This demonstrates how to use the application programmatically
+
+print("Independent Design Checker - Test Script")
+print("=" * 50)
+
+print("\nTo run the command-line version:")
+print("IDC_Structural_Checker.exe path/to/your/design.pdf --type building")
+print("\nExample:")
+print('IDC_Structural_Checker.exe "C:\\My Designs\\building_design.pdf" --type building')
+
+print("\nTo run the GUI version:")
+print("Simply double-click IDC_GUI.exe")
+
+print("\nBoth applications will:")
+print("1. Load the PDF design file")
+print("2. Extract text content from the PDF")
+print("3. Send the content to the Grok API for structural analysis")
+print("4. Generate a detailed report with findings")
+print("5. Save the report to the output directory")
+
+print("\nThe applications are located in:")
+print("C:\\Users\\11131\\clawd\\IDC_Project\\dist\\")
+
+print("\nFor building designs, the system will check:")
+print("- Structural system analysis")
+print("- Loading and analysis")
+print("- Material specifications")
+print("- Code compliance")
+print("- Critical design elements")
+print("- Safety and redundancy")
+
+print("\nFor temporary structures, the system will check:")
+print("- Construction loads and equipment")
+print("- Safety considerations")
+print("- Weather resistance")
+print("- Duration and maintenance")
+print("- Material and connections")
+
+print("\nNote: The Grok API key is already configured in the application.")
+print("Make sure you have a valid subscription to the Grok API to use this tool.")
