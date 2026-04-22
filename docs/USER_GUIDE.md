@@ -1,4 +1,4 @@
-# IDC User Guide v0.11
+# IDC User Guide v0.12
 
 ## Quick Start
 

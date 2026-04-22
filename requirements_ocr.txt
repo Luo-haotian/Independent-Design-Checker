@@ -1,4 +1,4 @@
-# IDC v0.11 OCR requirements
+# IDC v0.12 OCR requirements
 # Install Tesseract separately:
 # https://github.com/UB-Mannheim/tesseract/wiki
 
@@ -8,3 +8,4 @@ pyinstaller>=6.0.0
 Pillow>=10.0.0
 numpy>=1.24.0
 pytesseract>=0.3.10
+python-docx>=1.1.0

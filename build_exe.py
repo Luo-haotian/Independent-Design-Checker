@@ -27,16 +27,28 @@ def copy_runtime_files():
     os.makedirs(DIST_DIR, exist_ok=True)
     if os.path.exists(".env.example"):
         shutil.copy2(".env.example", os.path.join(DIST_DIR, ".env.example"))
+    if os.path.exists(".env"):
+        shutil.copy2(".env", os.path.join(DIST_DIR, ".env"))
+        print("Copied .env into dist for packaged runtime.")
+    else:
+        print("No root .env found. Skipping dist/.env copy.")
 
 
 def build_standard_versions():
     """Build the standard CLI and GUI executables."""
     common_args = [
-        "--add-data=config.py;.",
-        "--add-data=.env.example;.",
+        f"--add-data={os.path.abspath('config.py')};.",
+        f"--add-data={os.path.abspath('report_generator.py')};.",
+        f"--add-data={os.path.abspath('report_assets')};report_assets",
+        f"--add-data={os.path.abspath('.env.example')};.",
         "--hidden-import=requests",
         "--hidden-import=fitz",
         "--hidden-import=PyMuPDF",
+        "--hidden-import=docx",
+        "--hidden-import=docx.enum.text",
+        "--hidden-import=docx.shared",
+        "--hidden-import=docx.oxml.ns",
+        "--hidden-import=docx.oxml",
         "--distpath=./dist",
         "--workpath=./build",
         "--specpath=./spec_files",
@@ -73,8 +85,10 @@ def build_standard_versions():
 def build_ocr_versions():
     """Build the OCR-enabled CLI and GUI executables."""
     common_args = [
-        "--add-data=config.py;.",
-        "--add-data=.env.example;.",
+        f"--add-data={os.path.abspath('config.py')};.",
+        f"--add-data={os.path.abspath('report_generator.py')};.",
+        f"--add-data={os.path.abspath('report_assets')};report_assets",
+        f"--add-data={os.path.abspath('.env.example')};.",
         "--hidden-import=requests",
         "--hidden-import=fitz",
         "--hidden-import=PyMuPDF",
@@ -82,6 +96,11 @@ def build_ocr_versions():
         "--hidden-import=PIL",
         "--hidden-import=PIL.Image",
         "--hidden-import=numpy",
+        "--hidden-import=docx",
+        "--hidden-import=docx.enum.text",
+        "--hidden-import=docx.shared",
+        "--hidden-import=docx.oxml.ns",
+        "--hidden-import=docx.oxml",
         "--distpath=./dist",
         "--workpath=./build",
         "--specpath=./spec_files",
@@ -184,7 +203,7 @@ def main():
     print("Build completed")
     print("=" * 60)
     print("Executables are in the dist folder.")
-    print("Copy a real .env file next to the executables before runtime.")
+    print("Runtime environment files were copied into dist when available.")
 
 
 if __name__ == "__main__":

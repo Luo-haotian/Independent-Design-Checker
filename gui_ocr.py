@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 class IDC_GUI_OCR:
     def __init__(self, root):
         self.root = root
-        self.root.title("IDC v0.11 - Structural Verification (OCR)")
+        self.root.title("IDC v0.12 - Structural Verification (OCR)")
         self.root.geometry("950x750")
         self.setup_ui()
 
@@ -188,20 +188,21 @@ class IDC_GUI_OCR:
             capture = StringIO()
             with redirect_stdout(capture):
                 success = checker.check(pdf_path, structure_type, output_dir, force_ocr=force_ocr)
+            report_file = checker.last_report_file
 
             out_text = capture.getvalue()
             if out_text:
                 self.root.after(0, lambda: self.log(out_text))
 
-            self.root.after(0, lambda: self.done(success))
+            self.root.after(0, lambda: self.done(success, report_file))
         except Exception as exc:
             self.root.after(0, lambda: self.log(f"ERROR: {exc}"))
             import traceback
 
             self.root.after(0, lambda: self.log(traceback.format_exc()))
-            self.root.after(0, lambda: self.done(False))
+            self.root.after(0, lambda: self.done(False, None))
 
-    def done(self, success):
+    def done(self, success, report_file=None):
         self.progress.stop()
         self.check_btn.config(state="normal")
         self.log("=" * 60)
@@ -209,7 +210,16 @@ class IDC_GUI_OCR:
             self.status_var.set("Analysis completed successfully.")
             self.status_label.config(foreground="green")
             self.log("[OK] Analysis completed.")
-            messagebox.showinfo("Success", "Analysis completed. Report saved.")
+            if report_file:
+                self.log(f"[OK] Output file: {report_file}")
+                suffix = Path(report_file).suffix.lower()
+                if suffix == ".txt":
+                    message = f"Analysis completed.\nDOCX generation failed, so a text fallback was saved:\n{report_file}"
+                else:
+                    message = f"Analysis completed.\nReport saved:\n{report_file}"
+            else:
+                message = "Analysis completed."
+            messagebox.showinfo("Success", message)
         else:
             self.status_var.set("Analysis failed")
             self.status_label.config(foreground="red")

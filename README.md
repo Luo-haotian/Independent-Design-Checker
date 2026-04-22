@@ -1,8 +1,8 @@
-# Independent Design Checker (IDC) v0.11
+# Independent Design Checker (IDC) v0.12
 
-IDC is a structural design review tool that reads PDF submissions and produces a text report for building or temporary works review.
+IDC is a structural design review tool that reads PDF submissions and produces a structured Word report for building or temporary works review.
 
-This `v0.11` cleanup release standardizes the project around the Grok API, removes legacy multi-provider references, and aligns the OCR workflow with `Tesseract + pytesseract`.
+This `v0.12` release adds a sample-style IDC Word report pipeline with branded cover pages, project metadata extraction, and denser reviewer comments while keeping the Grok-based workflow introduced in `v0.11`.
 
 ## Quick Start
 
@@ -26,7 +26,7 @@ Basic workflow:
 4. Confirm the output folder.
 5. Click `Check Design`.
 
-Reports are saved to `./reports` by default.
+Reports are saved to `./reports` by default as `.docx` files.
 
 ## Runtime Setup
 

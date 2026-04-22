@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title IDC v0.11 - Structural Design Checker (CLI)
+title IDC v0.12 - Structural Design Checker (CLI)
 
 echo ================================================
 echo Independent Design Checker (IDC) - CLI Mode

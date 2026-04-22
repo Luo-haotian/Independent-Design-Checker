@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.12 - Sample-Style Word Report Release
+
+- added a dedicated Word report generator that produces sample-inspired IDC report layouts
+- introduced branded report assets for cover pages, headers, and submission blocks
+- extracted project title, checked item, and job reference from source PDFs to populate report metadata
+- improved temporary works and building prompts so reports include denser, more actionable IDC reviewer comments
+- updated the GUI flow and packaged runtime so the distributed app continues working with `.env` beside the executable
+- kept the project history additive through normal commits and version tagging instead of overwrite-style updates
+
 ## v0.11 - Cleanup and Documentation Alignment
 
 - standardized the project as Grok-only

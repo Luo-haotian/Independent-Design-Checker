@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title IDC v0.11 - Structural Design Checker (GUI)
+title IDC v0.12 - Structural Design Checker (GUI)
 
 echo Starting IDC GUI...
 echo.

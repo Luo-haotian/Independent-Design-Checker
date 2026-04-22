@@ -33,3 +33,11 @@ Thumbs.db
 
 # Reports (optional - if you don't want to commit generated reports)
 reports/
+
+# Local review samples and temporary validation outputs
+report sample/
+test file/
+tmp_reports*/
+tmp_sample_extract/
+tmp_*
+~$*.docx
