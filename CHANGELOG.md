@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.14 - Intranet Server Release
+
+- added a Flask/Waitress-based intranet upload server so staff can submit PDFs from a browser
+- moved OCR-heavy processing to the server flow through the existing `CheckerOCR` pipeline
+- added job status pages, report download links, upload size limits, optional access token protection, and basic health checks
+- added IT-oriented `.bat` scripts for server install, server startup, and optional Windows startup task registration
+- added `requirements_server.txt` and `docs/IT_SERVER_DEPLOYMENT.md` for company server deployment
+- added configurable Tesseract command and OCR language settings through environment variables
+- updated docs and runtime templates for server-side OCR deployment
+
 ## v0.12 - Sample-Style Word Report Release
 
 - added a dedicated Word report generator that produces sample-inspired IDC report layouts

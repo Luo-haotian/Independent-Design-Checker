@@ -1,8 +1,8 @@
-# Independent Design Checker (IDC) v0.12
+# Independent Design Checker (IDC) v0.14
 
 IDC is a structural design review tool that reads PDF submissions and produces a structured Word report for building or temporary works review.
 
-This `v0.12` release adds a sample-style IDC Word report pipeline with branded cover pages, project metadata extraction, and denser reviewer comments while keeping the Grok-based workflow introduced in `v0.11`.
+This `v0.14` release adds an intranet server mode so company staff can upload PDFs in a browser while parsing, OCR, Grok analysis, and Word report generation run on the company server. The desktop EXE workflow remains available.
 
 ## Quick Start
 
@@ -46,6 +46,25 @@ IDC_ENV_FILE=C:\path\to\.env
 
 ## Advanced Options
 
+### Intranet Server
+
+Use the server mode when company staff should not install desktop EXEs or OCR software locally.
+
+IT setup:
+
+```bat
+server\install_server.bat
+server\run_server.bat
+```
+
+Then staff open:
+
+```text
+http://server-name:8080
+```
+
+Server deployment details are in `docs/IT_SERVER_DEPLOYMENT.md`.
+
 ### OCR GUI
 
 Use `IDC_GUI_OCR.exe` or:
@@ -88,6 +107,12 @@ OCR runtime also requires Tesseract:
 
 [UB Mannheim Tesseract build](https://github.com/UB-Mannheim/tesseract/wiki)
 
+Server version:
+
+```powershell
+pip install -r requirements_server.txt
+```
+
 ## Build Executables
 
 Build all executables:
@@ -114,8 +139,11 @@ python build_exe.py --ocr
 - `gui_ocr.py`: OCR desktop GUI
 - `main.py`: standard CLI engine
 - `main_ocr.py`: OCR CLI engine
+- `server/idc_server.py`: intranet upload server
+- `server/*.bat`: IT installation and server startup scripts
 - `config.py`: runtime configuration
 - `docs/USER_GUIDE.md`: end-user guide
+- `docs/IT_SERVER_DEPLOYMENT.md`: IT deployment guide
 - `API_SETUP_GUIDE.md`: Grok API setup steps
 - `README_OCR.md`: OCR notes
 
@@ -124,3 +152,4 @@ python build_exe.py --ocr
 - Do not commit `.env`.
 - Do not embed real API keys into code, logs, or docs.
 - Put the real `.env` next to the executable only on trusted machines.
+- For server deployments, bind only to the trusted intranet and use `IDC_SERVER_ACCESS_TOKEN` unless another access control layer is already enforced.

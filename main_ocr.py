@@ -97,7 +97,9 @@ def check_tesseract():
     if not PYTESSERACT_AVAILABLE:
         return False
 
+    configured_path = os.environ.get("IDC_TESSERACT_CMD") or os.environ.get("TESSERACT_CMD")
     possible_paths = [
+        configured_path,
         r"C:\Program Files\Tesseract-OCR\tesseract.exe",
         r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
         rf"C:\Users\{os.environ.get('USERNAME', '')}\AppData\Local\Tesseract-OCR\tesseract.exe",
@@ -109,7 +111,7 @@ def check_tesseract():
         return True
     except Exception:
         for path in possible_paths:
-            if not os.path.exists(path):
+            if not path or not os.path.exists(path):
                 continue
             pytesseract.pytesseract.tesseract_cmd = path
             try:
@@ -200,8 +202,9 @@ class OCRExtractor:
 
     def __init__(self):
         self.available = TESSERACT_AVAILABLE
+        self.language = os.environ.get("IDC_OCR_LANG", "chi_sim+eng")
         if self.available:
-            print("Tesseract OCR initialized (lang: chi_sim+eng)")
+            print(f"Tesseract OCR initialized (lang: {self.language})")
         else:
             print("WARNING: Tesseract not available. Install from: https://github.com/UB-Mannheim/tesseract/wiki")
 
@@ -210,7 +213,7 @@ class OCRExtractor:
         if not self.available:
             return ""
         try:
-            return pytesseract.image_to_string(image, lang="chi_sim+eng")
+            return pytesseract.image_to_string(image, lang=self.language)
         except Exception as exc:
             logger.error("OCR error: %s", exc)
             return ""

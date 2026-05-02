@@ -1,4 +1,4 @@
-# IDC User Guide v0.12
+# IDC User Guide v0.14
 
 ## Quick Start
 
@@ -26,7 +26,7 @@ That is the default workflow.
 
 ## What The Tool Produces
 
-IDC reads the PDF and writes a text report that usually includes:
+IDC reads the PDF and writes a Word report that usually includes:
 
 - executive summary
 - technical review comments
@@ -60,6 +60,16 @@ OCR modes:
 - `Force OCR` for fully scanned PDFs
 - `No OCR` for text-based PDFs
 
+## Company Server Mode
+
+If your company IT team has deployed the IDC server, open the intranet address they provide, for example:
+
+```text
+http://server-name:8080
+```
+
+Upload the PDF, choose `Building` or `Temporary`, select an OCR mode, and wait for the Word report download link. In this mode, OCR and report generation run on the server, so you do not need to install IDC or Tesseract on your own computer.
+
 ## Advanced Option: CLI
 
 Standard CLI:
@@ -84,3 +94,5 @@ If the run fails, check:
 - the network is available
 
 For OCR issues, also check that Tesseract is installed.
+
+For server mode, contact IT if the upload page is unavailable, the access token is rejected, or the job remains queued for a long time.

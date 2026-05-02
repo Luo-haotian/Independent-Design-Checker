@@ -2,6 +2,8 @@
 
 Use the OCR version when the PDF is scanned, image-based, or only partly searchable.
 
+In `v0.14`, OCR can also run on the company server through the intranet upload page. Staff upload a PDF in the browser and do not need local Tesseract or IDC EXE installation.
+
 ## Recommended Tools
 
 - `IDC_GUI_OCR.exe` for most OCR use cases
@@ -48,6 +50,29 @@ Common install path:
 ```text
 C:\Program Files\Tesseract-OCR\tesseract.exe
 ```
+
+Custom server path:
+
+```env
+IDC_TESSERACT_CMD=D:\Apps\Tesseract-OCR\tesseract.exe
+IDC_OCR_LANG=chi_sim+eng
+```
+
+## Server OCR
+
+Install server dependencies:
+
+```bat
+server\install_server.bat
+```
+
+Start server:
+
+```bat
+server\run_server.bat
+```
+
+IT deployment details are in `docs/IT_SERVER_DEPLOYMENT.md`.
 
 ## Output
 

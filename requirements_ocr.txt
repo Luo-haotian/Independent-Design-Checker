@@ -1,4 +1,4 @@
-# IDC v0.12 OCR requirements
+# IDC v0.14 OCR requirements
 # Install Tesseract separately:
 # https://github.com/UB-Mannheim/tesseract/wiki
 
