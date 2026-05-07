@@ -56,6 +56,12 @@ Staff can open:
 http://server-name:8080
 ```
 
+The QA records batch page is available from the main page through `QA Records Batch`, or directly at:
+
+```text
+http://server-name:8080/qa
+```
+
 Keep `IDC_SERVER_ACCESS_TOKEN` enabled unless the intranet is already protected by a stronger access control layer.
 
 ## Optional Startup Task
@@ -100,3 +106,4 @@ These folders may contain confidential submissions and generated reports. Put th
 - Increase workers only after confirming server CPU, memory, and API rate limits.
 - If OCR is unavailable, the upload still runs text-layer extraction when possible, but scanned PDFs will not produce useful content.
 - The `/healthz` endpoint returns a simple JSON health check including OCR availability.
+- QA Records Batch Checker outputs CSV, JSON, and summary files in the configured report directory. Treat these outputs as confidential project records.

@@ -70,6 +70,28 @@ http://server-name:8080
 
 Upload the PDF, choose `Building` or `Temporary`, select an OCR mode, and wait for the Word report download link. In this mode, OCR and report generation run on the server, so you do not need to install IDC or Tesseract on your own computer.
 
+## QA Records Batch Checker
+
+Use this server feature when you need to batch register OP records, mill certificates, concrete cube test reports, reinforcement test reports, or similar QA records.
+
+Basic steps:
+
+1. Open the intranet server page.
+2. Click `QA Records Batch`.
+3. Upload multiple PDFs or one ZIP package containing PDFs.
+4. Select the OCR mode.
+5. Wait for the batch job to finish.
+6. Download the QA output ZIP.
+
+The ZIP contains:
+
+- `qa_register.csv`: extracted register table
+- `qa_exceptions.csv`: records requiring human review
+- `qa_raw_results.json`: raw extracted data for audit/debug
+- `qa_summary.txt`: short processing summary
+
+Always check the CSV register against the source documents before using it as an official project record.
+
 ## Advanced Option: CLI
 
 Standard CLI:

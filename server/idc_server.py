@@ -22,6 +22,7 @@ if str(BASE_DIR) not in sys.path:
 
 from main_ocr import CheckerOCR, TESSERACT_AVAILABLE  # noqa: E402
 from config import API_KEY  # noqa: E402
+from qa_records import run_qa_batch  # noqa: E402
 
 UPLOAD_DIR = Path(os.environ.get("IDC_SERVER_UPLOAD_DIR", BASE_DIR / "server_uploads")).resolve()
 REPORT_DIR = Path(os.environ.get("IDC_SERVER_REPORT_DIR", BASE_DIR / "server_reports")).resolve()
@@ -30,6 +31,7 @@ ACCESS_TOKEN = os.environ.get("IDC_SERVER_ACCESS_TOKEN", "").strip()
 MAX_WORKERS = max(1, int(os.environ.get("IDC_SERVER_WORKERS", "1")))
 VALID_STRUCT_TYPES = {"building", "temporary"}
 VALID_OCR_MODES = {"auto", "force", "no-ocr"}
+VALID_QA_EXTENSIONS = {".pdf", ".zip"}
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -177,6 +179,39 @@ def _run_job(job_id: str) -> None:
         _append_log(job_id, f"Error: {exc}")
 
 
+def _run_qa_job(job_id: str) -> None:
+    job = _job_snapshot(job_id)
+    if not job:
+        return
+
+    started = time.time()
+    _update_job(job_id, status="running", started_at=datetime.now().isoformat(timespec="seconds"))
+    _append_log(job_id, "Server accepted the upload and started QA Records Batch Checker.")
+
+    try:
+        result = run_qa_batch(
+            Path(job["input_dir"]),
+            Path(job["output_dir"]),
+            ocr_mode=job["ocr_mode"],
+            model_name=job["model"] or None,
+            log_callback=lambda message: _append_log(job_id, message),
+        )
+        elapsed = round(time.time() - started, 1)
+        _update_job(
+            job_id,
+            status="completed",
+            report_path=result["package_path"],
+            completed_at=datetime.now().isoformat(timespec="seconds"),
+            elapsed_seconds=elapsed,
+            qa_result=result,
+        )
+        _append_log(job_id, f"QA batch completed in {elapsed} seconds.")
+        _append_log(job_id, f"Processed files: {result['processed']}; exceptions: {result['exceptions']}.")
+    except Exception as exc:  # noqa: BLE001 - show operational errors to IT/user
+        _update_job(job_id, status="failed", completed_at=datetime.now().isoformat(timespec="seconds"))
+        _append_log(job_id, f"Error: {exc}")
+
+
 @app.get("/healthz")
 def healthz():
     return {
@@ -184,6 +219,7 @@ def healthz():
         "api_key_configured": bool(API_KEY),
         "tesseract_available": TESSERACT_AVAILABLE,
         "workers": MAX_WORKERS,
+        "qa_records_checker": True,
     }
 
 
@@ -247,6 +283,7 @@ def index():
           <input id="model" name="model" type="text" placeholder="Use server default">
           <div class="actions">
             <button type="submit">Upload and Start</button>
+            <a class="button secondary" href="{{ url_for('qa_index') }}{{ token_query }}">QA Records Batch</a>
           </div>
         </form>
       </section>
@@ -273,6 +310,92 @@ def index():
         tesseract_label=tesseract_label,
         api_label=api_label,
         api_ready=bool(API_KEY),
+        token_query=_safe_token_query(),
+    )
+
+
+@app.get("/qa")
+def qa_index():
+    _require_token()
+    tesseract_label = "ready" if TESSERACT_AVAILABLE else "not detected"
+    api_label = "configured" if API_KEY else "missing"
+    return render_template_string(
+        """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QA Records Batch Checker</title>
+  {{ css|safe }}
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">QA Records Batch Checker</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+        <div class="status-pill">API: {{ api_label }}</div>
+        <div class="status-pill">OCR: {{ tesseract_label }}</div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="layout">
+      <section class="panel">
+        <h1>Batch QA Register</h1>
+        <p>Upload OP records, mill certificates, concrete cube tests, reinforcement tests, or a ZIP package. The server extracts fields into a CSV register and flags records that need review.</p>
+        {% if not api_ready %}
+        <p style="color:#b42318;font-weight:700">GROK_API_KEY is not configured on the server. Ask IT to edit the project .env file before uploading.</p>
+        {% endif %}
+        <form action="{{ url_for('create_qa_job') }}" method="post" enctype="multipart/form-data">
+          {% if token_required %}
+          <label for="token">Access token</label>
+          <input id="token" name="token" type="password" autocomplete="current-password" required>
+          {% endif %}
+          <label for="qa_files">PDF or ZIP files</label>
+          <input id="qa_files" name="qa_files" type="file" accept="application/pdf,.pdf,.zip" multiple required>
+          <div class="row">
+            <div>
+              <label for="ocr_mode">OCR mode</label>
+              <select id="ocr_mode" name="ocr_mode">
+                <option value="auto">Auto detect</option>
+                <option value="force">Force OCR</option>
+                <option value="no-ocr">No OCR</option>
+              </select>
+            </div>
+            <div>
+              <label for="model">Model override</label>
+              <input id="model" name="model" type="text" placeholder="Use server default">
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit">Upload and Build Register</button>
+            <a class="button secondary" href="/{{ token_query }}">IDC Review</a>
+          </div>
+        </form>
+      </section>
+      <aside class="panel">
+        <h2>Output</h2>
+        <p>The downloaded ZIP contains a QA register CSV, an exception CSV, raw JSON, and a short summary.</p>
+        <div class="meta">
+          <div><span>Accepted</span><strong>PDF / ZIP</strong></div>
+          <div><span>Max upload</span><strong>{{ max_upload_mb }} MB</strong></div>
+          <div><span>Workers</span><strong>{{ workers }}</strong></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
+        """,
+        css=BASE_CSS,
+        max_upload_mb=MAX_UPLOAD_MB,
+        workers=MAX_WORKERS,
+        token_required=bool(ACCESS_TOKEN),
+        tesseract_label=tesseract_label,
+        api_label=api_label,
+        api_ready=bool(API_KEY),
+        token_query=_safe_token_query(),
     )
 
 
@@ -319,6 +442,132 @@ def create_job():
 
     executor.submit(_run_job, job_id)
     return redirect(url_for("job_status", job_id=job_id) + _safe_token_query())
+
+
+@app.post("/qa/jobs")
+def create_qa_job():
+    _require_token()
+    uploads = [file for file in request.files.getlist("qa_files") if file and file.filename]
+    if not uploads:
+        abort(400, "No QA files uploaded.")
+
+    job_id = uuid.uuid4().hex[:12]
+    input_dir = UPLOAD_DIR / f"qa_{job_id}"
+    output_dir = REPORT_DIR / f"qa_{job_id}"
+    input_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    saved_files: list[str] = []
+    for upload in uploads:
+        filename = secure_filename(upload.filename)
+        if not filename:
+            continue
+        suffix = Path(filename).suffix.lower()
+        if suffix not in VALID_QA_EXTENSIONS:
+            abort(400, "Only PDF and ZIP uploads are supported for QA records.")
+        target = input_dir / filename
+        upload.save(target)
+        saved_files.append(filename)
+
+    if not saved_files:
+        abort(400, "No valid QA files uploaded.")
+
+    ocr_mode = request.form.get("ocr_mode", "auto")
+    if ocr_mode not in VALID_OCR_MODES:
+        abort(400, "Invalid OCR mode.")
+
+    job = {
+        "id": job_id,
+        "kind": "qa",
+        "filename": f"{len(saved_files)} QA upload(s)",
+        "input_dir": str(input_dir),
+        "output_dir": str(output_dir),
+        "saved_files": saved_files,
+        "ocr_mode": ocr_mode,
+        "model": request.form.get("model", "").strip(),
+        "status": "queued",
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "started_at": "",
+        "completed_at": "",
+        "elapsed_seconds": "",
+        "report_path": "",
+        "qa_result": {},
+        "log": ["QA uploads received. Waiting for worker."],
+    }
+    with jobs_lock:
+        jobs[job_id] = job
+
+    executor.submit(_run_qa_job, job_id)
+    return redirect(url_for("qa_job_status", job_id=job_id) + _safe_token_query())
+
+
+@app.get("/qa/jobs/<job_id>")
+def qa_job_status(job_id: str):
+    _require_token()
+    job = _job_snapshot(job_id)
+    if not job or job.get("kind") != "qa":
+        abort(404)
+
+    token_query = _safe_token_query()
+    download_url = url_for("download_report", job_id=job_id) + token_query if job.get("report_path") else ""
+    refresh_tag = "" if job["status"] in {"completed", "failed"} else '<meta http-equiv="refresh" content="5">'
+    qa_result = job.get("qa_result") or {}
+    return render_template_string(
+        """
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{ refresh_tag|safe }}
+  <title>QA Job {{ job.id }}</title>
+  {{ css|safe }}
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">QA Records Batch Checker</div>
+      <div class="status-pill">Job {{ job.id }}</div>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <h1>{{ job.filename }}</h1>
+      <p>Status: <span class="status {{ job.status }}">{{ job.status|upper }}</span></p>
+      <div class="meta">
+        <div><span>OCR mode</span><strong>{{ job.ocr_mode }}</strong></div>
+        <div><span>Uploaded files</span><strong>{{ job.saved_files|length }}</strong></div>
+        <div><span>Processed records</span><strong>{{ qa_result.get("processed", "-") }}</strong></div>
+        <div><span>Exceptions</span><strong>{{ qa_result.get("exceptions", "-") }}</strong></div>
+        <div><span>Created</span><strong>{{ job.created_at }}</strong></div>
+        <div><span>Completed</span><strong>{{ job.completed_at or "-" }}</strong></div>
+      </div>
+      <div class="actions">
+        <a class="button secondary" href="{{ url_for('qa_index') }}{{ token_query }}">New QA Batch</a>
+        {% if download_url %}
+        <a class="button" href="{{ download_url }}">Download QA Output ZIP</a>
+        {% endif %}
+      </div>
+    </section>
+    <section class="panel" style="margin-top:20px">
+      <h2>Processing Log</h2>
+      <div class="log">{{ log_text }}</div>
+      {% if job.status not in ["completed", "failed"] %}
+      <p class="note" style="margin-top:12px">This page refreshes every 5 seconds while the job is running.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
+        """,
+        css=BASE_CSS,
+        job=job,
+        qa_result=qa_result,
+        log_text="\n".join(job["log"]),
+        download_url=download_url,
+        token_query=token_query,
+        refresh_tag=refresh_tag,
+    )
 
 
 @app.get("/jobs/<job_id>")

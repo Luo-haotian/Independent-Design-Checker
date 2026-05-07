@@ -1,8 +1,8 @@
-# Independent Design Checker (IDC) v0.14
+# Independent Design Checker (IDC) v0.15
 
 IDC is a structural design review tool that reads PDF submissions and produces a structured Word report for building or temporary works review.
 
-This `v0.14` release adds an intranet server mode so company staff can upload PDFs in a browser while parsing, OCR, Grok analysis, and Word report generation run on the company server. The desktop EXE workflow remains available.
+This `v0.15` release adds the QA Records Batch Checker plus product workflow and PRD documentation on top of the `v0.14` intranet server mode. The desktop EXE workflow remains available for fast local testing and one-off reviews.
 
 ## Quick Start
 
@@ -64,6 +64,10 @@ http://server-name:8080
 ```
 
 Server deployment details are in `docs/IT_SERVER_DEPLOYMENT.md`.
+
+### QA Records Batch Checker
+
+The server also includes a QA Records Batch Checker for OP records, mill certificates, concrete cube tests, reinforcement tests, and similar QA documents. It accepts multiple PDFs or ZIP uploads and returns a CSV register, exception CSV, raw JSON, and summary file.
 
 ### OCR GUI
 
@@ -140,10 +144,13 @@ python build_exe.py --ocr
 - `main.py`: standard CLI engine
 - `main_ocr.py`: OCR CLI engine
 - `server/idc_server.py`: intranet upload server
+- `qa_records.py`: QA records batch classification and register extraction
 - `server/*.bat`: IT installation and server startup scripts
 - `config.py`: runtime configuration
 - `docs/USER_GUIDE.md`: end-user guide
 - `docs/IT_SERVER_DEPLOYMENT.md`: IT deployment guide
+- `docs/WORKFLOW.md`: product workflow diagram and operating modes
+- `docs/PRD.md`: product requirements, version register, and roadmap
 - `API_SETUP_GUIDE.md`: Grok API setup steps
 - `README_OCR.md`: OCR notes
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.15 - QA Records Batch Checker
+
+- added `docs/WORKFLOW.md` with the IDC desktop, CLI, OCR, and intranet server workflow
+- added `docs/PRD.md` as the central product requirements document for product scope, version tracking, and roadmap
+- added a QA Records Batch Checker MVP for OP, mill certificates, concrete cube tests, reinforcement tests, and similar QA records
+- added multi-file/ZIP QA upload, AI extraction, CSV register output, exception CSV output, raw JSON output, and summary output
+- updated the README project structure to include product workflow and PRD documents
+
 ## v0.14 - Intranet Server Release
 
 - added a Flask/Waitress-based intranet upload server so staff can submit PDFs from a browser
