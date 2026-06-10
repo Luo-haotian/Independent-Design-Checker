@@ -11,8 +11,8 @@ from pathlib import Path
 from tkinter import filedialog, messagebox, scrolledtext, ttk
 
 sys.path.insert(0, str(Path(__file__).parent))
-from config import API_PROVIDER, MODEL_NAME
-from main import Checker, MODEL_CONFIGS
+from config import API_PROVIDER, available_providers, get_default_model, get_model_configs, get_provider_label
+from main import Checker
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 class IDC_GUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("IDC v0.12 - Structural Verification")
+        self.root.title("IDC v0.16 - Structural Verification")
         self.root.geometry("900x700")
         self.setup_ui()
 
@@ -38,71 +38,91 @@ class IDC_GUI:
         ).grid(row=0, column=0, columnspan=3)
         ttk.Label(
             frame,
-            text=f"Powered by {API_PROVIDER.upper()} AI",
+            text=f"Default API: {get_provider_label(API_PROVIDER)}",
             foreground="gray",
         ).grid(row=1, column=0, columnspan=3, pady=(0, 10))
 
-        ttk.Label(frame, text="Model:").grid(row=2, column=0, sticky="w", pady=5)
-        self.model_var = tk.StringVar(value=MODEL_NAME)
-        model_combo = ttk.Combobox(
+        ttk.Label(frame, text="Provider:").grid(row=2, column=0, sticky="w", pady=5)
+        self.provider_var = tk.StringVar(value=API_PROVIDER)
+        provider_combo = ttk.Combobox(
             frame,
-            textvariable=self.model_var,
-            values=list(MODEL_CONFIGS.keys()),
+            textvariable=self.provider_var,
+            values=available_providers(),
             state="readonly",
             width=28,
         )
-        model_combo.grid(row=2, column=1, sticky="w", padx=5)
+        provider_combo.grid(row=2, column=1, sticky="w", padx=5)
+        provider_combo.bind("<<ComboboxSelected>>", lambda _event: self.on_provider_change())
+
+        ttk.Label(frame, text="Model:").grid(row=3, column=0, sticky="w", pady=5)
+        self.model_var = tk.StringVar(value=get_default_model(API_PROVIDER))
+        self.model_combo = ttk.Combobox(
+            frame,
+            textvariable=self.model_var,
+            values=list(get_model_configs(API_PROVIDER).keys()),
+            state="readonly",
+            width=28,
+        )
+        self.model_combo.grid(row=3, column=1, sticky="w", padx=5)
         self.model_info = ttk.Label(frame, text="")
-        self.model_info.grid(row=2, column=2, sticky="w")
+        self.model_info.grid(row=3, column=2, sticky="w")
         self.update_info()
-        model_combo.bind("<<ComboboxSelected>>", lambda _event: self.update_info())
+        self.model_combo.bind("<<ComboboxSelected>>", lambda _event: self.update_info())
 
-        ttk.Label(frame, text="PDF:").grid(row=3, column=0, sticky="w", pady=5)
+        ttk.Label(frame, text="PDF:").grid(row=4, column=0, sticky="w", pady=5)
         self.file_var = tk.StringVar()
-        ttk.Entry(frame, textvariable=self.file_var, width=50).grid(row=3, column=1, sticky="ew", padx=5)
-        ttk.Button(frame, text="Browse...", command=self.browse_file).grid(row=3, column=2)
+        ttk.Entry(frame, textvariable=self.file_var, width=50).grid(row=4, column=1, sticky="ew", padx=5)
+        ttk.Button(frame, text="Browse...", command=self.browse_file).grid(row=4, column=2)
 
-        ttk.Label(frame, text="Type:").grid(row=4, column=0, sticky="w", pady=5)
+        ttk.Label(frame, text="Type:").grid(row=5, column=0, sticky="w", pady=5)
         self.type_var = tk.StringVar(value="building")
         ttk.Radiobutton(frame, text="Building", variable=self.type_var, value="building").grid(
-            row=4,
+            row=5,
             column=1,
             sticky="w",
             padx=5,
         )
         ttk.Radiobutton(frame, text="Temporary", variable=self.type_var, value="temporary").grid(
-            row=4,
+            row=5,
             column=1,
             padx=(100, 0),
         )
 
-        ttk.Label(frame, text="Output:").grid(row=5, column=0, sticky="w", pady=5)
+        ttk.Label(frame, text="Output:").grid(row=6, column=0, sticky="w", pady=5)
         self.output_var = tk.StringVar(value="./reports")
-        ttk.Entry(frame, textvariable=self.output_var, width=50).grid(row=5, column=1, sticky="ew", padx=5)
-        ttk.Button(frame, text="Browse...", command=self.browse_output).grid(row=5, column=2)
+        ttk.Entry(frame, textvariable=self.output_var, width=50).grid(row=6, column=1, sticky="ew", padx=5)
+        ttk.Button(frame, text="Browse...", command=self.browse_output).grid(row=6, column=2)
 
         self.progress = ttk.Progressbar(frame, mode="indeterminate")
-        self.progress.grid(row=6, column=0, columnspan=3, sticky="ew", pady=10)
+        self.progress.grid(row=7, column=0, columnspan=3, sticky="ew", pady=10)
 
         out_frame = ttk.LabelFrame(frame, text="Output", padding=5)
-        out_frame.grid(row=7, column=0, columnspan=3, sticky="nsew", pady=10)
+        out_frame.grid(row=8, column=0, columnspan=3, sticky="nsew", pady=10)
         out_frame.columnconfigure(0, weight=1)
         out_frame.rowconfigure(0, weight=1)
         self.output = scrolledtext.ScrolledText(out_frame, height=25, width=85)
         self.output.grid(row=0, column=0, sticky="nsew")
-        frame.rowconfigure(7, weight=1)
+        frame.rowconfigure(8, weight=1)
 
         button_frame = ttk.Frame(frame)
-        button_frame.grid(row=8, column=0, columnspan=3, pady=10)
+        button_frame.grid(row=9, column=0, columnspan=3, pady=10)
         self.check_btn = ttk.Button(button_frame, text="Check Design", command=self.start)
         self.check_btn.pack(side="left", padx=5)
         ttk.Button(button_frame, text="Clear", command=self.clear).pack(side="left", padx=5)
         ttk.Button(button_frame, text="Exit", command=self.root.quit).pack(side="right", padx=5)
 
     def update_info(self):
+        provider = self.provider_var.get()
         model = self.model_var.get()
-        max_tokens = MODEL_CONFIGS.get(model, {}).get("max_context", 8000)
+        max_tokens = get_model_configs(provider).get(model, {}).get("max_context", 8000)
         self.model_info.config(text=f"Max: {max_tokens:,} tokens")
+
+    def on_provider_change(self):
+        provider = self.provider_var.get()
+        models = list(get_model_configs(provider).keys())
+        self.model_combo.config(values=models)
+        self.model_var.set(get_default_model(provider))
+        self.update_info()
 
     def browse_file(self):
         selected_file = filedialog.askopenfilename(filetypes=[("PDF", "*.pdf")])
@@ -135,15 +155,15 @@ class IDC_GUI:
 
         worker = threading.Thread(
             target=self.check,
-            args=(pdf_path, self.type_var.get(), self.output_var.get(), self.model_var.get()),
+            args=(pdf_path, self.type_var.get(), self.output_var.get(), self.model_var.get(), self.provider_var.get()),
         )
         worker.daemon = True
         worker.start()
 
-    def check(self, pdf_path, structure_type, output_dir, model):
+    def check(self, pdf_path, structure_type, output_dir, model, provider):
         try:
             os.makedirs(output_dir, exist_ok=True)
-            checker = Checker(model_name=model)
+            checker = Checker(model_name=model, provider=provider)
 
             capture = StringIO()
             with redirect_stdout(capture):

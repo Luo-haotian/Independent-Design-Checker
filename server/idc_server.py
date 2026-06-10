@@ -21,7 +21,7 @@ if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
 from main_ocr import CheckerOCR, TESSERACT_AVAILABLE  # noqa: E402
-from config import API_KEY  # noqa: E402
+from config import API_PROVIDER, available_providers, get_default_model, get_provider_label, is_provider_configured  # noqa: E402
 from qa_records import run_qa_batch  # noqa: E402
 
 UPLOAD_DIR = Path(os.environ.get("IDC_SERVER_UPLOAD_DIR", BASE_DIR / "server_uploads")).resolve()
@@ -32,6 +32,7 @@ MAX_WORKERS = max(1, int(os.environ.get("IDC_SERVER_WORKERS", "1")))
 VALID_STRUCT_TYPES = {"building", "temporary"}
 VALID_OCR_MODES = {"auto", "force", "no-ocr"}
 VALID_QA_EXTENSIONS = {".pdf", ".zip"}
+VALID_API_PROVIDERS = set(available_providers())
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -149,6 +150,7 @@ def _run_job(job_id: str) -> None:
     try:
         checker = CheckerOCR(
             model_name=job["model"] or None,
+            provider=job["provider"],
             use_ocr=job["ocr_mode"] != "no-ocr",
         )
         force_ocr = job["ocr_mode"] == "force"
@@ -194,6 +196,7 @@ def _run_qa_job(job_id: str) -> None:
             Path(job["output_dir"]),
             ocr_mode=job["ocr_mode"],
             model_name=job["model"] or None,
+            provider=job["provider"],
             log_callback=lambda message: _append_log(job_id, message),
         )
         elapsed = round(time.time() - started, 1)
@@ -216,7 +219,9 @@ def _run_qa_job(job_id: str) -> None:
 def healthz():
     return {
         "ok": True,
-        "api_key_configured": bool(API_KEY),
+        "default_provider": API_PROVIDER,
+        "api_key_configured": is_provider_configured(API_PROVIDER),
+        "providers": {provider: is_provider_configured(provider) for provider in VALID_API_PROVIDERS},
         "tesseract_available": TESSERACT_AVAILABLE,
         "workers": MAX_WORKERS,
         "qa_records_checker": True,
@@ -226,7 +231,7 @@ def healthz():
 @app.get("/")
 def index():
     tesseract_label = "ready" if TESSERACT_AVAILABLE else "not detected"
-    api_label = "configured" if API_KEY else "missing"
+    api_label = f"{get_provider_label(API_PROVIDER)} {'configured' if is_provider_configured(API_PROVIDER) else 'missing'}"
     return render_template_string(
         """
 <!doctype html>
@@ -253,7 +258,7 @@ def index():
         <h1>Server IDC Review</h1>
         <p>Upload a PDF submission. Extraction, OCR, API analysis, and Word report generation run on this server.</p>
         {% if not api_ready %}
-        <p style="color:#b42318;font-weight:700">GROK_API_KEY is not configured on the server. Ask IT to edit the project .env file before uploading.</p>
+        <p style="color:#b42318;font-weight:700">The default API provider is not configured on the server. Ask IT to edit the project .env file before uploading.</p>
         {% endif %}
         <form action="{{ url_for('create_job') }}" method="post" enctype="multipart/form-data">
           {% if token_required %}
@@ -279,8 +284,20 @@ def index():
               </select>
             </div>
           </div>
-          <label for="model">Model override</label>
-          <input id="model" name="model" type="text" placeholder="Use server default">
+          <div class="row">
+            <div>
+              <label for="provider">API provider</label>
+              <select id="provider" name="provider">
+                {% for item in providers %}
+                <option value="{{ item }}" {% if item == default_provider %}selected{% endif %}>{{ provider_labels[item] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label for="model">Model override</label>
+              <input id="model" name="model" type="text" placeholder="Use selected provider default">
+            </div>
+          </div>
           <div class="actions">
             <button type="submit">Upload and Start</button>
             <a class="button secondary" href="{{ url_for('qa_index') }}{{ token_query }}">QA Records Batch</a>
@@ -309,7 +326,10 @@ def index():
         token_required=bool(ACCESS_TOKEN),
         tesseract_label=tesseract_label,
         api_label=api_label,
-        api_ready=bool(API_KEY),
+        api_ready=is_provider_configured(API_PROVIDER),
+        default_provider=API_PROVIDER,
+        providers=sorted(VALID_API_PROVIDERS),
+        provider_labels={provider: get_provider_label(provider) for provider in VALID_API_PROVIDERS},
         token_query=_safe_token_query(),
     )
 
@@ -318,7 +338,7 @@ def index():
 def qa_index():
     _require_token()
     tesseract_label = "ready" if TESSERACT_AVAILABLE else "not detected"
-    api_label = "configured" if API_KEY else "missing"
+    api_label = f"{get_provider_label(API_PROVIDER)} {'configured' if is_provider_configured(API_PROVIDER) else 'missing'}"
     return render_template_string(
         """
 <!doctype html>
@@ -345,7 +365,7 @@ def qa_index():
         <h1>Batch QA Register</h1>
         <p>Upload OP records, mill certificates, concrete cube tests, reinforcement tests, or a ZIP package. The server extracts fields into a CSV register and flags records that need review.</p>
         {% if not api_ready %}
-        <p style="color:#b42318;font-weight:700">GROK_API_KEY is not configured on the server. Ask IT to edit the project .env file before uploading.</p>
+        <p style="color:#b42318;font-weight:700">The default API provider is not configured on the server. Ask IT to edit the project .env file before uploading.</p>
         {% endif %}
         <form action="{{ url_for('create_qa_job') }}" method="post" enctype="multipart/form-data">
           {% if token_required %}
@@ -364,8 +384,18 @@ def qa_index():
               </select>
             </div>
             <div>
+              <label for="provider">API provider</label>
+              <select id="provider" name="provider">
+                {% for item in providers %}
+                <option value="{{ item }}" {% if item == default_provider %}selected{% endif %}>{{ provider_labels[item] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div>
               <label for="model">Model override</label>
-              <input id="model" name="model" type="text" placeholder="Use server default">
+              <input id="model" name="model" type="text" placeholder="Use selected provider default">
             </div>
           </div>
           <div class="actions">
@@ -394,7 +424,10 @@ def qa_index():
         token_required=bool(ACCESS_TOKEN),
         tesseract_label=tesseract_label,
         api_label=api_label,
-        api_ready=bool(API_KEY),
+        api_ready=is_provider_configured(API_PROVIDER),
+        default_provider=API_PROVIDER,
+        providers=sorted(VALID_API_PROVIDERS),
+        provider_labels={provider: get_provider_label(provider) for provider in VALID_API_PROVIDERS},
         token_query=_safe_token_query(),
     )
 
@@ -417,10 +450,13 @@ def create_job():
     uploaded.save(input_path)
     struct_type = request.form.get("struct_type", "building")
     ocr_mode = request.form.get("ocr_mode", "auto")
+    provider = request.form.get("provider", API_PROVIDER).strip().lower()
     if struct_type not in VALID_STRUCT_TYPES:
         abort(400, "Invalid review type.")
     if ocr_mode not in VALID_OCR_MODES:
         abort(400, "Invalid OCR mode.")
+    if provider not in VALID_API_PROVIDERS:
+        abort(400, "Invalid API provider.")
 
     job = {
         "id": job_id,
@@ -428,6 +464,7 @@ def create_job():
         "input_path": str(input_path),
         "struct_type": struct_type,
         "ocr_mode": ocr_mode,
+        "provider": provider,
         "model": request.form.get("model", "").strip(),
         "status": "queued",
         "created_at": datetime.now().isoformat(timespec="seconds"),
@@ -473,8 +510,11 @@ def create_qa_job():
         abort(400, "No valid QA files uploaded.")
 
     ocr_mode = request.form.get("ocr_mode", "auto")
+    provider = request.form.get("provider", API_PROVIDER).strip().lower()
     if ocr_mode not in VALID_OCR_MODES:
         abort(400, "Invalid OCR mode.")
+    if provider not in VALID_API_PROVIDERS:
+        abort(400, "Invalid API provider.")
 
     job = {
         "id": job_id,
@@ -484,6 +524,7 @@ def create_qa_job():
         "output_dir": str(output_dir),
         "saved_files": saved_files,
         "ocr_mode": ocr_mode,
+        "provider": provider,
         "model": request.form.get("model", "").strip(),
         "status": "queued",
         "created_at": datetime.now().isoformat(timespec="seconds"),
@@ -536,6 +577,8 @@ def qa_job_status(job_id: str):
       <p>Status: <span class="status {{ job.status }}">{{ job.status|upper }}</span></p>
       <div class="meta">
         <div><span>OCR mode</span><strong>{{ job.ocr_mode }}</strong></div>
+        <div><span>API provider</span><strong>{{ provider_label }}</strong></div>
+        <div><span>Model</span><strong>{{ job.model or default_model }}</strong></div>
         <div><span>Uploaded files</span><strong>{{ job.saved_files|length }}</strong></div>
         <div><span>Processed records</span><strong>{{ qa_result.get("processed", "-") }}</strong></div>
         <div><span>Exceptions</span><strong>{{ qa_result.get("exceptions", "-") }}</strong></div>
@@ -566,6 +609,8 @@ def qa_job_status(job_id: str):
         log_text="\n".join(job["log"]),
         download_url=download_url,
         token_query=token_query,
+        provider_label=get_provider_label(job.get("provider")),
+        default_model=get_default_model(job.get("provider")),
         refresh_tag=refresh_tag,
     )
 
@@ -605,6 +650,8 @@ def job_status(job_id: str):
       <div class="meta">
         <div><span>Review type</span><strong>{{ job.struct_type }}</strong></div>
         <div><span>OCR mode</span><strong>{{ job.ocr_mode }}</strong></div>
+        <div><span>API provider</span><strong>{{ provider_label }}</strong></div>
+        <div><span>Model</span><strong>{{ job.model or default_model }}</strong></div>
         <div><span>Created</span><strong>{{ job.created_at }}</strong></div>
         <div><span>Started</span><strong>{{ job.started_at or "-" }}</strong></div>
         <div><span>Completed</span><strong>{{ job.completed_at or "-" }}</strong></div>
@@ -632,6 +679,8 @@ def job_status(job_id: str):
         log_text="\n".join(job["log"]),
         download_url=download_url,
         token_query=token_query,
+        provider_label=get_provider_label(job.get("provider")),
+        default_model=get_default_model(job.get("provider")),
         refresh_tag=refresh_tag,
     )
 

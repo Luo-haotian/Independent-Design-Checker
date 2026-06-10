@@ -1,4 +1,4 @@
-# IDC User Guide v0.14
+# IDC User Guide v0.16
 
 ## Quick Start
 
@@ -68,20 +68,30 @@ If your company IT team has deployed the IDC server, open the intranet address t
 http://server-name:8080
 ```
 
-Upload the PDF, choose `Building` or `Temporary`, select an OCR mode, and wait for the Word report download link. In this mode, OCR and report generation run on the server, so you do not need to install IDC or Tesseract on your own computer.
+Upload the PDF, choose `Building` or `Temporary`, select the API provider, select an OCR mode, and wait for the Word report download link. In this mode, OCR and report generation run on the server, so you do not need to install IDC or Tesseract on your own computer.
+
+API provider:
+
+- `Grok`: default provider.
+- `Kimi`: optional provider. IT must configure `KIMI_API_KEY` or `MOONSHOT_API_KEY` first.
 
 ## QA Records Batch Checker
 
-Use this server feature when you need to batch register OP records, mill certificates, concrete cube test reports, reinforcement test reports, or similar QA records.
+Use this server feature when you need to batch register OP records, mill certificates, concrete cube test reports, reinforcement bar certificates/test reports, or similar contractor submission QA records.
 
 Basic steps:
 
-1. Open the intranet server page.
+1. Open the intranet server page and confirm the API and OCR status labels are ready.
 2. Click `QA Records Batch`.
-3. Upload multiple PDFs or one ZIP package containing PDFs.
-4. Select the OCR mode.
-5. Wait for the batch job to finish.
-6. Download the QA output ZIP.
+3. Select the API provider. Use `Grok` unless IT asks you to test `Kimi`.
+4. Select the OCR mode:
+   - `Auto detect` for mixed scanned/searchable files.
+   - `Force OCR` for scanned contractor submissions.
+   - `No OCR` for clean searchable PDFs.
+5. Upload multiple PDFs or one ZIP package containing PDFs.
+6. Wait for the batch job to finish.
+7. Download the QA output ZIP.
+8. Open `qa_operator_report.md` first, then check the exception CSV.
 
 The ZIP contains:
 
@@ -89,8 +99,11 @@ The ZIP contains:
 - `qa_exceptions.csv`: records requiring human review
 - `qa_raw_results.json`: raw extracted data for audit/debug
 - `qa_summary.txt`: short processing summary
+- `qa_operator_report.md`: plain-language operator report with next actions
 
 Always check the CSV register against the source documents before using it as an official project record.
+
+For scanned submissions, manually verify heat numbers, batch numbers, bar marks, cube IDs, sample IDs, grades, dates, and result values against the source PDF.
 
 ## Advanced Option: CLI
 
@@ -112,7 +125,7 @@ If the run fails, check:
 
 - the PDF path is correct
 - the PDF can be opened normally
-- `.env` exists and contains a valid `GROK_API_KEY`
+- `.env` exists and contains a valid key for the selected API provider
 - the network is available
 
 For OCR issues, also check that Tesseract is installed.

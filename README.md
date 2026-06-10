@@ -1,8 +1,8 @@
-# Independent Design Checker (IDC) v0.15
+# Independent Design Checker (IDC) v0.16
 
 IDC is a structural design review tool that reads PDF submissions and produces a structured Word report for building or temporary works review.
 
-This `v0.15` release adds the QA Records Batch Checker plus product workflow and PRD documentation on top of the `v0.14` intranet server mode. The desktop EXE workflow remains available for fast local testing and one-off reviews.
+This `v0.16` release adds Grok/Kimi provider selection, stronger contractor submission batch review outputs, real/public sample validation, safer EXE packaging, and Docker-based intranet hosting. The desktop EXE workflow remains available for fast local testing and one-off reviews.
 
 ## Quick Start
 
@@ -35,7 +35,8 @@ Create a `.env` file from `.env.example` and add your Grok API key:
 ```env
 GROK_API_KEY=your-grok-api-key-here
 GROK_API_URL=https://api.x.ai/v1/chat/completions
-MODEL_NAME=grok-4-1-fast-non-reasoning
+GROK_MODEL_NAME=grok-4-1-fast-non-reasoning
+IDC_API_PROVIDER=grok
 ```
 
 You can also point to a different env file with:
@@ -65,9 +66,36 @@ http://server-name:8080
 
 Server deployment details are in `docs/IT_SERVER_DEPLOYMENT.md`.
 
+Docker deployment is also available for a one-computer intranet host:
+
+```powershell
+copy .env.example .env
+docker compose up -d --build
+```
+
+Docker details are in `docs/DOCKER_DEPLOYMENT.md`.
+
 ### QA Records Batch Checker
 
-The server also includes a QA Records Batch Checker for OP records, mill certificates, concrete cube tests, reinforcement tests, and similar QA documents. It accepts multiple PDFs or ZIP uploads and returns a CSV register, exception CSV, raw JSON, and summary file.
+The server also includes a QA Records Batch Checker for OP records, mill certificates, concrete cube tests, reinforcement bar certificates/test reports, and similar contractor submission documents. It accepts multiple PDFs or ZIP uploads and returns a CSV register, exception CSV, raw JSON, summary file, and operator report.
+
+Operator workflow:
+
+1. Open the server page and confirm API and OCR are ready.
+2. Open `QA Records Batch`.
+3. Choose `Grok` or `Kimi` as the API provider. Grok is the default.
+4. Choose `Auto detect` for mixed files, `Force OCR` for scanned files, or `No OCR` for searchable PDFs.
+5. Upload PDFs or a ZIP package.
+6. Download the output ZIP and review `qa_operator_report.md` first.
+7. Check `qa_exceptions.csv` before accepting the register.
+
+Sample validation can be run from source:
+
+```powershell
+python scripts\run_contractor_submission_samples.py
+```
+
+Add `--run-ai` when the selected provider API key is configured.
 
 ### OCR GUI
 
@@ -145,10 +173,12 @@ python build_exe.py --ocr
 - `main_ocr.py`: OCR CLI engine
 - `server/idc_server.py`: intranet upload server
 - `qa_records.py`: QA records batch classification and register extraction
+- `scripts/run_contractor_submission_samples.py`: real scanned and public electronic sample validation harness
 - `server/*.bat`: IT installation and server startup scripts
 - `config.py`: runtime configuration
 - `docs/USER_GUIDE.md`: end-user guide
 - `docs/IT_SERVER_DEPLOYMENT.md`: IT deployment guide
+- `docs/DOCKER_DEPLOYMENT.md`: Docker deployment guide
 - `docs/WORKFLOW.md`: product workflow diagram and operating modes
 - `docs/PRD.md`: product requirements, version register, and roadmap
 - `API_SETUP_GUIDE.md`: Grok API setup steps

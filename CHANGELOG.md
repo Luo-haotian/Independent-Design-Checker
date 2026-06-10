@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.16 - Contractor Submission Batch Review Enhancements
+
+- added selectable Grok/Kimi API provider support while keeping Grok as the default provider
+- added Kimi/Moonshot OpenAI-compatible environment configuration
+- added provider selection to the desktop GUI, OCR GUI, and intranet server upload pages
+- expanded QA batch register outputs with OCR diagnostics for scanned submissions
+- added `qa_operator_report.md` to the QA output ZIP for step-by-step operator review
+- added a contractor submission sample harness for real scanned Batch 15/16 samples and public electronic PDF samples
+- added Dockerfile, Docker Compose, and Docker deployment guide for one-computer intranet hosting
+- changed EXE packaging so real `.env` is not copied into `dist` unless `--include-env` is explicitly used
+
 ## v0.15 - QA Records Batch Checker
 
 - added `docs/WORKFLOW.md` with the IDC desktop, CLI, OCR, and intranet server workflow

@@ -1,0 +1,23 @@
+.git
+.venv*
+__pycache__/
+*.pyc
+
+.env
+.env.local
+.env.*.local
+
+build/
+dist/
+spec_files/
+reports/
+server_uploads/
+server_reports/
+output/
+tmp_*/
+tmp_reports*/
+tmp_contractor_submission_samples/
+report sample/
+test file/
+*.log
+~$*.docx

@@ -9,17 +9,13 @@ from datetime import datetime
 from typing import Optional
 
 import fitz
-import requests
 from PIL import Image
 
 from config import (
-    API_KEY,
-    API_PROVIDER,
-    API_URL,
     MODEL_CONFIGS,
-    MODEL_NAME,
-    TEMPERATURE,
-    check_api_key,
+    call_chat_completion,
+    get_llm_config,
+    get_provider_label,
 )
 
 logging.basicConfig(
@@ -222,25 +218,17 @@ class OCRExtractor:
 class CheckerOCR:
     """Checker with OCR fallback for scanned documents."""
 
-    def __init__(self, model_name: str | None = None, use_ocr: bool = True):
-        check_api_key()
-        self.api_key = API_KEY
-        self.api_url = API_URL
-        self.model = model_name or MODEL_NAME
-        self.provider = API_PROVIDER
-
-        config = MODEL_CONFIGS.get(self.model, MODEL_CONFIGS[MODEL_NAME])
-        self.max_context = config["max_context"]
-        self.max_output = config["max_output"]
-        self.headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-        }
+    def __init__(self, model_name: str | None = None, provider: str | None = None, use_ocr: bool = True):
+        self.llm_config = get_llm_config(provider, model_name)
+        self.model = self.llm_config.model
+        self.provider = self.llm_config.provider
+        self.max_context = self.llm_config.max_context
+        self.max_output = self.llm_config.max_output
         self.last_report_file: str | None = None
 
         self.ocr_extractor = OCRExtractor() if use_ocr else None
 
-        logger.info("Using %s API", self.provider.upper())
+        logger.info("Using %s API", get_provider_label(self.provider))
         logger.info("Model: %s", self.model)
         logger.info("OCR Enabled: %s", bool(self.ocr_extractor and self.ocr_extractor.available))
 
@@ -299,33 +287,16 @@ class CheckerOCR:
                 print(f"ERROR: Input is too large ({estimated:,} > {self.max_context:,})")
                 return None
 
-            payload = {
-                "model": self.model,
-                "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": self.max_output,
-                "temperature": TEMPERATURE,
-            }
-
-            print(f"Calling {self.provider.upper()} API...")
-            response = requests.post(
-                self.api_url,
-                headers=self.headers,
-                json=payload,
-                timeout=180,
+            print(f"Calling {get_provider_label(self.provider)} API...")
+            message, result = call_chat_completion(
+                prompt,
+                provider=self.provider,
+                model_name=self.model,
+                max_tokens=self.max_output,
             )
-
-            if response.status_code == 200:
-                result = response.json()
-                if "usage" in result:
-                    print(f"Tokens used: {result['usage'].get('total_tokens', 0):,}")
-                return result["choices"][0]["message"]["content"]
-
-            if response.status_code == 401:
-                print("ERROR 401: Invalid Grok API key.")
-                return None
-
-            print(f"API Error {response.status_code}: {response.text[:200]}")
-            return None
+            if "usage" in result:
+                print(f"Tokens used: {result['usage'].get('total_tokens', 0):,}")
+            return message
         except Exception as exc:
             print(f"API error: {exc}")
             return None
@@ -441,6 +412,7 @@ OCR requires Tesseract:
     parser.add_argument("--type", choices=["building", "temporary"], default="building")
     parser.add_argument("--output-dir", default="./reports")
     parser.add_argument("--model", default=None, help="Model to use (overrides config)")
+    parser.add_argument("--provider", choices=["grok", "kimi"], default=None, help="API provider to use")
     parser.add_argument("--force-ocr", action="store_true", help="Force OCR for all pages")
     parser.add_argument("--no-ocr", action="store_true", help="Disable OCR and use only text extraction")
     args = parser.parse_args()
@@ -456,7 +428,7 @@ OCR requires Tesseract:
     os.makedirs(args.output_dir, exist_ok=True)
 
     try:
-        checker = CheckerOCR(model_name=args.model, use_ocr=not args.no_ocr)
+        checker = CheckerOCR(model_name=args.model, provider=args.provider, use_ocr=not args.no_ocr)
         success = checker.check(
             args.pdf_file,
             args.type,

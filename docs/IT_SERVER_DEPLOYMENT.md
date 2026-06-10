@@ -1,14 +1,14 @@
-# IDC v0.14 IT Server Deployment Guide
+# IDC v0.16 IT Server Deployment Guide
 
-This guide is for installing IDC on a company intranet server so staff can upload PDF submissions in a browser. PDF parsing, OCR, Grok analysis, and Word report generation run on the server.
+This guide is for installing IDC on a company intranet server so staff can upload PDF submissions in a browser. PDF parsing, OCR, API analysis, and Word report generation run on the server. Grok is the default API provider; Kimi/Moonshot can be enabled as an OpenAI-compatible provider.
 
 ## Server Requirements
 
 - Windows Server or Windows 10/11 host on the company intranet
 - Python 3.10 or later
 - Tesseract OCR installed on the server
-- Network access from the server to the configured Grok API endpoint
-- A server-side `.env` file containing `GROK_API_KEY`
+- Network access from the server to the configured API endpoint
+- A server-side `.env` file containing at least `GROK_API_KEY`, or Kimi credentials when Kimi is selected
 
 Tesseract default path:
 
@@ -33,7 +33,14 @@ Edit `.env` before production use:
 ```env
 GROK_API_KEY=your-real-key
 GROK_API_URL=https://api.x.ai/v1/chat/completions
-MODEL_NAME=grok-4-1-fast-non-reasoning
+GROK_MODEL_NAME=grok-4-1-fast-non-reasoning
+IDC_API_PROVIDER=grok
+
+# Optional Kimi/Moonshot provider
+# KIMI_API_KEY=your-real-kimi-key
+# MOONSHOT_API_KEY=your-real-kimi-key
+# KIMI_API_URL=https://api.moonshot.cn/v1/chat/completions
+# KIMI_MODEL_NAME=kimi-k2.5
 
 IDC_SERVER_HOST=0.0.0.0
 IDC_SERVER_PORT=8080
@@ -63,6 +70,27 @@ http://server-name:8080/qa
 ```
 
 Keep `IDC_SERVER_ACCESS_TOKEN` enabled unless the intranet is already protected by a stronger access control layer.
+
+## Docker Option
+
+If the host computer has Docker Desktop, IDC can also run as a container:
+
+```powershell
+copy .env.example .env
+notepad .env
+docker compose up -d --build
+```
+
+See `docs/DOCKER_DEPLOYMENT.md` for the one-computer intranet deployment workflow.
+
+## API Provider Selection
+
+The upload pages include an API provider dropdown:
+
+- `Grok` is the default and uses `GROK_API_KEY`, `GROK_API_URL`, and `GROK_MODEL_NAME`.
+- `Kimi` uses `KIMI_API_KEY` or `MOONSHOT_API_KEY`, plus `KIMI_API_URL` and `KIMI_MODEL_NAME`.
+
+Kimi/Moonshot is OpenAI-compatible, so no separate SDK is required. The server sends the same chat-completions request shape to the selected provider.
 
 ## Optional Startup Task
 
@@ -106,4 +134,19 @@ These folders may contain confidential submissions and generated reports. Put th
 - Increase workers only after confirming server CPU, memory, and API rate limits.
 - If OCR is unavailable, the upload still runs text-layer extraction when possible, but scanned PDFs will not produce useful content.
 - The `/healthz` endpoint returns a simple JSON health check including OCR availability.
-- QA Records Batch Checker outputs CSV, JSON, and summary files in the configured report directory. Treat these outputs as confidential project records.
+- QA Records Batch Checker outputs CSV, JSON, summary, and operator report files in the configured report directory. Treat these outputs as confidential project records.
+
+## Sample Validation
+
+Run the sample harness from the project root:
+
+```powershell
+python scripts\run_contractor_submission_samples.py
+```
+
+This profiles the real scanned Batch 15/16 reinforcement submission samples and downloads public electronic mill certificate / concrete cube examples. Add `--run-ai` only after the selected provider API key is configured:
+
+```powershell
+python scripts\run_contractor_submission_samples.py --provider grok --run-ai
+python scripts\run_contractor_submission_samples.py --provider kimi --run-ai
+```

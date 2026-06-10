@@ -56,6 +56,7 @@ The product currently supports desktop EXE, command line, OCR, intranet server w
 | v0.12 | Released | Added sample-style branded Word report generation, metadata extraction, and denser IDC reviewer comments. |
 | v0.14 | Released | Added intranet server deployment so staff can upload PDFs in a browser while OCR and report generation run on the server. |
 | v0.15 | Released | Adds product workflow documentation, this PRD, and a QA Records Batch Checker MVP for batch QA register extraction. |
+| v0.16 | Released | Adds Grok/Kimi provider selection, contractor submission operator reports, OCR diagnostics, sample validation, and Docker intranet deployment. |
 
 ## 6. Functional Requirements
 

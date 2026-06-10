@@ -22,16 +22,18 @@ def clean_build_dirs():
     os.makedirs(SPEC_DIR, exist_ok=True)
 
 
-def copy_runtime_files():
+def copy_runtime_files(include_env: bool = False):
     """Copy user-facing runtime templates into dist."""
     os.makedirs(DIST_DIR, exist_ok=True)
     if os.path.exists(".env.example"):
         shutil.copy2(".env.example", os.path.join(DIST_DIR, ".env.example"))
-    if os.path.exists(".env"):
+    if include_env and os.path.exists(".env"):
         shutil.copy2(".env", os.path.join(DIST_DIR, ".env"))
         print("Copied .env into dist for packaged runtime.")
-    else:
+    elif include_env:
         print("No root .env found. Skipping dist/.env copy.")
+    else:
+        print("Skipped dist/.env copy. Copy .env.example to .env on the target machine.")
 
 
 def build_standard_versions():
@@ -158,6 +160,7 @@ Notes:
   - OCR requirements: pip install -r requirements_ocr.txt
   - Tesseract must be installed separately for OCR runtime support.
   - Keep your real .env outside version control.
+  - By default, real .env is not copied into dist.
 """
     )
 
@@ -168,6 +171,7 @@ def main():
     parser.add_argument("--standard", action="store_true", help="Build only standard versions")
     parser.add_argument("--ocr", action="store_true", help="Build only OCR versions")
     parser.add_argument("--clean", action="store_true", help="Only clean build directories")
+    parser.add_argument("--include-env", action="store_true", help="Copy the real .env into dist for private internal packaging")
     args = parser.parse_args()
 
     if not any([args.all, args.standard, args.ocr, args.clean]):
@@ -197,7 +201,7 @@ def main():
             print("\nWARNING: pytesseract is not installed. Skipping OCR builds.")
             print("Install OCR dependencies with: pip install -r requirements_ocr.txt")
 
-    copy_runtime_files()
+    copy_runtime_files(include_env=args.include_env)
 
     print("\n" + "=" * 60)
     print("Build completed")
