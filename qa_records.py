@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import fitz
+import pymupdf as fitz
 from PIL import Image
 
 from config import call_chat_completion, get_default_model, get_provider_label

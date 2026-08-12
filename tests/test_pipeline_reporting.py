@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import fitz
+import pymupdf as fitz
 
 from idc.ingestion import ingest_pdf
 from idc.pipeline import create_review_run, deterministic_summary, export_review_json

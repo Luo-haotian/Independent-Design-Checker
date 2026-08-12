@@ -10,8 +10,11 @@ if ((Split-Path -Leaf $archive) -ne "IDC-Archive") {
 }
 
 $candidate = Join-Path $archive $CandidateName
-if (-not (Test-Path -LiteralPath (Join-Path $candidate "dist\IDC_CLI.exe") -PathType Leaf)) {
-    throw "Verified final release candidates were not found."
+$requiredExecutables = @("IDC_CLI.exe", "IDC_GUI.exe", "IDC_CLI_OCR.exe", "IDC_GUI_OCR.exe")
+foreach ($executable in $requiredExecutables) {
+    if (-not (Test-Path -LiteralPath (Join-Path $candidate "dist\$executable") -PathType Leaf)) {
+        throw "Verified final release candidate is missing: $executable"
+    }
 }
 
 foreach ($childName in @("build", "spec_files")) {
@@ -39,6 +42,7 @@ $staleNames = @(
     "2026-08-12-v0.17-release-candidates.stale3",
     "2026-08-12-v0.17-release-candidates.superseded-concrete-default",
     "2026-08-12-v0.17-release-candidates.partial-obsolete-hidden-import",
+    "2026-08-12-v0.17-release-candidates.partial-obsolete-fitz-api",
     "idc-v0.17-build-env"
 )
 foreach ($name in $staleNames) {

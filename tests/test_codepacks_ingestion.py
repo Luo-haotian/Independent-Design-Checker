@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-import fitz
+import pymupdf as fitz
 import pytest
 
 from idc.code_basis import detect_code_declarations, resolve_code_basis

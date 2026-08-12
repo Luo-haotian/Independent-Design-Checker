@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Protocol
 
-import fitz
+import pymupdf as fitz
 from PIL import Image
 
 
