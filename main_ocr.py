@@ -17,6 +17,8 @@ from config import (
     get_llm_config,
     get_provider_label,
 )
+from idc.ingestion import DocumentExtraction, ingest_pdf
+from idc.llm_review import review_document
 
 logging.basicConfig(
     level=logging.INFO,
@@ -225,6 +227,8 @@ class CheckerOCR:
         self.max_context = self.llm_config.max_context
         self.max_output = self.llm_config.max_output
         self.last_report_file: str | None = None
+        self.last_extraction: DocumentExtraction | None = None
+        self.last_ai_observations: list[str] = []
 
         self.ocr_extractor = OCRExtractor() if use_ocr else None
 
@@ -233,43 +237,20 @@ class CheckerOCR:
         logger.info("OCR Enabled: %s", bool(self.ocr_extractor and self.ocr_extractor.available))
 
     def extract(self, pdf_path: str, force_ocr: bool = False) -> tuple[Optional[str], int, bool]:
-        """Extract text from PDF, using OCR when needed."""
+        """Compatibility wrapper around page-preserving OCR extraction."""
         try:
-            doc = fitz.open(pdf_path)
-            text_parts = []
-            images = 0
-            used_ocr = False
-            total_pages = len(doc)
-
-            print(f"Processing {total_pages} pages...")
-
-            for page_num, page in enumerate(doc, 1):
-                page_text = page.get_text()
-                should_use_ocr = force_ocr or len(page_text.strip()) < 50
-
-                if should_use_ocr and self.ocr_extractor and self.ocr_extractor.available:
-                    print(f"  Page {page_num}/{total_pages}: Using OCR...")
-                    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
-                    image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-                    ocr_text = self.ocr_extractor.extract_text_from_image(image)
-                    if ocr_text.strip():
-                        text_parts.append(f"--- Page {page_num} (OCR) ---\n{ocr_text}")
-                        used_ocr = True
-                    images += 1
-                else:
-                    if page_text.strip():
-                        text_parts.append(f"--- Page {page_num} ---\n{page_text}")
-                    print(f"  Page {page_num}/{total_pages}: Text extracted ({len(page_text)} chars)")
-
-                images += len(page.get_images())
-
-            doc.close()
-
-            if used_ocr:
+            self.last_extraction = ingest_pdf(
+                pdf_path,
+                ocr=self.ocr_extractor,
+                force_ocr=force_ocr,
+            )
+            if self.last_extraction.used_ocr:
                 print("OCR was used for some pages.")
-
-            text = "\n\n".join(text_parts)
-            return (text if text.strip() else None), images, used_ocr
+            return (
+                self.last_extraction.full_text or None,
+                self.last_extraction.embedded_images,
+                self.last_extraction.used_ocr,
+            )
         except Exception as exc:
             logger.error("Extraction error: %s", exc)
             return None, 0, False
@@ -315,12 +296,51 @@ class CheckerOCR:
 
         return self.call_api(prompt.format(content=truncated))
 
+    def analyze_document(
+        self,
+        extraction: DocumentExtraction,
+        struct_type: str,
+        *,
+        critic: bool = False,
+        critic_provider: str | None = None,
+    ) -> Optional[str]:
+        """Review all readable pages and retain coverage disclosure."""
+        prompt = BUILDING_PROMPT if struct_type == "building" else TEMPORARY_PROMPT
+        max_chars = get_safe_length(extraction.full_text, self.max_context, prompt)
+        critic_call = None
+        if critic:
+            selected_provider = critic_provider or self.provider
+
+            def critic_call(critic_prompt: str) -> str | None:
+                message, _result = call_chat_completion(
+                    critic_prompt,
+                    provider=selected_provider,
+                    max_tokens=self.max_output,
+                )
+                return message
+
+        result, observations, covered, missing = review_document(
+            extraction,
+            prompt,
+            self.call_api,
+            max_input_chars=max_chars,
+            critic=critic,
+            call_critic=critic_call,
+        )
+        self.last_ai_observations = observations
+        if missing:
+            logger.warning("Unprocessed or unreadable PDF pages: %s", missing)
+        logger.info("Reviewed PDF pages: %s", covered)
+        return result
+
     def check(
         self,
         pdf_path: str,
         struct_type: str = "building",
         output_dir: str | None = None,
         force_ocr: bool = False,
+        critic: bool = False,
+        critic_provider: str | None = None,
     ) -> bool:
         """Run the full OCR analysis flow."""
         self.last_report_file = None
@@ -330,7 +350,8 @@ class CheckerOCR:
             return False
 
         content, images, used_ocr = self.extract(pdf_path, force_ocr)
-        if not content:
+        extraction = self.last_extraction
+        if not content or not extraction:
             print("ERROR: Could not extract text from the PDF.")
             return False
 
@@ -339,7 +360,13 @@ class CheckerOCR:
         print(f"Estimated: ~{estimate_tokens(len(content)):,} tokens")
         metadata = extract_report_metadata(content, pdf_path)
 
-        result = self.analyze(content, struct_type)
+        print(f"Pages: {extraction.page_count}; readable: {len(extraction.processed_pages)}")
+        result = self.analyze_document(
+            extraction,
+            struct_type,
+            critic=critic,
+            critic_provider=critic_provider,
+        )
         if not result:
             return False
 

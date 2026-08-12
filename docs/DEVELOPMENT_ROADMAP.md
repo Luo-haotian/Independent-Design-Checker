@@ -17,15 +17,14 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
   - Archive evidence: 94 source records, 79 unique payload files, 1,060.61 MiB payload.
   - Verification: Git bundle and SHA-256 payload verification passed.
   - Cleanup: repository workspace reduced to approximately 0.5 MiB; `.env` remained ignored and was not archived.
-  - Commit: recorded in the M01 milestone commit.
+  - Commit: `88d092a`.
 
 ## In Progress
 
-- M02 - Refactor shared behavior into the `idc` package with compatibility entrypoints.
+- M03 - Add page-preserving evidence models, coverage reporting, and HK-default code-pack governance.
 
 ## Planned
 
-- M03 - Add page-preserving evidence models, coverage reporting, and HK-default code-pack governance.
 - M04 - Add deterministic RC beam flexure and shear checks with evidence and clause traceability.
 - M05 - Add persistent jobs, signed reviewer decisions, audit events, retention, and server security hardening.
 - M06 - Extend CLI, GUI, server, JSON, and Word outputs; add tests, CI, packaging verification, and documentation.
@@ -48,3 +47,5 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
 ## Evidence Log
 
 Milestone completion entries will include the commit ID, tests, build results, archive size, repository size, and remaining limitations.
+
+- M02 completed: introduced the `idc` package, public evidence/review contracts, page-preserving PDF ingestion, context-safe page chunking, coverage disclosure, and optional non-authoritative critic observations. Compatibility entrypoints remain available. Static parse and a three-page ingestion smoke test passed. Commit recorded in the M02 milestone commit.

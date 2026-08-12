@@ -16,6 +16,8 @@ from config import (
     get_llm_config,
     get_provider_label,
 )
+from idc.ingestion import DocumentExtraction, ingest_pdf
+from idc.llm_review import review_document
 
 logging.basicConfig(
     level=logging.INFO,
@@ -158,21 +160,17 @@ class Checker:
         self.max_context = self.llm_config.max_context
         self.max_output = self.llm_config.max_output
         self.last_report_file: str | None = None
+        self.last_extraction: DocumentExtraction | None = None
+        self.last_ai_observations: list[str] = []
 
         logger.info("Using %s API", get_provider_label(self.provider))
         logger.info("Model: %s", self.model)
 
     def extract(self, pdf_path: str) -> tuple[Optional[str], int]:
-        """Extract text and count embedded images."""
+        """Compatibility wrapper around page-preserving extraction."""
         try:
-            doc = fitz.open(pdf_path)
-            text_parts = []
-            images = 0
-            for page in doc:
-                text_parts.append(page.get_text())
-                images += len(page.get_images())
-            doc.close()
-            return "\n".join(text_parts), images
+            self.last_extraction = ingest_pdf(pdf_path)
+            return self.last_extraction.full_text, self.last_extraction.embedded_images
         except Exception as exc:
             logger.error("Extraction error: %s", exc)
             return None, 0
@@ -205,7 +203,7 @@ class Checker:
             return None
 
     def analyze(self, content: str, struct_type: str) -> Optional[str]:
-        """Build the prompt and request the analysis."""
+        """Compatibility path for callers that provide text instead of pages."""
         prompt = BUILDING_PROMPT if struct_type == "building" else TEMPORARY_PROMPT
         safe_len = get_safe_length(content, self.max_context, prompt)
         if safe_len <= 0:
@@ -218,7 +216,52 @@ class Checker:
 
         return self.call_api(prompt.format(content=truncated))
 
-    def check(self, pdf_path: str, struct_type: str = "building", output_dir: str | None = None) -> bool:
+    def analyze_document(
+        self,
+        extraction: DocumentExtraction,
+        struct_type: str,
+        *,
+        critic: bool = False,
+        critic_provider: str | None = None,
+    ) -> Optional[str]:
+        """Review all readable pages without silently truncating the document."""
+        prompt = BUILDING_PROMPT if struct_type == "building" else TEMPORARY_PROMPT
+        max_chars = get_safe_length(extraction.full_text, self.max_context, prompt)
+        critic_call = None
+        if critic:
+            selected_provider = critic_provider or self.provider
+
+            def critic_call(critic_prompt: str) -> str | None:
+                message, _result = call_chat_completion(
+                    critic_prompt,
+                    provider=selected_provider,
+                    max_tokens=self.max_output,
+                )
+                return message
+
+        result, observations, covered, missing = review_document(
+            extraction,
+            prompt,
+            self.call_api,
+            max_input_chars=max_chars,
+            critic=critic,
+            call_critic=critic_call,
+        )
+        self.last_ai_observations = observations
+        if missing:
+            logger.warning("Unprocessed or unreadable PDF pages: %s", missing)
+        logger.info("Reviewed PDF pages: %s", covered)
+        return result
+
+    def check(
+        self,
+        pdf_path: str,
+        struct_type: str = "building",
+        output_dir: str | None = None,
+        *,
+        critic: bool = False,
+        critic_provider: str | None = None,
+    ) -> bool:
         """Run the full standard analysis flow."""
         self.last_report_file = None
         print(f"\nAnalyzing: {pdf_path}")
@@ -227,7 +270,8 @@ class Checker:
             return False
 
         content, images = self.extract(pdf_path)
-        if not content or not content.strip():
+        extraction = self.last_extraction
+        if not content or not content.strip() or not extraction:
             print("ERROR: Could not extract readable text from the PDF.")
             return False
 
@@ -235,7 +279,13 @@ class Checker:
         print(f"Estimated: ~{estimate_tokens(len(content)):,} tokens")
         metadata = extract_report_metadata(content, pdf_path)
 
-        result = self.analyze(content, struct_type)
+        print(f"Pages: {extraction.page_count}; readable: {len(extraction.processed_pages)}")
+        result = self.analyze_document(
+            extraction,
+            struct_type,
+            critic=critic,
+            critic_provider=critic_provider,
+        )
         if not result:
             return False
 
