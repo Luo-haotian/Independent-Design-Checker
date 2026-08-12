@@ -131,3 +131,40 @@ If the run fails, check:
 For OCR issues, also check that Tesseract is installed.
 
 For server mode, contact IT if the upload page is unavailable, the access token is rejected, or the job remains queued for a long time.
+# IDC v0.17 Evidence Workflow
+
+Hong Kong is the default jurisdiction. Always confirm the code-pack ID and basis date shown in the report. If no reviewed beam-fact file is supplied, IDC produces narrative observations and an explicit statement that no deterministic `PASS` or `FAIL` was produced.
+
+Reviewer-confirmed beam input uses this sanitized structure:
+
+```json
+{
+  "beams": [{
+    "beam_id": "B1",
+    "span_mm": 6000,
+    "width_mm": 300,
+    "overall_depth_mm": 550,
+    "effective_depth_mm": 500,
+    "concrete_strength_mpa": 40,
+    "steel_strength_mpa": 500,
+    "link_strength_mpa": 500,
+    "design_moment_knm": 250,
+    "design_shear_kn": 160,
+    "design_action_basis": "ULS",
+    "tension_steel_mm2": 1800,
+    "link_area_mm2": 201,
+    "link_spacing_mm": 200,
+    "section_type": "rectangular",
+    "prestressed": false,
+    "axial_force_kn": 0,
+    "torsion_knm": 0,
+    "evidence": {
+      "width_mm": [{"source_file": "design.pdf", "page": 12, "quote": "B1 300 x 550"}]
+    }
+  }]
+}
+```
+
+Every required field needs at least one page-evidence item. Add every field to `evidence`; the shortened example shows only one. Use `conflict_fields` when submitted values disagree. Do not resolve a conflict merely by choosing the convenient value.
+
+Review structured results before the AI narrative. Confirm code basis, source hash, page coverage, applicability, units, demand, capacity, utilisation, clauses, formula version, and limitations. The bundled rules are pending responsible engineer approval.

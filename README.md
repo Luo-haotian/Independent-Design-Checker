@@ -1,192 +1,71 @@
-# Independent Design Checker (IDC) v0.16
+# Independent Design Checker
 
-IDC is a structural design review tool that reads PDF submissions and produces a structured Word report for building or temporary works review.
+IDC v0.17 is an evidence-aware structural review application. Hong Kong is the default jurisdiction, but every project pins an explicit code pack. The application preserves the existing CLI, OCR, desktop GUI, server, QA-record batch, Grok/Kimi narrative review, Word report, Docker, and PyInstaller workflows.
 
-This `v0.16` release adds Grok/Kimi provider selection, stronger contractor submission batch review outputs, real/public sample validation, safer EXE packaging, and Docker-based intranet hosting. The desktop EXE workflow remains available for fast local testing and one-off reviews.
+## Trust Model
+
+- Only deterministic rules can return engineering `PASS` or `FAIL`.
+- AI narrative is labelled as an observation and cannot override a deterministic result.
+- Missing or conflicting required facts return `INSUFFICIENT_EVIDENCE` or `CONFLICT`.
+- Page evidence, source SHA-256, code basis, formulas, limitations, and audit decisions remain traceable.
+- The bundled HK rules are **pending responsible structural engineer approval** and are not a certified design service.
+
+## v0.17 Deterministic Scope
+
+The first vertical slice covers non-prestressed, normal-depth, rectangular, singly reinforced RC beams: flexure, required/provided tension reinforcement, reinforcement limits, shear resistance, links, minimum links, and spacing. Deep, flanged, prestressed, axially loaded, and torsion-loaded beams return `OUT_OF_SCOPE`.
 
 ## Quick Start
 
-For most users, start with the standard GUI:
-
-```text
-IDC_GUI.exe
-```
-
-Or run from source:
+Use Python 3.11 or 3.12:
 
 ```powershell
-python gui.py
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev,ocr,server]"
+Copy-Item .env.example .env
 ```
 
-Basic workflow:
-
-1. Open `IDC_GUI`.
-2. Choose the PDF file.
-3. Select `Building` or `Temporary`.
-4. Confirm the output folder.
-5. Click `Check Design`.
-
-Reports are saved to `./reports` by default as `.docx` files.
-
-## Runtime Setup
-
-Create a `.env` file from `.env.example` and add your Grok API key:
-
-```env
-GROK_API_KEY=your-grok-api-key-here
-GROK_API_URL=https://api.x.ai/v1/chat/completions
-GROK_MODEL_NAME=grok-4-1-fast-non-reasoning
-IDC_API_PROVIDER=grok
-```
-
-You can also point to a different env file with:
-
-```text
-IDC_ENV_FILE=C:\path\to\.env
-```
-
-## Advanced Options
-
-### Intranet Server
-
-Use the server mode when company staff should not install desktop EXEs or OCR software locally.
-
-IT setup:
-
-```bat
-server\install_server.bat
-server\run_server.bat
-```
-
-Then staff open:
-
-```text
-http://server-name:8080
-```
-
-Server deployment details are in `docs/IT_SERVER_DEPLOYMENT.md`.
-
-Docker deployment is also available for a one-computer intranet host:
+Place official code PDFs outside the repository and set `IDC_CODE_LIBRARY`. The application verifies them against hashes in the selected pack manifest.
 
 ```powershell
-copy .env.example .env
-docker compose up -d --build
+python main.py design.pdf --jurisdiction HK `
+  --code-pack hk-bd-concrete-2020-amd-2024-04 `
+  --code-as-of 2024-04-01 --input-overrides reviewed_beam_facts.json `
+  --export-json
 ```
 
-Docker details are in `docs/DOCKER_DEPLOYMENT.md`.
+The critic pass is optional and disabled by default. Enable it with `--critic`; its output remains non-authoritative.
 
-### QA Records Batch Checker
+## Beam Fact Input
 
-The server also includes a QA Records Batch Checker for OP records, mill certificates, concrete cube tests, reinforcement bar certificates/test reports, and similar contractor submission documents. It accepts multiple PDFs or ZIP uploads and returns a CSV register, exception CSV, raw JSON, summary file, and operator report.
+Deterministic checks require reviewer-confirmed values with page evidence. See [the user guide](docs/USER_GUIDE.md) for the JSON schema. No fact is inferred into a deterministic `PASS` without evidence.
 
-Operator workflow:
-
-1. Open the server page and confirm API and OCR are ready.
-2. Open `QA Records Batch`.
-3. Choose `Grok` or `Kimi` as the API provider. Grok is the default.
-4. Choose `Auto detect` for mixed files, `Force OCR` for scanned files, or `No OCR` for searchable PDFs.
-5. Upload PDFs or a ZIP package.
-6. Download the output ZIP and review `qa_operator_report.md` first.
-7. Check `qa_exceptions.csv` before accepting the register.
-
-Sample validation can be run from source:
+## Server
 
 ```powershell
-python scripts\run_contractor_submission_samples.py
+python server\idc_server.py
 ```
 
-Add `--run-ai` when the selected provider API key is configured.
+When `IDC_SERVER_ACCESS_TOKEN` is set, users exchange it through `/login`. The token is not carried in URLs or redirects. Fact edits and signed decisions require CSRF protection, reviewer name, reason, and evidence. SQLite data is stored under `IDC_DATA_DIR`.
 
-### OCR GUI
-
-Use `IDC_GUI_OCR.exe` or:
+## Development
 
 ```powershell
-python gui_ocr.py
+python -m pytest
+python -m ruff check idc tests main.py main_ocr.py qa_records.py server/idc_server.py
+python build_exe.py --all --output-root C:\temp\idc-build
 ```
 
-Recommended when the PDF is scanned, image-based, or only partly searchable.
+CI tests Python 3.11/3.12 on Windows and Linux. Raw uploads and generated reports expire after `IDC_RETENTION_DAYS` (default 30); hashes, facts, results, decisions, and audit events remain in SQLite.
 
-### CLI
+## Documentation
 
-Standard CLI:
+- [Development roadmap](docs/DEVELOPMENT_ROADMAP.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Code-pack governance](docs/CODE_PACK_GOVERNANCE.md)
+- [Security and limitations](docs/SECURITY.md)
+- [User guide](docs/USER_GUIDE.md)
+- [Server deployment](docs/IT_SERVER_DEPLOYMENT.md)
+- [Docker deployment](docs/DOCKER_DEPLOYMENT.md)
 
-```powershell
-python main.py "C:\path\to\design.pdf" --type building
-```
-
-OCR CLI:
-
-```powershell
-python main_ocr.py "C:\path\to\design.pdf" --type building --force-ocr
-```
-
-## Installation
-
-Standard version:
-
-```powershell
-pip install -r requirements.txt
-```
-
-OCR version:
-
-```powershell
-pip install -r requirements_ocr.txt
-```
-
-OCR runtime also requires Tesseract:
-
-[UB Mannheim Tesseract build](https://github.com/UB-Mannheim/tesseract/wiki)
-
-Server version:
-
-```powershell
-pip install -r requirements_server.txt
-```
-
-## Build Executables
-
-Build all executables:
-
-```powershell
-python build_exe.py --all
-```
-
-Build only the standard version:
-
-```powershell
-python build_exe.py --standard
-```
-
-Build only OCR executables:
-
-```powershell
-python build_exe.py --ocr
-```
-
-## Project Structure
-
-- `gui.py`: standard desktop GUI
-- `gui_ocr.py`: OCR desktop GUI
-- `main.py`: standard CLI engine
-- `main_ocr.py`: OCR CLI engine
-- `server/idc_server.py`: intranet upload server
-- `qa_records.py`: QA records batch classification and register extraction
-- `scripts/run_contractor_submission_samples.py`: real scanned and public electronic sample validation harness
-- `server/*.bat`: IT installation and server startup scripts
-- `config.py`: runtime configuration
-- `docs/USER_GUIDE.md`: end-user guide
-- `docs/IT_SERVER_DEPLOYMENT.md`: IT deployment guide
-- `docs/DOCKER_DEPLOYMENT.md`: Docker deployment guide
-- `docs/WORKFLOW.md`: product workflow diagram and operating modes
-- `docs/PRD.md`: product requirements, version register, and roadmap
-- `API_SETUP_GUIDE.md`: Grok API setup steps
-- `README_OCR.md`: OCR notes
-
-## Security Notes
-
-- Do not commit `.env`.
-- Do not embed real API keys into code, logs, or docs.
-- Put the real `.env` next to the executable only on trusted machines.
-- For server deployments, bind only to the trusted intranet and use `IDC_SERVER_ACCESS_TOKEN` unless another access control layer is already enforced.
+Official code PDFs, confidential submissions, company workbooks, `.env`, and generated outputs must remain outside the public repository.

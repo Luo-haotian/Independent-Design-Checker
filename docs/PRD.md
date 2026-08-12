@@ -215,3 +215,8 @@ Deferred:
 - What project specifications should pass/fail checks compare against?
 - Should QA records be stored after processing, or deleted after export?
 - Who is allowed to upload, review, approve, and download batch QA outputs?
+# v0.17 Product Addendum
+
+The product objective is trustworthy layered checking: document coverage, design-basis validation, evidence/conflict gating, deterministic engineering rules, non-authoritative AI observations, and signed human review. Hong Kong remains the default jurisdiction while exact-match external packs enable other countries without silent fallback.
+
+The v0.17 release criterion is a traceable RC beam flexure/shear vertical slice, not broad code coverage. The authoritative scope and pending work are maintained in `docs/DEVELOPMENT_ROADMAP.md`.

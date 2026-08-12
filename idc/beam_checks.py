@@ -11,6 +11,7 @@ from typing import Any
 from .codepacks import CodePack
 from .evidence import evidence_gate
 from .models import CheckResult, CheckStatus, ExtractedFact, SourceEvidence
+from .units import normalize_input_units
 
 
 @dataclass(slots=True)
@@ -26,6 +27,7 @@ class BeamCheckInput:
     link_strength_mpa: float | None = None
     design_moment_knm: float | None = None
     design_shear_kn: float | None = None
+    design_action_basis: str | None = None
     tension_steel_mm2: float | None = None
     link_area_mm2: float | None = None
     link_spacing_mm: float | None = None
@@ -47,9 +49,14 @@ class BeamCheckInput:
             "link_strength_mpa": self.link_strength_mpa,
             "design_moment_knm": self.design_moment_knm,
             "design_shear_kn": self.design_shear_kn,
+            "design_action_basis": self.design_action_basis,
             "tension_steel_mm2": self.tension_steel_mm2,
             "link_area_mm2": self.link_area_mm2,
             "link_spacing_mm": self.link_spacing_mm,
+            "section_type": self.section_type,
+            "prestressed": self.prestressed,
+            "axial_force_kn": self.axial_force_kn,
+            "torsion_knm": self.torsion_knm,
         }
         units = {
             "span_mm": "mm",
@@ -61,9 +68,14 @@ class BeamCheckInput:
             "link_strength_mpa": "MPa",
             "design_moment_knm": "kN m",
             "design_shear_kn": "kN",
+            "design_action_basis": None,
             "tension_steel_mm2": "mm2",
             "link_area_mm2": "mm2",
             "link_spacing_mm": "mm",
+            "section_type": None,
+            "prestressed": None,
+            "axial_force_kn": "kN",
+            "torsion_knm": "kN m",
         }
         return [
             ExtractedFact(
@@ -86,6 +98,7 @@ FLEXURE_FACTS = (
     "concrete_strength_mpa",
     "steel_strength_mpa",
     "design_moment_knm",
+    "design_action_basis",
     "tension_steel_mm2",
 )
 SHEAR_FACTS = (
@@ -94,9 +107,18 @@ SHEAR_FACTS = (
     "concrete_strength_mpa",
     "link_strength_mpa",
     "design_shear_kn",
+    "design_action_basis",
     "tension_steel_mm2",
     "link_area_mm2",
     "link_spacing_mm",
+)
+APPLICABILITY_FACTS = (
+    "span_mm",
+    "overall_depth_mm",
+    "section_type",
+    "prestressed",
+    "axial_force_kn",
+    "torsion_knm",
 )
 
 
@@ -109,6 +131,9 @@ def _value(value: float | None, unit: str) -> dict[str, Any]:
 
 
 def _applicability(beam: BeamCheckInput, pack: CodePack) -> CheckResult:
+    gate = evidence_gate(beam.facts(), APPLICABILITY_FACTS, rule_id="IDC-EVIDENCE-APPLICABILITY-001")
+    if gate.status != CheckStatus.PASS:
+        return gate
     rule = pack.rules["rules"]["HK-RC-BEAM-APP-001"]
     limitations: list[str] = []
     if beam.section_type.lower() != "rectangular":
@@ -148,7 +173,7 @@ def _applicability(beam: BeamCheckInput, pack: CodePack) -> CheckResult:
 def _validate_positive(beam: BeamCheckInput, names: tuple[str, ...]) -> str | None:
     for name in names:
         value = getattr(beam, name)
-        if value is not None and value <= 0:
+        if isinstance(value, (int, float)) and not isinstance(value, bool) and value <= 0:
             return f"{name} must be greater than zero."
     return None
 
@@ -158,6 +183,10 @@ def _flexure_checks(beam: BeamCheckInput, pack: CodePack) -> list[CheckResult]:
     gate = evidence_gate(facts, FLEXURE_FACTS, rule_id="IDC-EVIDENCE-FLEXURE-001")
     results = [gate]
     if gate.status != CheckStatus.PASS:
+        return results
+    if str(beam.design_action_basis).upper() != "ULS":
+        gate.status = CheckStatus.INSUFFICIENT_EVIDENCE
+        gate.message = "design_action_basis must confirm ULS design actions."
         return results
     invalid = _validate_positive(beam, FLEXURE_FACTS)
     if invalid:
@@ -268,6 +297,10 @@ def _shear_checks(beam: BeamCheckInput, pack: CodePack) -> list[CheckResult]:
     results = [gate]
     if gate.status != CheckStatus.PASS:
         return results
+    if str(beam.design_action_basis).upper() != "ULS":
+        gate.status = CheckStatus.INSUFFICIENT_EVIDENCE
+        gate.message = "design_action_basis must confirm ULS design actions."
+        return results
     invalid = _validate_positive(beam, SHEAR_FACTS)
     if invalid:
         gate.status = CheckStatus.ERROR
@@ -377,18 +410,31 @@ def run_beam_checks(beam: BeamCheckInput, pack: CodePack) -> list[CheckResult]:
 
 
 def _parse_evidence(raw: dict[str, Any], source_file: str) -> dict[str, list[SourceEvidence]]:
+    if not isinstance(raw, dict):
+        raise ValueError("evidence must be an object keyed by fact name.")
     parsed: dict[str, list[SourceEvidence]] = {}
     for name, entries in raw.items():
-        parsed[name] = [
-            SourceEvidence(
-                source_file=item.get("source_file", source_file),
-                page=item.get("page"),
-                quote=item.get("quote", ""),
-                extraction_method=item.get("extraction_method", "manual"),
-                confidence=float(item.get("confidence", 1.0)),
+        if not isinstance(entries, list):
+            raise ValueError(f"Evidence for {name} must be a list.")
+        parsed[name] = []
+        for item in entries:
+            if not isinstance(item, dict):
+                raise ValueError(f"Evidence for {name} must contain objects.")
+            page = item.get("page")
+            confidence = float(item.get("confidence", 1.0))
+            if page is not None and (not isinstance(page, int) or isinstance(page, bool) or page < 1):
+                raise ValueError(f"Evidence page for {name} must be a positive integer.")
+            if not 0 <= confidence <= 1:
+                raise ValueError(f"Evidence confidence for {name} must be between 0 and 1.")
+            parsed[name].append(
+                SourceEvidence(
+                    source_file=item.get("source_file", source_file),
+                    page=page,
+                    quote=item.get("quote", ""),
+                    extraction_method=item.get("extraction_method", "manual"),
+                    confidence=confidence,
+                )
             )
-            for item in entries
-        ]
     return parsed
 
 
@@ -407,7 +453,9 @@ def load_beam_inputs(path: str | Path, source_file: str) -> list[BeamCheckInput]
     for record in records:
         if "beam_id" not in record:
             raise ValueError("Every beam input requires beam_id.")
-        values = dict(record)
+        if not isinstance(record, dict):
+            raise ValueError("Every beam input must be an object.")
+        values = normalize_input_units(record)
         values["source_file"] = values.get("source_file", source_file)
         values["evidence"] = _parse_evidence(values.get("evidence", {}), values["source_file"])
         values["conflict_fields"] = set(values.get("conflict_fields", []))

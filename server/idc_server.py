@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import os
 import hmac
+import os
 import secrets
 import sys
 import threading
@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
 from flask import Flask, abort, jsonify, redirect, render_template_string, request, send_file, session, url_for
 from werkzeug.utils import secure_filename
 
@@ -20,11 +21,17 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
-from main_ocr import CheckerOCR, TESSERACT_AVAILABLE  # noqa: E402
-from config import API_PROVIDER, available_providers, get_default_model, get_provider_label, is_provider_configured  # noqa: E402
-from qa_records import run_qa_batch  # noqa: E402
+from config import (  # noqa: E402
+    API_PROVIDER,
+    available_providers,
+    get_default_model,
+    get_provider_label,
+    is_provider_configured,
+)
 from idc.persistence import ReviewStore  # noqa: E402
 from idc.retention import cleanup_expired_files  # noqa: E402
+from main_ocr import TESSERACT_AVAILABLE, CheckerOCR  # noqa: E402
+from qa_records import run_qa_batch  # noqa: E402
 
 UPLOAD_DIR = Path(os.environ.get("IDC_SERVER_UPLOAD_DIR", BASE_DIR / "server_uploads")).resolve()
 REPORT_DIR = Path(os.environ.get("IDC_SERVER_REPORT_DIR", BASE_DIR / "server_reports")).resolve()
@@ -44,7 +51,11 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
 app.config["SECRET_KEY"] = os.environ.get("IDC_SERVER_SECRET_KEY") or secrets.token_hex(32)
-app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.environ.get("IDC_SESSION_COOKIE_SECURE", "0") == "1",
+)
 store = ReviewStore(DATA_DIR / "reviews.sqlite3")
 cleanup_expired_files([UPLOAD_DIR, REPORT_DIR])
 
@@ -160,13 +171,20 @@ def login():
 def _job_snapshot(job_id: str) -> dict[str, Any] | None:
     with jobs_lock:
         job = jobs.get(job_id)
-        return dict(job) if job else None
+        if job:
+            return dict(job)
+    return store.get_job(job_id)
 
 
 def _update_job(job_id: str, **updates: Any) -> None:
     with jobs_lock:
         if job_id in jobs:
             jobs[job_id].update(updates)
+            snapshot = dict(jobs[job_id])
+        else:
+            snapshot = None
+    if snapshot:
+        store.save_job(snapshot)
 
 
 def _append_log(job_id: str, message: str) -> None:
@@ -174,6 +192,11 @@ def _append_log(job_id: str, message: str) -> None:
     with jobs_lock:
         if job_id in jobs:
             jobs[job_id]["log"].append(f"[{stamp}] {message}")
+            snapshot = dict(jobs[job_id])
+        else:
+            snapshot = None
+    if snapshot:
+        store.save_job(snapshot)
 
 
 def _run_job(job_id: str) -> None:
@@ -491,6 +514,7 @@ def qa_index():
 def create_job():
     _require_token()
     _require_csrf()
+    cleanup_expired_files([UPLOAD_DIR, REPORT_DIR])
     uploaded = request.files.get("pdf_file")
     if not uploaded or not uploaded.filename:
         abort(400, "No PDF file uploaded.")
@@ -546,6 +570,7 @@ def create_job():
     }
     with jobs_lock:
         jobs[job_id] = job
+    store.save_job(job)
 
     executor.submit(_run_job, job_id)
     return redirect(url_for("job_status", job_id=job_id) + _safe_token_query())
@@ -555,6 +580,7 @@ def create_job():
 def create_qa_job():
     _require_token()
     _require_csrf()
+    cleanup_expired_files([UPLOAD_DIR, REPORT_DIR])
     uploads = [file for file in request.files.getlist("qa_files") if file and file.filename]
     if not uploads:
         abort(400, "No QA files uploaded.")
@@ -608,6 +634,7 @@ def create_qa_job():
     }
     with jobs_lock:
         jobs[job_id] = job
+    store.save_job(job)
 
     executor.submit(_run_qa_job, job_id)
     return redirect(url_for("qa_job_status", job_id=job_id) + _safe_token_query())
@@ -812,7 +839,7 @@ def edit_fact(job_id: str, fact_id: str):
         store.edit_fact(job["review_run_id"], fact_id, payload.get("value"), evidence=evidence, reviewer=payload.get("reviewer", ""), reason=payload.get("reason", ""))
     except (ValueError, KeyError) as exc:
         abort(400, str(exc))
-    return jsonify({"ok": True, "run_id": job["review_run_id"], "fact_id": fact_id})
+    return jsonify({"ok": True, "run_id": job["review_run_id"], "fact_id": fact_id, "results_invalidated": True})
 
 
 @app.post("/jobs/<job_id>/decision")

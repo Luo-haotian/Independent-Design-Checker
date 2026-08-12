@@ -195,7 +195,8 @@ class IDC_GUI:
 
             self.root.after(0, lambda: self.done(success, report_file))
         except Exception as exc:
-            self.root.after(0, lambda: self.log(f"ERROR: {exc}"))
+            message = f"ERROR: {exc}"
+            self.root.after(0, lambda: self.log(message))
             self.root.after(0, lambda: self.done(False, None))
 
     def done(self, success, report_file=None):

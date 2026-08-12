@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -72,7 +73,11 @@ class CodePack:
             if root:
                 path = root / source["filename"]
                 if path.is_file():
-                    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                    hasher = hashlib.sha256()
+                    with path.open("rb") as handle:
+                        for block in iter(lambda: handle.read(1024 * 1024), b""):
+                            hasher.update(block)
+                    digest = hasher.hexdigest()
                     expected = source.get("sha256")
                     result.update(
                         available=True,
@@ -95,6 +100,8 @@ def _validate_manifest(manifest: dict[str, Any], folder_name: str) -> None:
     for source in manifest["sources"]:
         if not {"filename", "official_url"}.issubset(source):
             raise ValueError("Every code-pack source requires filename and official_url.")
+        if Path(source["filename"]).name != source["filename"] or "/" in source["filename"] or "\\" in source["filename"]:
+            raise ValueError("Code-pack source filenames must not contain a path.")
         digest = source.get("sha256")
         if digest is not None and (len(digest) != 64 or any(ch not in "0123456789abcdefABCDEF" for ch in digest)):
             raise ValueError(f"Invalid SHA-256 in code-pack source {source['filename']}.")
@@ -121,6 +128,8 @@ def load_code_pack(
     extra_roots: list[str | Path] | None = None,
 ) -> CodePack:
     """Load exactly the requested pack; never substitute another jurisdiction."""
+    if not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", pack_id):
+        raise ValueError("Invalid code-pack ID.")
     requested_jurisdiction = jurisdiction.upper()
     for root in code_pack_roots(extra_roots):
         pack_root = root / pack_id

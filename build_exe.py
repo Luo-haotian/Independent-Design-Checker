@@ -42,6 +42,7 @@ def build_standard_versions():
         f"--add-data={os.path.abspath('config.py')};.",
         f"--add-data={os.path.abspath('report_generator.py')};.",
         f"--add-data={os.path.abspath('report_assets')};report_assets",
+        f"--add-data={os.path.abspath('codepacks')};codepacks",
         f"--add-data={os.path.abspath('.env.example')};.",
         "--hidden-import=requests",
         "--hidden-import=fitz",
@@ -51,9 +52,9 @@ def build_standard_versions():
         "--hidden-import=docx.shared",
         "--hidden-import=docx.oxml.ns",
         "--hidden-import=docx.oxml",
-        "--distpath=./dist",
-        "--workpath=./build",
-        "--specpath=./spec_files",
+        f"--distpath={DIST_DIR}",
+        f"--workpath={BUILD_DIR}",
+        f"--specpath={SPEC_DIR}",
         "--clean",
     ]
 
@@ -90,6 +91,7 @@ def build_ocr_versions():
         f"--add-data={os.path.abspath('config.py')};.",
         f"--add-data={os.path.abspath('report_generator.py')};.",
         f"--add-data={os.path.abspath('report_assets')};report_assets",
+        f"--add-data={os.path.abspath('codepacks')};codepacks",
         f"--add-data={os.path.abspath('.env.example')};.",
         "--hidden-import=requests",
         "--hidden-import=fitz",
@@ -103,9 +105,9 @@ def build_ocr_versions():
         "--hidden-import=docx.shared",
         "--hidden-import=docx.oxml.ns",
         "--hidden-import=docx.oxml",
-        "--distpath=./dist",
-        "--workpath=./build",
-        "--specpath=./spec_files",
+        f"--distpath={DIST_DIR}",
+        f"--workpath={BUILD_DIR}",
+        f"--specpath={SPEC_DIR}",
         "--clean",
     ]
 
@@ -166,13 +168,20 @@ Notes:
 
 
 def main():
+    global DIST_DIR, BUILD_DIR, SPEC_DIR
     parser = argparse.ArgumentParser(description="Build IDC executables")
     parser.add_argument("--all", action="store_true", help="Build standard and OCR versions")
     parser.add_argument("--standard", action="store_true", help="Build only standard versions")
     parser.add_argument("--ocr", action="store_true", help="Build only OCR versions")
     parser.add_argument("--clean", action="store_true", help="Only clean build directories")
     parser.add_argument("--include-env", action="store_true", help="Copy the real .env into dist for private internal packaging")
+    parser.add_argument("--output-root", default=".", help="Build under this temporary or external directory")
     args = parser.parse_args()
+
+    output_root = os.path.abspath(args.output_root)
+    DIST_DIR = os.path.join(output_root, "dist")
+    BUILD_DIR = os.path.join(output_root, "build")
+    SPEC_DIR = os.path.join(output_root, "spec_files")
 
     if not any([args.all, args.standard, args.ocr, args.clean]):
         print_usage()

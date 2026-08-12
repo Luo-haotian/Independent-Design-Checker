@@ -12,7 +12,7 @@ from tkinter import filedialog, messagebox, scrolledtext, ttk
 
 sys.path.insert(0, str(Path(__file__).parent))
 from config import API_PROVIDER, available_providers, get_default_model, get_model_configs, get_provider_label
-from main_ocr import CheckerOCR, TESSERACT_AVAILABLE
+from main_ocr import TESSERACT_AVAILABLE, CheckerOCR
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -235,7 +235,8 @@ class IDC_GUI_OCR:
 
             self.root.after(0, lambda: self.done(success, report_file))
         except Exception as exc:
-            self.root.after(0, lambda: self.log(f"ERROR: {exc}"))
+            message = f"ERROR: {exc}"
+            self.root.after(0, lambda: self.log(message))
             import traceback
 
             self.root.after(0, lambda: self.log(traceback.format_exc()))

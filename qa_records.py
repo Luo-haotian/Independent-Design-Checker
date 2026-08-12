@@ -17,7 +17,6 @@ from PIL import Image
 from config import call_chat_completion, get_default_model, get_provider_label
 from main_ocr import OCRExtractor
 
-
 QA_RECORD_FIELDS = [
     "source_file",
     "document_type",

@@ -8,14 +8,12 @@ import sys
 from datetime import datetime
 from typing import Optional
 
-import fitz
-
 from config import (
-    MODEL_CONFIGS,
     call_chat_completion,
     get_llm_config,
     get_provider_label,
 )
+from idc.codepacks import load_code_pack
 from idc.ingestion import DocumentExtraction, ingest_pdf
 from idc.llm_review import review_document
 from idc.pipeline import create_review_run, deterministic_summary, export_review_json
@@ -36,12 +34,12 @@ Requirements:
 - Include an Executive Summary.
 - Classify any issues found as Critical, Major, or Minor.
 - Provide actionable Recommendations.
-- For each design check, state whether it is Satisfactory or Unsatisfactory with brief justification.
+- Do not issue engineering PASS/FAIL or Satisfactory/Unsatisfactory conclusions. Use "AI Observation: Appears adequate / Requires review / Insufficient information" with brief justification.
 - Do not keep the report high-level only. For every major section, include specific IDC reviewer comments on adequacy, assumptions, missing information, and follow-up actions.
 - Even where the design appears generally acceptable, provide multiple concrete review comments rather than only saying it is satisfactory.
 - Use this reporting pattern for each major section where supported by the submitted material:
   ## Section Title
-  **IDC Check:** Satisfactory / Unsatisfactory
+  **AI Observation:** Appears adequate / Requires review / Insufficient information
   **IDC Reviewer Comments:**
   - at least 3 concrete review comments
   - each comment must mention actual submitted parameters, member names, drawings, calculations, assumptions, or missing information whenever available
@@ -62,13 +60,13 @@ Requirements:
 - Include an Executive Summary.
 - Classify any issues found as Critical, Major, or Minor.
 - Provide actionable Recommendations.
-- For each design check, state whether it is Satisfactory or Unsatisfactory with brief justification.
+- Do not issue engineering PASS/FAIL or Satisfactory/Unsatisfactory conclusions. Use "AI Observation: Appears adequate / Requires review / Insufficient information" with brief justification.
 - Do not keep the report high-level only. For every major section, include specific IDC reviewer comments on adequacy, assumptions, missing information, and follow-up actions.
 - Even where the design appears generally acceptable, provide multiple concrete review comments rather than only saying it is satisfactory.
 - Cover the temporary works review in a practical IDC sequence where supported by the submission: Executive Summary, Reference Codes, Design Parameters and Assumptions, Loading, Member Checks, Stability/Bracing, Bearing/Support/Connection Checks, Construction or usage limitations, Recommendations, and Conclusion.
 - Use this reporting pattern for each major section:
   ## Section Title
-  **IDC Check:** Satisfactory / Unsatisfactory
+  **AI Observation:** Appears adequate / Requires review / Insufficient information
   **IDC Reviewer Comments:**
   - at least 3 concrete review comments
   - each comment must mention actual submitted parameters, member names, drawings, calculations, assumptions, or missing information whenever available
@@ -226,11 +224,6 @@ class Checker:
         *,
         critic: bool = False,
         critic_provider: str | None = None,
-        jurisdiction: str = "HK",
-        code_pack: str = "hk-bd-concrete-2020-amd-2024-04",
-        code_as_of: str | None = None,
-        export_json: bool = False,
-        input_overrides: str | None = None,
     ) -> Optional[str]:
         """Review all readable pages without silently truncating the document."""
         prompt = BUILDING_PROMPT if struct_type == "building" else TEMPORARY_PROMPT
@@ -269,6 +262,11 @@ class Checker:
         *,
         critic: bool = False,
         critic_provider: str | None = None,
+        jurisdiction: str = "HK",
+        code_pack: str = "hk-bd-concrete-2020-amd-2024-04",
+        code_as_of: str | None = None,
+        export_json: bool = False,
+        input_overrides: str | None = None,
     ) -> bool:
         """Run the full standard analysis flow."""
         self.last_report_file = None
@@ -281,6 +279,12 @@ class Checker:
         extraction = self.last_extraction
         if not content or not content.strip() or not extraction:
             print("ERROR: Could not extract readable text from the PDF.")
+            return False
+
+        try:
+            load_code_pack(code_pack, jurisdiction=jurisdiction).code_basis(code_as_of)
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"ERROR: Code basis is invalid: {exc}")
             return False
 
         print(f"Content: {len(content):,} chars, {images} images")

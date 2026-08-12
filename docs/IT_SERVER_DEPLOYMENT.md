@@ -150,3 +150,8 @@ This profiles the real scanned Batch 15/16 reinforcement submission samples and 
 python scripts\run_contractor_submission_samples.py --provider grok --run-ai
 python scripts\run_contractor_submission_samples.py --provider kimi --run-ai
 ```
+# v0.17 Required Controls
+
+Set `IDC_SERVER_ACCESS_TOKEN`, a long random `IDC_SERVER_SECRET_KEY`, `IDC_DATA_DIR`, `IDC_CODE_LIBRARY`, and `IDC_RETENTION_DAYS=30`. Put official code PDFs in the read-only code library and verify filenames/hashes against the selected manifest. Users sign in at `/login`; tokens must not be embedded in bookmarks or links.
+
+Back up the SQLite file in `IDC_DATA_DIR` because it contains persistent findings, edits, decisions, and audit events. Raw upload/report directories are temporary and are cleaned by retention policy.

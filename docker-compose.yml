@@ -1,7 +1,7 @@
 services:
   idc-server:
     build: .
-    image: independent-design-checker:0.16
+    image: independent-design-checker:0.17
     container_name: idc-server
     env_file:
       - .env
@@ -11,6 +11,9 @@ services:
       IDC_SERVER_USE_WAITRESS: "1"
       IDC_SERVER_UPLOAD_DIR: /data/uploads
       IDC_SERVER_REPORT_DIR: /data/reports
+      IDC_DATA_DIR: /data/idc
+      IDC_CODE_LIBRARY: /codes
+      IDC_RETENTION_DAYS: ${IDC_RETENTION_DAYS:-30}
       IDC_TESSERACT_CMD: /usr/bin/tesseract
       IDC_OCR_LANG: ${IDC_OCR_LANG:-eng}
       IDC_SERVER_MAX_UPLOAD_MB: ${IDC_SERVER_MAX_UPLOAD_MB:-200}
@@ -20,8 +23,11 @@ services:
     volumes:
       - idc_uploads:/data/uploads
       - idc_reports:/data/reports
+      - idc_data:/data/idc
+      - ${IDC_CODE_LIBRARY:-./local-code-library}:/codes:ro
     restart: unless-stopped
 
 volumes:
   idc_uploads:
   idc_reports:
+  idc_data:

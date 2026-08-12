@@ -27,7 +27,7 @@ def create_review_run(
     pack = load_code_pack(code_pack_id, jurisdiction=jurisdiction)
     run = ReviewRun(
         run_id=uuid.uuid4().hex,
-        source_file=extraction.source_file,
+        source_file=extraction.source_path,
         source_sha256=extraction.source_sha256,
         code_basis=pack.code_basis(code_as_of),
         page_count=extraction.page_count,
@@ -38,7 +38,7 @@ def create_review_run(
         model_name=model,
     )
     if input_overrides:
-        beams: list[BeamCheckInput] = load_beam_inputs(input_overrides, extraction.source_file)
+        beams: list[BeamCheckInput] = load_beam_inputs(input_overrides, extraction.source_path)
         for beam in beams:
             run.facts.extend(beam.facts())
             run.checks.extend(run_beam_checks(beam, pack))

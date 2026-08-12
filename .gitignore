@@ -42,6 +42,7 @@ idc_data/
 .ruff_cache/
 .coverage
 htmlcov/
+*.egg-info/
 
 # Local review samples and temporary validation outputs
 report sample/
@@ -49,4 +50,5 @@ test file/
 tmp_reports*/
 tmp_sample_extract/
 tmp_*
+tmp_visual_qa/
 ~$*.docx

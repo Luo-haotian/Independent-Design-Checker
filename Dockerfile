@@ -25,10 +25,13 @@ RUN pip install --no-cache-dir -r requirements_server.txt
 
 COPY . .
 
-RUN mkdir -p /data/uploads /data/reports
+RUN mkdir -p /data/uploads /data/reports /data/idc /codes
 
 ENV IDC_SERVER_UPLOAD_DIR=/data/uploads
 ENV IDC_SERVER_REPORT_DIR=/data/reports
+ENV IDC_DATA_DIR=/data/idc
+ENV IDC_CODE_LIBRARY=/codes
+ENV IDC_RETENTION_DAYS=30
 
 EXPOSE 8080
 

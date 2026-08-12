@@ -31,6 +31,10 @@ class ReviewStore:
                     source_sha256 TEXT NOT NULL, payload_json TEXT NOT NULL, created_at TEXT NOT NULL,
                     updated_at TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS jobs (
+                    job_id TEXT PRIMARY KEY, status TEXT NOT NULL, payload_json TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
                 CREATE TABLE IF NOT EXISTS facts (
                     run_id TEXT NOT NULL, fact_id TEXT NOT NULL, payload_json TEXT NOT NULL,
                     PRIMARY KEY (run_id, fact_id), FOREIGN KEY (run_id) REFERENCES review_runs(run_id)
@@ -47,6 +51,21 @@ class ReviewStore:
                 );
                 """
             )
+
+    def save_job(self, job: dict[str, Any]) -> None:
+        job_id = str(job.get("id", "")).strip()
+        if not job_id:
+            raise ValueError("A persisted job requires an id.")
+        with self.connect() as db:
+            db.execute(
+                "INSERT INTO jobs VALUES (?, ?, ?, ?) ON CONFLICT(job_id) DO UPDATE SET status=excluded.status, payload_json=excluded.payload_json, updated_at=excluded.updated_at",
+                (job_id, str(job.get("status", "unknown")), json.dumps(job), utc_now()),
+            )
+
+    def get_job(self, job_id: str) -> dict[str, Any] | None:
+        with self.connect() as db:
+            row = db.execute("SELECT payload_json FROM jobs WHERE job_id=?", (job_id,)).fetchone()
+        return json.loads(row[0]) if row else None
 
     def save_run(self, run: ReviewRun) -> None:
         payload = run.to_dict()
@@ -84,6 +103,8 @@ class ReviewStore:
     def edit_fact(self, run_id: str, fact_id: str, new_value: Any, *, evidence: list[dict[str, Any]], reviewer: str, reason: str) -> None:
         if not reviewer.strip() or not reason.strip() or not evidence:
             raise ValueError("Fact edits require reviewer, reason, and evidence.")
+        if any(not isinstance(item, dict) or not isinstance(item.get("page"), int) or item.get("page", 0) < 1 for item in evidence):
+            raise ValueError("Every fact-edit evidence item requires a positive page number.")
         with self.connect() as db:
             row = db.execute("SELECT payload_json FROM facts WHERE run_id=? AND fact_id=?", (run_id, fact_id)).fetchone()
             if not row:
@@ -92,6 +113,15 @@ class ReviewStore:
             old_value = fact.get("value")
             fact.update(value=new_value, evidence=evidence, reviewer_overridden=True)
             db.execute("UPDATE facts SET payload_json=? WHERE run_id=? AND fact_id=?", (json.dumps(fact), run_id, fact_id))
+            run_row = db.execute("SELECT payload_json FROM review_runs WHERE run_id=?", (run_id,)).fetchone()
+            run_payload = json.loads(run_row[0])
+            run_payload["status"] = ReviewStatus.DRAFT.value
+            run_payload["checks"] = []
+            db.execute("DELETE FROM results WHERE run_id=?", (run_id,))
+            db.execute(
+                "UPDATE review_runs SET status=?, payload_json=?, updated_at=? WHERE run_id=?",
+                (ReviewStatus.DRAFT.value, json.dumps(run_payload), utc_now(), run_id),
+            )
             self._audit(db, run_id, AuditEvent("FACT_EDIT", reviewer.strip(), reason.strip(), fact_id=fact_id, old_value=old_value, new_value=new_value))
 
     def decide(self, run_id: str, decision: str, *, reviewer: str, reason: str) -> None:
@@ -101,8 +131,11 @@ class ReviewStore:
         if status not in {ReviewStatus.APPROVED, ReviewStatus.REJECTED}:
             raise ValueError("Decision must be APPROVED or REJECTED.")
         with self.connect() as db:
-            if not db.execute("SELECT 1 FROM review_runs WHERE run_id=?", (run_id,)).fetchone():
+            row = db.execute("SELECT status FROM review_runs WHERE run_id=?", (run_id,)).fetchone()
+            if not row:
                 raise KeyError(run_id)
+            if row["status"] != ReviewStatus.READY_FOR_REVIEW.value:
+                raise ValueError("Only a READY_FOR_REVIEW run can receive a decision; rerun checks after fact edits.")
             db.execute("UPDATE review_runs SET status=?, updated_at=? WHERE run_id=?", (status.value, utc_now(), run_id))
             self._audit(db, run_id, AuditEvent("REVIEW_DECISION", reviewer.strip(), reason.strip(), new_value=status.value))
 

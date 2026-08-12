@@ -37,19 +37,22 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
   - Server: structured result download, fact-edit, and approval/rejection endpoints were added while preserving prior routes.
   - Archive uploads: member count, member size, total expanded size, compression ratio, duplicate output name, and path containment are validated.
   - Verification: restart persistence, audit history, required reviewer/reason, retention, traversal, duplicate-name, and ZIP-ratio cases passed locally.
-  - Commit: recorded in the M05 milestone commit.
+  - Commit: `37ebce2`.
 
 ## In Progress
 
-- M06 - Complete test/CI, packaging, deployment, documentation, and visual report verification.
+- M07 - Push the branch, open a draft pull request, and observe the first GitHub Actions run.
 
 ## Planned
 
-- M07 - Push the branch and open a draft pull request for review.
+- Add an inline desktop fact editor and deterministic recheck action. v0.17 currently uses reviewer-confirmed JSON in desktop apps and structured fact-edit APIs on the server.
+- Add broader mocked-provider end-to-end coverage for scanned PDFs, all GUI interactions, and server worker restart/resume behaviour.
 
 ## Blocked
 
 - Engineering certification of code clauses, formula implementations, and rule scope requires approval by the responsible structural engineer.
+- Docker image execution is not verified on this host because the Docker CLI is unavailable; Dockerfile and Compose configuration are updated for CI or another host.
+- Representative DOCX package/XML/content verification passed, but visual raster verification remains blocked because the bundled renderer has no LibreOffice and Microsoft Word automation did not complete conversion on this host.
 - GitHub Release publication and merge to `main` require explicit user approval after the draft pull request review.
 
 ## Post-v0.17 Backlog
@@ -66,3 +69,10 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
 Milestone completion entries will include the commit ID, tests, build results, archive size, repository size, and remaining limitations.
 
 - M03 acceptance evidence is recorded above. Public manifests contain source hashes and official URLs, while raw code PDFs remain external through `IDC_CODE_LIBRARY`.
+- M06 completed: added controlled dependency inputs, Python 3.11/3.12 Windows/Linux CI, unit conversion and ULS/action/scope evidence gates, JSON/Word parity tests, server security tests, deployment updates, and English architecture/governance/security/user documentation.
+  - Verification: 31 sanitized tests pass on Python 3.12.13; `idc` package coverage is 85%; Ruff and `pip check` pass.
+  - Packaging: all four executables built with PyInstaller 6.22.0, embedded the HK manifest/rules, and passed CLI-help or GUI-startup smoke tests.
+  - Release candidates: `C:\Users\11131\Documents\IDC-Archive\2026-08-12-v0.17-release-candidates`, 205.41 MiB, with per-file SHA-256 inventory. Build/spec directories and all stale build attempts were removed.
+  - Repository: public working files are approximately 0.33 MiB; `.env`, raw code PDFs, build outputs, uploads, reports, and private comparison material are excluded.
+  - Online record: the Buildings Department code index and main official PDF link were rechecked on 2026-08-12 and still list the 2020 Edition with February 2022, June 2023, and April 2024 amendments.
+  - Commit: recorded in the M06 milestone commit.

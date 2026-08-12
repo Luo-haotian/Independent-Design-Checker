@@ -1,5 +1,5 @@
-# IDC v0.14 standard requirements
-PyMuPDF>=1.23.0
-requests>=2.31.0
-pyinstaller>=6.0.0
-python-docx>=1.1.0
+# IDC v0.17 standard requirements (controlled ranges)
+PyMuPDF>=1.23,<2
+requests>=2.31,<3
+pyinstaller>=6,<7
+python-docx>=1.1,<2
