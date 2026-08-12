@@ -38,11 +38,24 @@ IDC v0.17 adds page-level evidence, report-declared multi-code basis resolution,
   - Archive uploads: member count, member size, total expanded size, compression ratio, duplicate output name, and path containment are validated.
   - Verification: restart persistence, audit history, required reviewer/reason, retention, traversal, duplicate-name, and ZIP-ratio cases passed locally.
   - Commit: `37ebce2`.
+- M06 - Added controlled dependency inputs, Python 3.11/3.12 tooling, Windows/Linux CI, unit and design-action gates, security coverage, packaging controls, and English user/deployment/architecture/governance/security documentation.
+  - Verification: 38 sanitized tests pass in an isolated Python 3.12.13 environment; `idc` package coverage is 86%; Ruff and `pip check` pass.
+  - Packaging: all four executables build with PyInstaller 6.22.0 and pass CLI-help or GUI-startup smoke tests. The build log contains no missing-import, traceback, or deprecation tokens.
+  - Commit: `a12977d`, with dependency correction in `39946b7`.
+- M06b - Replaced the concrete-specific product default with report-declared multi-code resolution and removed member-specific UI emphasis.
+  - Selection: report-declared HK, BS, EN, GB, and other standards are retained in source order. The general HK default is a selection profile, not a concrete code. Competing member codes require reviewer pinning; non-HK selection never falls back to HK.
+  - Interfaces: desktop and server screens expose general jurisdiction, code basis, reviewed facts, evidence, results, critic, and human decision controls. The restricted RC member rules remain a separately versioned adapter and are not the UI identity.
+  - Verification: mixed-basis, non-HK no-fallback, generic-fact, no-false-pass, and adapter-activation tests pass.
+  - Commits: `39946b7`, `9e1a762`, `55c473b`, and `dbca38c`.
+- M07 - Completed cross-platform CI and replacement release-candidate verification.
+  - CI: GitHub Actions run `31562434478` passed on Windows and Linux with Python 3.11 and 3.12.
+  - Release candidates: `C:\Users\11131\Documents\IDC-Archive\2026-08-12-v0.17-release-candidates`, 205.45 MiB. `release-candidate-inventory.json` records the four executable hashes, source commit, test evidence, embedded profiles, and limitations.
+  - Cleanup: intermediate build/spec output, the isolated build environment, and superseded concrete-default/deprecated-import candidates were removed after verification.
+  - Source commit: `dbca38c`.
 
 ## In Progress
 
-- M06b - Replace the concrete-specific product default with report-declared HK/BS/EN/GB code-basis resolution, remove member-specific UI emphasis, rerun tests, and rebuild release candidates.
-- M07 - Fix the Python 3.11 dependency constraint, push the correction, and observe the next GitHub Actions run on draft PR #1.
+- None.
 
 ## Planned
 
@@ -70,11 +83,9 @@ IDC v0.17 adds page-level evidence, report-declared multi-code basis resolution,
 Milestone completion entries will include the commit ID, tests, build results, archive size, repository size, and remaining limitations.
 
 - M03 acceptance evidence is recorded above. Public manifests contain source hashes and official URLs, while raw code PDFs remain external through `IDC_CODE_LIBRARY`.
-- M06 completed: added controlled dependency inputs, Python 3.11/3.12 Windows/Linux CI, unit conversion and ULS/action/scope evidence gates, JSON/Word parity tests, server security tests, deployment updates, and English architecture/governance/security/user documentation.
-  - Verification: 31 sanitized tests pass on Python 3.12.13; `idc` package coverage is 85%; Ruff and `pip check` pass.
-  - Packaging: all four executables built with PyInstaller 6.22.0, embedded the HK manifest/rules, and passed CLI-help or GUI-startup smoke tests.
-  - Release candidates: `C:\Users\11131\Documents\IDC-Archive\2026-08-12-v0.17-release-candidates`, 205.41 MiB, with per-file SHA-256 inventory. Build/spec directories and all stale build attempts were removed.
-  - Repository: public working files are approximately 0.33 MiB; `.env`, raw code PDFs, build outputs, uploads, reports, and private comparison material are excluded.
-  - Online record: the Buildings Department code index and main official PDF link were rechecked on 2026-08-12 and still list the 2020 Edition with February 2022, June 2023, and April 2024 amendments.
-  - Commit: recorded in the M06 milestone commit.
-- The first M06 candidate set and CI result were superseded after product review identified that a concrete-specific default and member-specific UI emphasis were inappropriate. The replacement uses the general HK report-declared profile and prioritises every code stated by the submitted report; final candidate hashes will be replaced after rebuild.
+- Final local verification: 38 tests passed, `idc` coverage is 86%, Ruff passed, dependency consistency passed, and all four executable smoke tests passed.
+- Final packaging verification: both the general `hk-report-declared-default` selection profile and the separately versioned `hk-bd-concrete-2020-amd-2024-04` adapter manifest/rules are embedded. The real `.env` is absent.
+- Preservation archive: `C:\Users\11131\Documents\IDC-Archive\2026-08-12-v0.16-pre-clean` is 1,060.78 MiB including indexes and verification material; its recorded unique payload is 1,060.61 MiB.
+- Repository: public working files are 1,281,648 bytes (1.22 MiB), below the 10 MiB target. `.env`, raw code PDFs, build outputs, uploads, reports, and private comparison material remain excluded.
+- Online record: the Buildings Department code index and main official PDF link were rechecked on 2026-08-12 and still provide the 2020 Edition plus the February 2022, June 2023, and April 2024 amendment record.
+- The earlier concrete-default candidate set was explicitly superseded and deleted. The replacement prioritises every code stated by the submitted report and retains the general HK context only when the report is silent.
