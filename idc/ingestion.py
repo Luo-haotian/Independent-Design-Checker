@@ -25,6 +25,8 @@ class PageContent:
     confidence: float
     embedded_images: int = 0
     low_text: bool = False
+    width: float = 0.0
+    height: float = 0.0
 
     @property
     def labelled_text(self) -> str:
@@ -117,6 +119,8 @@ def ingest_pdf(
                     confidence=confidence,
                     embedded_images=len(page.get_images()),
                     low_text=low_text,
+                    width=float(page.rect.width),
+                    height=float(page.rect.height),
                 )
             )
     finally:
@@ -163,5 +167,5 @@ def build_page_chunks(extraction: DocumentExtraction, max_chars: int) -> list[Do
 
 def coverage_from_chunks(extraction: DocumentExtraction, chunks: list[DocumentChunk]) -> tuple[list[int], list[int]]:
     covered = sorted({page for chunk in chunks for page in chunk.page_numbers})
-    missing = sorted(set(range(1, extraction.page_count + 1)) - set(covered))
+    missing = sorted({page.page_number for page in extraction.pages} - set(covered))
     return covered, missing

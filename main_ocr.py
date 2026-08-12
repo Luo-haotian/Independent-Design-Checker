@@ -15,10 +15,13 @@ from config import (
     get_llm_config,
     get_provider_label,
 )
+from idc.artifacts import create_standard_package
 from idc.code_basis import resolve_code_basis
 from idc.ingestion import DocumentExtraction, ingest_pdf
 from idc.llm_review import review_document
-from idc.pipeline import create_review_run, deterministic_summary, export_review_json
+from idc.pipeline import create_review_run, export_review_json
+from idc.profiles import profile_prompt
+from idc.submission import normalize_submission, review_extraction
 
 logging.basicConfig(
     level=logging.INFO,
@@ -231,6 +234,10 @@ class CheckerOCR:
         self.last_ai_observations: list[str] = []
         self.last_review_run = None
         self.last_json_file: str | None = None
+        self.last_standard_package_file: str | None = None
+        self.last_normalized_submission = None
+        self.last_comments = []
+        self.last_executive_summary = ""
 
         self.ocr_extractor = OCRExtractor() if use_ocr else None
 
@@ -306,9 +313,11 @@ class CheckerOCR:
         critic: bool = False,
         critic_provider: str | None = None,
     ) -> Optional[str]:
-        """Review all readable pages and retain coverage disclosure."""
-        prompt = BUILDING_PROMPT if struct_type == "building" else TEMPORARY_PROMPT
-        max_chars = get_safe_length(extraction.full_text, self.max_context, prompt)
+        """Classify the submission, then review calculation/supporting pages only."""
+        self.last_normalized_submission = normalize_submission(extraction, struct_type)
+        calculation_extraction = review_extraction(extraction, self.last_normalized_submission)
+        prompt = profile_prompt(struct_type)
+        max_chars = get_safe_length(calculation_extraction.full_text, self.max_context, prompt)
         critic_call = None
         if critic:
             selected_provider = critic_provider or self.provider
@@ -321,18 +330,21 @@ class CheckerOCR:
                 )
                 return message
 
-        result, observations, covered, missing = review_document(
-            extraction,
+        result, observations, covered, missing, executive_summary, comments = review_document(
+            calculation_extraction,
             prompt,
             self.call_api,
             max_input_chars=max_chars,
             critic=critic,
             call_critic=critic_call,
+            declared_code_text=extraction.full_text,
         )
         self.last_ai_observations = observations
+        self.last_comments = comments
+        self.last_executive_summary = executive_summary
         if missing:
             logger.warning("Unprocessed or unreadable PDF pages: %s", missing)
-        logger.info("Reviewed PDF pages: %s", covered)
+        logger.info("Calculation-focused PDF pages: %s", covered)
         return result
 
     def check(
@@ -351,6 +363,7 @@ class CheckerOCR:
     ) -> bool:
         """Run the full OCR analysis flow."""
         self.last_report_file = None
+        self.last_standard_package_file = None
         print(f"\nAnalyzing: {pdf_path}")
         if not os.path.exists(pdf_path):
             print(f"ERROR: File not found: {pdf_path}")
@@ -396,6 +409,9 @@ class CheckerOCR:
                 code_as_of=code_as_of,
                 input_overrides=input_overrides,
                 ai_observations=self.last_ai_observations,
+                submission_structure=self.last_normalized_submission,
+                comments=self.last_comments,
+                executive_summary=self.last_executive_summary,
                 provider=self.provider,
                 model=self.model,
             )
@@ -403,7 +419,10 @@ class CheckerOCR:
             print(f"ERROR: Code basis or deterministic input is invalid: {exc}")
             return False
         self.last_review_run = review_run
-        result = deterministic_summary(review_run) + result
+        package_path = os.path.join(report_dir, f"{base_name}_OCR_standard_package.zip")
+        create_standard_package(review_run, extraction, package_path)
+        self.last_standard_package_file = package_path
+        print(f"[OK] Standard package saved: {package_path}")
         if export_json:
             json_path = os.path.join(report_dir, f"{base_name}_OCR_review.json")
             export_review_json(review_run, json_path)
@@ -424,6 +443,7 @@ class CheckerOCR:
                 project_title=metadata["project_title"],
                 checked_item=metadata["checked_item"],
                 job_reference=metadata["job_reference"],
+                review_run=review_run,
             )
             self.last_report_file = report_file
             print(f"\n[OK] Report saved: {report_file}")

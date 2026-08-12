@@ -28,6 +28,13 @@ That is the default workflow.
 
 IDC reads the PDF and writes a Word report that usually includes:
 
+- calculation and supporting page ranges reviewed
+- drawing pages identified but not assessed in v0.17
+- a concise executive summary
+- an actionable IDC comment table with page location, basis, required action, assessment and evidence confidence
+
+The Server also provides a Standard Package ZIP. It contains the normalized calculation text, page classification, structured comments, code evidence and maintenance processing record. Hashes, model details and rule-pack diagnostics are kept there rather than in the human Word report.
+
 - executive summary
 - technical review comments
 - identified issues
@@ -134,6 +141,8 @@ For server mode, contact IT if the upload page is unavailable, the access token 
 ## Evidence and Code-Basis Workflow
 
 Hong Kong is the default review context, but the submitted report's declared codes take priority. Keep code selection at `auto` for normal review: IDC records all detected HK, BS, EN, GB, and other references. If competing member codes are detected, a reviewer must pin the applicable validated pack; IDC does not silently choose the HK Concrete Code.
+
+For Concrete 2013, Foundation 2017 and Steel 2011 declarations, IDC can validate candidate clauses against the local text indexes. If the submission omits the edition, any edition-sensitive item remains pending confirmation. If no applicable code is stated, IDC asks the designer to provide the code, edition and clause instead of assuming an HK code.
 
 Generic reviewer-confirmed facts use this structure and remain reviewable even when no deterministic adapter is installed:
 

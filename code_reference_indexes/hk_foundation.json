@@ -1,0 +1,1021 @@
+{
+  "family": "foundation",
+  "canonical_name": "HK Code of Practice for Foundations 2017",
+  "edition": "2024 Edition",
+  "aliases": [
+    "code of practice for foundations",
+    "foundation code 2017",
+    "hk foundation code"
+  ],
+  "source_folder": "hkcop_foundation_2017_unlocked_structured",
+  "clauses": [
+    {
+      "clause": "1.1",
+      "title": "Scope",
+      "printed_page": 1,
+      "source_pdf_page": 8,
+      "markdown": "### 1.1 SCOPE\n\nThis Code of Practice was prepared on the basis of being ‘deemed-to-satisfy’ the Building (Construction) Regulations as far as the design and construction of foundations are concerned. Departure from the requirements and recommendations of this Code of Practice or the use of other standards or codes of practice for design of foundations may require demonstration of the compliance with the provisions of the Building (Construction) Regulations.\n\nThis Code of Practice is intended for local use only. Methods of foundation design that are currently and commonly used in Hong Kong are included in this Code of Practice as far as possible. It should be noted that some methods of foundation design have been developed from practical considerations and experience and have been accepted on the basis that they have been demonstrated to have worked satisfactorily.\n\nIn addition to technical aspects, this Code of Practice also includes brief descriptions of local practices that could affect the design and construction of foundations. The descriptions cover mainly the purposes and objectives of the practices. Detailed procedural requirements are not included; reference should be made to the most current practice notes issued by the Buildings Department or other government departments or bureaux.\n\nDesign for seismic effect is not presently included in this Code of Practice. However, where seismic effect is considered in the design of the superstructure, it should also be considered in the design of the foundation."
+    },
+    {
+      "clause": "1.2",
+      "title": "Glossary",
+      "printed_page": 1,
+      "source_pdf_page": 8,
+      "markdown": "### 1.2 GLOSSARY\n\nFor the purpose of this Code of Practice the following glossary of terms applies:\n\n*Allowable bearing pressure.* The maximum allowable bearing pressure that may be applied at the base of the foundation, taking into account the ultimate bearing capacity of the soil or rock, the magnitude and type of settlement expected and the ability of the structure to accommodate such settlement. [NOTE: The allowable bearing pressure is a combined function of the site conditions, including all construction in the vicinity, and the characteristics of the proposed foundation/structure.]\n\n*Allowable load.* The maximum load that may be applied safely to a foundation after taking into account its ultimate bearing capacity, negative skin friction, pile spacing, overall bearing capacity of the ground below the foundation and allowable settlement.\n\n*Authorized Person.* A person whose name is on the authorized persons’ register kept under section 3(1) of the Buildings Ordinance."
+    },
+    {
+      "clause": "1.3",
+      "title": "Abbreviations",
+      "printed_page": 4,
+      "source_pdf_page": 11,
+      "markdown": "### 1.3 ABBREVIATIONS\n\nFor the purpose of this Code of Practice the following abbreviations apply:\n\n<table><tr><td>AP</td><td>Authorized Person</td></tr><tr><td>CS1</td><td>Construction Standard 1</td></tr><tr><td>CS2</td><td>Construction Standard 2</td></tr><tr><td>ETWB</td><td>Environmental, Transport and Works Bureau (a former government bureau)</td></tr><tr><td>GEO</td><td>Geotechnical Engineering Office</td></tr><tr><td>GEOGUIDE 2</td><td>“Guide to Site Investigation” published by GEO</td></tr><tr><td>GEOGUIDE 3</td><td>“Guide to Rock and Soil Descriptions” published by GEO</td></tr><tr><td>HOKLAS</td><td>Hong Kong Laboratory Accreditation Scheme</td></tr><tr><td>MQD</td><td>Marble Quality Designation</td></tr><tr><td>NSF</td><td>Negative Skin Friction</td></tr><tr><td>PNAP</td><td>Practice Note for Authorized Persons, Registered Structural Engineers and Registered Geotechnical Engineers</td></tr><tr><td>PR Plan</td><td>Public Relations Plan</td></tr><tr><td>RSE</td><td>Registered Structural Engineer</td></tr><tr><td>RGE</td><td>Registered Geotechnical Engineer</td></tr><tr><td>RSC</td><td>Registered Specialist Contractor</td></tr><tr><td>RQD</td><td>Rock Quality Designation</td></tr><tr><td>SPT</td><td>Standard Penetration Test</td></tr><tr><td>TCR</td><td>Total Core Recovery</td></tr><tr><td>UCS</td><td>Uniaxial Compressive Strength</td></tr></table>"
+    },
+    {
+      "clause": "1.4",
+      "title": "Symbols",
+      "printed_page": 5,
+      "source_pdf_page": 12,
+      "markdown": "## 1.4 SYMBOLS\n\nFor the purpose of this Code of Practice the following symbols apply:\n\n<table>\n<tr>\n<td><math>\\sigma'</math></td>\n<td>=</td>\n<td>effective vertical overburden pressure</td>\n</tr>\n<tr>\n<td><math>\\sigma_v'</math></td>\n<td>=</td>\n<td>mean vertical effective stress (kPa)</td>\n</tr>\n<tr>\n<td><math>\\beta</math></td>\n<td>=</td>\n<td>shaft resistance coefficient</td>\n</tr>\n<tr>\n<td><math>\\gamma</math></td>\n<td>=</td>\n<td>bulk unit weight of the soil</td>\n</tr>\n<tr>\n<td><math>\\gamma'</math></td>\n<td>=</td>\n<td>submerged unit weight of the soil</td>\n</tr>\n<tr>\n<td><math>\\gamma_s'</math></td>\n<td>=</td>\n<td>effective unit weight of the soil</td>\n</tr>\n<tr>\n<td><math>\\gamma_w</math></td>\n<td>=</td>\n<td>unit weight of water</td>\n</tr>\n<tr>\n<td><math>n_h</math></td>\n<td>=</td>\n<td>constant of horizontal subgrade reaction</td>\n</tr>\n<tr>\n<td><math>\\zeta_{cs}, \\zeta_{\\gamma s}, \\zeta_{qs}</math></td>\n<td>=</td>\n<td>influence factors for shape of foundation</td>\n</tr>\n<tr>\n<td><math>\\zeta_{ci}, \\zeta_{\\gamma i}, \\zeta_{qi}</math></td>\n<td>=</td>\n<td>influence factors for inclination of load</td>\n</tr>\n<tr>\n<td><math>\\zeta_{cg}, \\zeta_{\\gamma g}, \\zeta_{qg}</math></td>\n<td>=</td>\n<td>influence factors for ground surface</td>\n</tr>\n<tr>\n<td><math>\\zeta_{ct}, \\zeta_{\\gamma t}, \\zeta_{qt}</math></td>\n<td>=</td>\n<td>influence factors for tilting of foundation base</td>\n</tr>\n<tr>\n<td><math>\\alpha_f</math></td>\n<td>=</td>\n<td>inclination of the base of the footing</td>\n</tr>\n<tr>\n<td><math>\\phi'</math></td>\n<td>=</td>\n<td>effective angle of shearing resistance</td>\n</tr>\n<tr>\n<td><math>\\tau_s</math></td>\n<td>=</td>\n<td>ultimate shaft friction under transient tension</td>\n</tr>\n<tr>\n<td><math>\\mu</math></td>\n<td>=</td>\n<td>friction factor</td>\n</tr>\n<tr>\n<td><math>\\omega</math></td>\n<td>=</td>\n<td>sloping inclination in front of the footing</td>\n</tr>\n<tr>\n<td><math>\\nu</math></td>\n<td>=</td>\n<td>Poisson's ratio</td>\n</tr>\n<tr>\n<td><math>A</math></td>\n<td>=</td>\n<td>cross-section area of the pile</td>\n</tr>\n<tr>\n<td><math>B</math></td>\n<td>=</td>\n<td>width or diameter of test plate</td>\n</tr>\n<tr>\n<td><math>B_f</math></td>\n<td>=</td>\n<td>least dimension of footing</td>\n</tr>\n<tr>\n<td><math>B_f'</math></td>\n<td>=</td>\n<td><math>B_f - 2e_B</math></td>\n</tr>\n<tr>\n<td><math>c'</math></td>\n<td>=</td>\n<td>effective cohesion of soil</td>\n</tr>\n<tr>\n<td><math>c_c</math></td>\n<td>=</td>\n<td>temporary compression of the hammer cushion</td>\n</tr>\n<tr>\n<td><math>c_p</math></td>\n<td>=</td>\n<td>temporary compression of pile</td>\n</tr>\n<tr>\n<td><math>c_q</math></td>\n<td>=</td>\n<td>temporary compression of ground at pile toe</td>\n</tr>\n<tr>\n<td><math>dl</math></td>\n<td>=</td>\n<td>elemental length of the pile</td>\n</tr>\n<tr>\n<td><math>D</math></td>\n<td>=</td>\n<td>least lateral dimension of the pile</td>\n</tr>\n<tr>\n<td><math>D_f</math></td>\n<td>=</td>\n<td>depth from ground surface to the base of shallow foundation</td>\n</tr>\n<tr>\n<td><math>D_{\\min}</math></td>\n<td>=</td>\n<td>minimum dead load</td>\n</tr>\n<tr>\n<td><math>e</math></td>\n<td>=</td>\n<td>coefficient of restitution</td>\n</tr>\n<tr>\n<td><math>e_B</math></td>\n<td>=</td>\n<td>eccentricity of load along B direction</td>\n</tr>\n<tr>\n<td><math>e_L</math></td>\n<td>=</td>\n<td>eccentricity of load along L direction</td>\n</tr>\n<tr>\n<td><math>E</math></td>\n<td>=</td>\n<td>Young's modulus of the material of the pile</td>\n</tr>\n<tr>\n<td><math>E_h</math></td>\n<td>=</td>\n<td>efficiency of hammer</td>\n</tr>\n<tr>\n<td><math>E_s</math></td>\n<td>=</td>\n<td>Young's modulus of soil</td>\n</tr>\n<tr>\n<td><math>f_{cu}</math></td>\n<td>=</td>\n<td>characteristic strength of concrete</td>\n</tr>\n<tr>\n<td><math>f_y</math></td>\n<td>=</td>\n<td>characteristic strength of steel</td>\n</tr>\n<tr>\n<td><math>G_k</math></td>\n<td>=</td>\n<td>characteristic dead load</td>\n</tr>\n<tr>\n<td><math>h</math></td>\n<td>=</td>\n<td>hammer drop height</td>\n</tr>\n<tr>\n<td><math>H</math></td>\n<td>=</td>\n<td>horizontal applied load</td>\n</tr>\n<tr>\n<td><math>I_a</math></td>\n<td>=</td>\n<td>adverse imposed load including live and soil loads</td>\n</tr>\n<tr>\n<td><math>k_p</math></td>\n<td>=</td>\n<td>ground borne vibration coefficient</td>\n</tr>\n</table>"
+    },
+    {
+      "clause": "2.1",
+      "title": "General",
+      "printed_page": 8,
+      "source_pdf_page": 15,
+      "markdown": "### **2.1 GENERAL**\n\n#### **2.1.1 BASIC REQUIREMENTS**\n\nFoundations of any building or structure shall be designed and constructed to withstand safely all the dead, imposed and wind loads without impairing the stability or inducing excessive movement to the building or of any other building, street, land, slope or services.\n\nThe allowable capacity of the soil/rock under working loads where any foundation is founded shall be the lesser of:\n\n- (a) the ultimate capacity for bearing, bond or friction with an adequate factor of safety against failure; or\n- (b) the value in relation to bearing, bond or friction such that the maximum deformation or movement induced to the foundation under working loads can be tolerated by the building, any other building, structure, land, street and services.\n\nThe allowable capacity may be increased by 25% when such increase is solely due to wind effects.\n\nIn determining the said factor of safety against failure, due consideration shall be given to the form and depth of the foundation, loading characteristics, the general geological conditions of the ground and its surrounding including the presence of dissolution features, jointing conditions and any other relevant characteristics for rock.\n\n#### **2.1.2 COMPATIBILITY OF DESIGN AND CONSTRUCTION**\n\nIn choosing the method for the determination of the ultimate capacity or for the estimation of settlement, care must be taken to ensure that the site investigation, testing, derivation of parameters, computations, method of construction and standards of acceptance are mutually compatible and consistent with such method.\n\n#### **2.1.3 CLASSIFICATION OF SOILS AND ROCKS**\n\nThe classification of soils and rocks used in this Code is set out in Table 2.1. Further definition and description can be obtained from GEOGUIDE 3."
+    },
+    {
+      "clause": "2.1.1",
+      "title": "Basic Requirements",
+      "printed_page": 8,
+      "source_pdf_page": 15,
+      "markdown": "#### **2.1.1 BASIC REQUIREMENTS**\n\nFoundations of any building or structure shall be designed and constructed to withstand safely all the dead, imposed and wind loads without impairing the stability or inducing excessive movement to the building or of any other building, street, land, slope or services.\n\nThe allowable capacity of the soil/rock under working loads where any foundation is founded shall be the lesser of:\n\n- (a) the ultimate capacity for bearing, bond or friction with an adequate factor of safety against failure; or\n- (b) the value in relation to bearing, bond or friction such that the maximum deformation or movement induced to the foundation under working loads can be tolerated by the building, any other building, structure, land, street and services.\n\nThe allowable capacity may be increased by 25% when such increase is solely due to wind effects.\n\nIn determining the said factor of safety against failure, due consideration shall be given to the form and depth of the foundation, loading characteristics, the general geological conditions of the ground and its surrounding including the presence of dissolution features, jointing conditions and any other relevant characteristics for rock."
+    },
+    {
+      "clause": "2.1.2",
+      "title": "Compatibility of Design and Construction",
+      "printed_page": 8,
+      "source_pdf_page": 15,
+      "markdown": "#### **2.1.2 COMPATIBILITY OF DESIGN AND CONSTRUCTION**\n\nIn choosing the method for the determination of the ultimate capacity or for the estimation of settlement, care must be taken to ensure that the site investigation, testing, derivation of parameters, computations, method of construction and standards of acceptance are mutually compatible and consistent with such method."
+    },
+    {
+      "clause": "2.1.3",
+      "title": "Classification of Soils and Rocks",
+      "printed_page": 8,
+      "source_pdf_page": 15,
+      "markdown": "#### **2.1.3 CLASSIFICATION OF SOILS AND ROCKS**\n\nThe classification of soils and rocks used in this Code is set out in Table 2.1. Further definition and description can be obtained from GEOGUIDE 3."
+    },
+    {
+      "clause": "2.2",
+      "title": "Allowable Bearing Pressure, Bond or Friction of Ground",
+      "printed_page": 9,
+      "source_pdf_page": 16,
+      "markdown": "## **2.2 ALLOWABLE BEARING PRESSURE, BOND OR FRICTION OF GROUND**\n\nThe allowable bearing pressure, bond or friction of soils and rocks should be determined by one of the methods given in clauses 2.2.1 to 2.2.5.\n\n### **2.2.1 RATIONAL DESIGN METHOD**\n\nRational design method for calculating the ultimate capacity should be based on sound engineering approach and should include:\n\n- (a) the reasonable interpretation of the results of site investigation;\n- (b) the assessment of test results obtained in-situ or from samples in the laboratory; and\n- (c) an analysis based on the laws of physics and recognized engineering principles taking into account the ground conditions and foundation geometry, or an established empirical method proven with adequate correlation.\n\nNormally, the allowable capacity is estimated by applying a factor of safety of 3 to the calculated ultimate bearing capacity. However, other factors of safety may be adopted having regard to the nature of the soil or rock, its variability over the site and the reliability of the design method.\n\n### **2.2.2 PRESUMED VALUES**\n\n#### **(1) General**\n\nIn lieu of a rational design method, the allowable capacity for soils and rocks may also be taken as those presumed values derived from empirical correlation and as stipulated below provided that the following conditions are complied with:\n\n- (a) the planning, conducting and supervision of the ground investigation and the interpretation of the results are carried out in accordance with the recommendations given in Chapter 3; and\n- (b) the structures are not unduly sensitive to settlement or other displacement or movement that may be required to mobilize the allowable capacity.\n\nThe presumed values for rock are based on the assumption that slip of the rock will not occur. Therefore, where the rock profile is inclined at such an angle that the bearing capacity of the rock mass may be affected, the rock joints should be checked to ensure that there is no unfavourable joint orientation that could permit slip of the rock to occur."
+    },
+    {
+      "clause": "2.2.1",
+      "title": "Rational Design Method",
+      "printed_page": 9,
+      "source_pdf_page": 16,
+      "markdown": "### **2.2.1 RATIONAL DESIGN METHOD**\n\nRational design method for calculating the ultimate capacity should be based on sound engineering approach and should include:\n\n- (a) the reasonable interpretation of the results of site investigation;\n- (b) the assessment of test results obtained in-situ or from samples in the laboratory; and\n- (c) an analysis based on the laws of physics and recognized engineering principles taking into account the ground conditions and foundation geometry, or an established empirical method proven with adequate correlation.\n\nNormally, the allowable capacity is estimated by applying a factor of safety of 3 to the calculated ultimate bearing capacity. However, other factors of safety may be adopted having regard to the nature of the soil or rock, its variability over the site and the reliability of the design method."
+    },
+    {
+      "clause": "2.2.2",
+      "title": "Presumed Values",
+      "printed_page": 9,
+      "source_pdf_page": 16,
+      "markdown": "### **2.2.2 PRESUMED VALUES**\n\n#### **(1) General**\n\nIn lieu of a rational design method, the allowable capacity for soils and rocks may also be taken as those presumed values derived from empirical correlation and as stipulated below provided that the following conditions are complied with:\n\n- (a) the planning, conducting and supervision of the ground investigation and the interpretation of the results are carried out in accordance with the recommendations given in Chapter 3; and\n- (b) the structures are not unduly sensitive to settlement or other displacement or movement that may be required to mobilize the allowable capacity.\n\nThe presumed values for rock are based on the assumption that slip of the rock will not occur. Therefore, where the rock profile is inclined at such an angle that the bearing capacity of the rock mass may be affected, the rock joints should be checked to ensure that there is no unfavourable joint orientation that could permit slip of the rock to occur."
+    },
+    {
+      "clause": "2.2.3",
+      "title": "In-Situ Testing Method",
+      "printed_page": 14,
+      "source_pdf_page": 21,
+      "markdown": "### 2.2.3 IN-SITU TESTING METHOD\n\nThe allowable capacity for soils and rocks may also be estimated by appropriate load testing of the foundation on site. The following should be considered when using this method:\n\n- (a) the variation at founding conditions between the location of the testing foundation and locations of the actual foundations;\n- (b) the duration of load application in the test as compared to the working life of the foundation; and\n- (c) the scale effect of the test relative to the full size of the foundation."
+    },
+    {
+      "clause": "2.2.4",
+      "title": "Bearing Capacity Equation Method",
+      "printed_page": 14,
+      "source_pdf_page": 21,
+      "markdown": "### 2.2.4 BEARING CAPACITY EQUATION METHOD\n\n#### Allowable Vertical Bearing Pressure of Shallow Foundation founded on Soil\n\nThe allowable vertical bearing pressure of foundations founded on soils derived by bearing capacity equation may be taken as:\n\n$$q_a = \\frac{q_u - q_o}{F} + q_o$$\n\nwhere  $q_a$  = allowable vertical bearing pressure\n\n$q_u$  = ultimate bearing capacity of the granular soil, which should be limited to 3 000 kPa\n\n$q_o$  = effective overburden pressure at the base of the foundation, i.e.  $q_o = \\gamma_s' D_f$ , where  $\\gamma_s'$  and  $D_f$  are respectively the effective unit weight and depth of the soil that originally exists above the base of the foundation\n\n$F$  = factor of safety not less than 3\n\nThe ultimate bearing capacity of the soil for shallow foundation may be estimated by the following equation:\n\n$$q_u = \\frac{Q_u}{B_f' L_f'} = c' N_c \\zeta_{cs} \\zeta_{ci} \\zeta_{ct} \\zeta_{cg} + 0.5 B_f' \\gamma_s' N_\\gamma \\zeta_{\\gamma s} \\zeta_{\\gamma i} \\zeta_{\\gamma t} \\zeta_{\\gamma g} + q N_q \\zeta_{qs} \\zeta_{qi} \\zeta_{qt} \\zeta_{qg}$$\n\nwhere  $N_c, N_\\gamma, N_q$  = general bearing capacity factors which determine the capacity of a long strip footing\n\n$Q_u$  = ultimate resistance against bearing capacity failure\n\n$c'$  = effective cohesion of soil\n\n$\\gamma_s'$  = effective unit weight of soil"
+    },
+    {
+      "clause": "2.2.5",
+      "title": "Other Methods",
+      "printed_page": 19,
+      "source_pdf_page": 26,
+      "markdown": "## 2.2.5 OTHER METHODS\n\nOther methods may be used to estimate the allowable capacity for bearing, bond or friction of soils and rocks provided that the suitability of the method can be demonstrated."
+    },
+    {
+      "clause": "2.3",
+      "title": "Foundation Settlement and Rotation",
+      "printed_page": 19,
+      "source_pdf_page": 26,
+      "markdown": "## 2.3 FOUNDATION SETTLEMENT AND ROTATION\n\n### 2.3.1 ESTIMATION OF SETTLEMENT\n\n#### (1) General\n\nPrediction of settlement is an important part of foundation design to ensure the future stability and serviceability of the structure supported by the foundation. The prediction of settlement comprising immediate settlement, primary consolidation settlement and secondary consolidation settlement should be:\n\n- (a) based on the results of a proper site investigation and appropriate laboratory or field tests identifying the conditions of the groundwater and the ground that contribute to the settlement of the foundation;\n- (b) based on the principles of mechanics or established empirical methods proven with adequate correlation; and\n- (c) applicable to Hong Kong soils and in conformity with case histories.\n\n#### (2) Foundations on Granular Soils\n\nMethods for computing immediate settlements of foundations on granular soils are based on theory of elasticity, empirical correlations or full-scale loading tests. Empirical correlations between foundation settlement and results of"
+    },
+    {
+      "clause": "2.3.1",
+      "title": "Estimation of Settlement",
+      "printed_page": 19,
+      "source_pdf_page": 26,
+      "markdown": "### 2.3.1 ESTIMATION OF SETTLEMENT\n\n#### (1) General\n\nPrediction of settlement is an important part of foundation design to ensure the future stability and serviceability of the structure supported by the foundation. The prediction of settlement comprising immediate settlement, primary consolidation settlement and secondary consolidation settlement should be:\n\n- (a) based on the results of a proper site investigation and appropriate laboratory or field tests identifying the conditions of the groundwater and the ground that contribute to the settlement of the foundation;\n- (b) based on the principles of mechanics or established empirical methods proven with adequate correlation; and\n- (c) applicable to Hong Kong soils and in conformity with case histories.\n\n#### (2) Foundations on Granular Soils\n\nMethods for computing immediate settlements of foundations on granular soils are based on theory of elasticity, empirical correlations or full-scale loading tests. Empirical correlations between foundation settlement and results of"
+    },
+    {
+      "clause": "2.3.2",
+      "title": "Acceptable Settlement and Rotation",
+      "printed_page": 23,
+      "source_pdf_page": 30,
+      "markdown": "## 2.3.2 ACCEPTABLE SETTLEMENT AND ROTATION\n\n### (1) General\n\nAcceptance of estimated settlement and rotation of foundations should be considered on a case-by-case basis, as different structures will have different tolerance in accommodating movements of their foundations. The acceptable settlement and rotation for foundations should therefore be determined for each individual case with respect to integrity, stability and functionality of the supported structure.\n\nWhere differential settlement is anticipated, it should be assessed accurately or conservatively, and its effect on the supported structure should be checked to ensure that it is acceptable in respect of strength and serviceability.\n\n### (2) Reference Criteria\n\nFor buildings or structures not particularly sensitive to movement, the following movement criteria, evaluated at the base of a shallow foundation or in case of a deep foundation, the base of pile cap or the equivalent raft level for driven piles, may be used as a reference for developing case specific criteria:\n\n- (a) The maximum total settlement should not exceed 30 mm;\n- (b) The differential settlement between columns/vertical elements should be limited to 1:500; and\n- (c) The maximum angular rotation should not exceed 1:500 due to wind or other transient loads.\n\nThe above criteria should be assessed based on working loads. For criteria (a) and (b), the dead loads may be reduced to 50%, and the imposed loads may be reduced in accordance with the Code of Practice for Dead and Imposed Loads.\n\nIn general, criterion (a) could be deemed to be satisfied if the foundation rests directly on categories 1(a), 1(b), 1(c), 1(d) and 2 rock or if the foundation elements are driven to sound bearing strata with SPT N values  $\\geq 200$ .\n\nDifferential settlement should be considered in situations where its evaluation is considered necessary, for example, mixed foundation systems, piles with significant difference in lengths, substantial variation in the properties or depths of compressible strata under the foundations. The differential settlements should be properly controlled or appropriately catered for in the design of superstructure.\n\n### (3) Individual Case\n\nWhere the anticipated movement of the foundation is in excess of the reference criteria specified in (2) above, an assessment should be carried out to"
+    },
+    {
+      "clause": "2.4",
+      "title": "Structures on Reclaimed Land",
+      "printed_page": 24,
+      "source_pdf_page": 31,
+      "markdown": "## **2.4 STRUCTURES ON RECLAIMED LAND**\n\nReclaimed land is liable to significant subsidence due to long-term consolidation of underlying compressible material. All structures and foundations (including floor slabs, partitions, fence walls, ancillary structures, underground utilities and drainage) built on reclaimed land must be designed with due consideration of the effect of such significant subsidence.\n\n### **2.4.1 GENERAL DESIGN RULES**\n\n- (a) Unless recommended otherwise, the lowest floor slabs of a building should not be designed as on-grade slabs.\n- (b) Floor slabs directly above a raft-type pile cap may be designed as on-grade.\n- (c) The following structures may also be designed as on-grade structures provided that they can be readily repaired or replaced if damaged by settlement:\n  - (i) fence walls, landscaping structures and lightweight covered walkway; and\n  - (ii) floor slabs used for car parking, loading and unloading, vehicular ramp or pedestrian pavement.\n- (d) For structures such as transformer rooms and pump houses, the foundations should be carried down through the reclaimed materials to a firm stratum with the lowest floor slabs designed as suspended.\n- (e) Underground utilities and drainage underneath a building should be supported by suspended floor slabs or pile caps. The pipe connection at the interface between the structurally supported portion and the on-grade portion of pipes should be designed to accommodate differential settlement due to the subsidence of the latter.\n- (f) Where significant settlement due to long-term consolidation of the ground is anticipated, measures should be provided in the pile cap design to mitigate the migration of soil into any void that may be formed underneath the pile cap due to consolidation of the ground below.\n- (g) The effect of negative skin friction on pile elements should be duly assessed."
+    },
+    {
+      "clause": "2.4.1",
+      "title": "General Design Rules",
+      "printed_page": 24,
+      "source_pdf_page": 31,
+      "markdown": "### **2.4.1 GENERAL DESIGN RULES**\n\n- (a) Unless recommended otherwise, the lowest floor slabs of a building should not be designed as on-grade slabs.\n- (b) Floor slabs directly above a raft-type pile cap may be designed as on-grade.\n- (c) The following structures may also be designed as on-grade structures provided that they can be readily repaired or replaced if damaged by settlement:\n  - (i) fence walls, landscaping structures and lightweight covered walkway; and\n  - (ii) floor slabs used for car parking, loading and unloading, vehicular ramp or pedestrian pavement.\n- (d) For structures such as transformer rooms and pump houses, the foundations should be carried down through the reclaimed materials to a firm stratum with the lowest floor slabs designed as suspended.\n- (e) Underground utilities and drainage underneath a building should be supported by suspended floor slabs or pile caps. The pipe connection at the interface between the structurally supported portion and the on-grade portion of pipes should be designed to accommodate differential settlement due to the subsidence of the latter.\n- (f) Where significant settlement due to long-term consolidation of the ground is anticipated, measures should be provided in the pile cap design to mitigate the migration of soil into any void that may be formed underneath the pile cap due to consolidation of the ground below.\n- (g) The effect of negative skin friction on pile elements should be duly assessed."
+    },
+    {
+      "clause": "2.4.2",
+      "title": "Alternative Approach",
+      "printed_page": 25,
+      "source_pdf_page": 32,
+      "markdown": "## 2.4.2 ALTERNATIVE APPROACH\n\nWhere it is intended not to follow the design rules given in clause 2.4.1, the problem of differential and total settlement should be fully considered. The time-related total and differential settlement (including predicted time-settlement curves) should be assessed based on site-specific ground investigation, and measures to overcome or accommodate the problem should be provided.\n\nTo ensure the reliability of the time-settlement relationship estimated at the design stage, continuous settlement monitoring (through instrumentation) throughout the construction period should be carried out and the assessment of the settlement should be reviewed from time to time.\n\nIn the settlement assessment, reference may be made to the settlement measurements collected during the reclamation period and any previous settlement assessments made for the reclamation. However, such data should only be used as reference to the historical settlement characteristics of the site or as supplementary information to the site-specific assessment unless their accuracy can be guaranteed. The historical settlement record and settlement assessment for government reclamation, if available, can be obtained from the government department who undertook the reclamation projects, usually the Civil Engineering and Development Department."
+    },
+    {
+      "clause": "2.4.3",
+      "title": "Long-term Monitoring and/or Maintenance",
+      "printed_page": 25,
+      "source_pdf_page": 32,
+      "markdown": "## 2.4.3 LONG TERM MONITORING AND/OR MAINTENANCE\n\nWhere the design of structures requires long-term monitoring and/or maintenance, the designer, through the AP, should alert the developer of such requirements and their implications and advise him to inform any prospective buyers who may have to bear the costs for such requirements."
+    },
+    {
+      "clause": "2.4.4",
+      "title": "Reclaimed Land with Consolidation Substantially Completed",
+      "printed_page": 25,
+      "source_pdf_page": 32,
+      "markdown": "## 2.4.4 RECLAIMED LAND WITH CONSOLIDATION SUBSTANTIALLY COMPLETED\n\nSubstantial consolidation will have occurred in land that had been reclaimed a long time ago and the design rules specified in clause 2.4.1 therefore need not be followed unless the building superstructure is particularly sensitive to movement or there is evidence showing noticeable on-going ground settlement. For practical design purpose, the effect of consolidation may be ignored when the ground has undergone a minimum of 95% of primary consolidation settlement. In the absence of a detailed consolidation assessment, the number of years after reclamation required to achieve the 95% degree of consolidation for marine clay of an aggregate thickness  $H$  could be taken as follows:\n\n<table border=\"1\"><thead><tr><th>Thickness of clayey deposits without interbedding sand/silt layers, <math>H</math></th><th>Number of years</th></tr></thead><tbody><tr><td><math>H \\leq 5\\text{m}</math></td><td>10</td></tr><tr><td><math>5\\text{m} &lt; H \\leq 10\\text{m}</math></td><td>20</td></tr><tr><td><math>10\\text{m} &lt; H \\leq 15\\text{m}</math></td><td>30</td></tr></tbody></table>"
+    },
+    {
+      "clause": "2.5",
+      "title": "Structural Requirements",
+      "printed_page": 26,
+      "source_pdf_page": 33,
+      "markdown": "## **2.5 STRUCTURAL REQUIREMENTS**\n\n### **2.5.1 GENERAL**\n\nThe structural design of foundations should comply with the provisions of the Building (Construction) Regulations.\n\n### **2.5.2 DESIGN LOADS**\n\nThe foundation of a building shall be designed to carry the working load with adequate factor of safety. Dead load, imposed load and wind load should be assessed in accordance with the Code of Practice for Dead and Imposed Loads, Code of Practice on Wind Effects in Hong Kong and other relevant codes of practice. The imposed load should include buoyancy force and earth pressure. Buoyancy force should be assessed in accordance with clause 2.5.3. Earth pressure should be assessed by using recognized geotechnical engineering methods.\n\nWhere it is necessary to carry out foundation design based on a set of assumed loads, a detailed schedule of the assumed loads should be prepared and, before the commencement of the construction of the superstructure, it is necessary to demonstrate that the loads from detailed calculations of the superstructure do not exceed the assumed loads used in the foundation design.\n\n### **2.5.3 UNDERGROUND WATER**\n\nThe lateral or uplift/buoyancy force due to underground water acting on a structure or its foundation may be calculated based on *either* the highest anticipated groundwater level *or* the highest possible groundwater level, which are defined below.\n\n#### **(1) Highest Anticipated Groundwater Level**\n\nThe highest anticipated groundwater level shall be the level derived from reliable data. In determining the highest anticipated groundwater level, the following conditions should be taken into consideration:\n\n- (a) the current and projected tidal variations;\n- (b) the design free surface water levels due to storm, wind surge and pounding;\n- (c) the design groundwater level taken into account the influences of rainfall, surface water run-off and groundwater movement;\n- (d) the damping of seawater tide influence by intervening ground;"
+    },
+    {
+      "clause": "2.5.1",
+      "title": "General",
+      "printed_page": 26,
+      "source_pdf_page": 33,
+      "markdown": "### **2.5.1 GENERAL**\n\nThe structural design of foundations should comply with the provisions of the Building (Construction) Regulations."
+    },
+    {
+      "clause": "2.5.2",
+      "title": "Design Loads",
+      "printed_page": 26,
+      "source_pdf_page": 33,
+      "markdown": "### **2.5.2 DESIGN LOADS**\n\nThe foundation of a building shall be designed to carry the working load with adequate factor of safety. Dead load, imposed load and wind load should be assessed in accordance with the Code of Practice for Dead and Imposed Loads, Code of Practice on Wind Effects in Hong Kong and other relevant codes of practice. The imposed load should include buoyancy force and earth pressure. Buoyancy force should be assessed in accordance with clause 2.5.3. Earth pressure should be assessed by using recognized geotechnical engineering methods.\n\nWhere it is necessary to carry out foundation design based on a set of assumed loads, a detailed schedule of the assumed loads should be prepared and, before the commencement of the construction of the superstructure, it is necessary to demonstrate that the loads from detailed calculations of the superstructure do not exceed the assumed loads used in the foundation design."
+    },
+    {
+      "clause": "2.5.3",
+      "title": "Underground Water",
+      "printed_page": 26,
+      "source_pdf_page": 33,
+      "markdown": "### **2.5.3 UNDERGROUND WATER**\n\nThe lateral or uplift/buoyancy force due to underground water acting on a structure or its foundation may be calculated based on *either* the highest anticipated groundwater level *or* the highest possible groundwater level, which are defined below.\n\n#### **(1) Highest Anticipated Groundwater Level**\n\nThe highest anticipated groundwater level shall be the level derived from reliable data. In determining the highest anticipated groundwater level, the following conditions should be taken into consideration:\n\n- (a) the current and projected tidal variations;\n- (b) the design free surface water levels due to storm, wind surge and pounding;\n- (c) the design groundwater level taken into account the influences of rainfall, surface water run-off and groundwater movement;\n- (d) the damping of seawater tide influence by intervening ground;"
+    },
+    {
+      "clause": "2.5.4",
+      "title": "Resistance to Sliding, Uplift and Overturning",
+      "printed_page": 27,
+      "source_pdf_page": 34,
+      "markdown": "## **2.5.4 RESISTANCE TO SLIDING, UPLIFT AND OVERTURNING**\n\n### **(1) General**\n\nThe foundations should be so designed and constructed to fulfil the requirements given in this clause.\n\nNote: For design of foundations to resist accidental loads, reference should be made to the relevant technical guidelines by government departments, e.g. GEO Technical Guidance Note No. 42 for the design of landslide debris impact loads.\n\n### **(2) Design Based on Highest Anticipated Groundwater Table**\n\nWhere the design is based on the highest anticipated groundwater table, a building or structure shall be so designed and constructed such that:\n\n- (a) the resistance to the sliding force acting thereon shall be at least 1.5 times the sliding force due to any loads;\n- (b) the resistance to the uplift force acting thereon shall be at least 1.5 times the uplift force due to any loads; and\n- (c) the resistance to the overturning moment acting thereon shall be at least 1.5 times the overturning moment due to wind loads, 1.5 times the overturning moment due to groundwater and two times the overturning moment due to loads other than wind loads and groundwater."
+    },
+    {
+      "clause": "2.5.5",
+      "title": "Materials and Stresses",
+      "printed_page": 29,
+      "source_pdf_page": 36,
+      "markdown": "## 2.5.5 MATERIALS AND STRESSES\n\n### (1) General\n\nMaterials and stresses shall comply with the requirements of the Building (Construction) Regulations and the relevant codes of practice.\n\nWhere the permissible stress method is used in the structural design of foundation members, the working stress may be increased by not more than 25% where such increase is solely due to wind loads.\n\n### (2) Concrete\n\nThe concrete used for foundation elements shall comply with the Building (Construction) Regulations and the relevant codes of practice. Subject to the provisions of this Code, the design of the reinforced concrete elements of a foundation should be carried out in accordance with the Code of Practice for Structural Use of Concrete.\n\nFor cast-in-place concrete foundations, the concrete strength should be reduced by 20% where groundwater is likely to be encountered during concreting or where concrete is placed underwater.\n\nThe axial compressive stress on a driven precast concrete pile under working loads should not exceed  $0.2f_{cu}$ .\n\nFor marine foundations, concrete should not be inferior to grade C45 as required in clause 2.6.4. All concrete should be cast in dry condition as far as possible. Where the concrete is placed under water, the concrete should be assumed as grade C25 for design purpose.\n\n### (3) Grout\n\nThe requirements for concrete given in this Code shall equally apply to grout.\n\n### (4) Steel\n\nFor driven steel bearing piles with a design safety factor on driving resistance of 2, the axial stress in the steel at working load should not exceed 30% of the yield stress.\n\nFor steel bearing piles installed in pre-bored holes or jacked to the required depth, in which no peak stresses due to impact are set up, the axial stress in the steel at working loads may be increased to 50% of the yield stress.\n\nStructural element design may be carried out in accordance with the Code of Practice for the Structural Use of Steel, provided that the condition under any possible load test is considered.\n\nFor steel piles, the allowable bond stress between steel and grout (with a"
+    },
+    {
+      "clause": "2.6",
+      "title": "Corrosion Protection of Foundations",
+      "printed_page": 30,
+      "source_pdf_page": 37,
+      "markdown": "## **2.6 CORROSION PROTECTION OF FOUNDATIONS**\n\n### **2.6.1 GENERAL**\n\nFoundations should be provided with adequate protections against corrosion, or alternatively, they should be suitably designed to allow for the effect of corrosion which may take place during their designed working life.\n\nTo ensure effective and economical designs for protection against corrosion, information on the presence of any corrosive material in the ground and the range of fluctuation of ground water table should be obtained.\n\n### **2.6.2 CONCRETE FOUNDATIONS**\n\nProvisions for corrosion protection of concrete foundations should be given in the foundation plans where:\n\n- (a) sulphate, chloride, aggressive chemical or other agents causing deterioration is present in the ground;\n- (b) alkalis are present in the concrete and a high moisture content environment exists;\n- (c) the foundations are constructed on a landfill site; or\n- (d) damage by abrasion may occur.\n\nTo avoid the alkali-aggregate reaction occurring in reinforced concrete structures, the"
+    },
+    {
+      "clause": "2.6.1",
+      "title": "General",
+      "printed_page": 30,
+      "source_pdf_page": 37,
+      "markdown": "### **2.6.1 GENERAL**\n\nFoundations should be provided with adequate protections against corrosion, or alternatively, they should be suitably designed to allow for the effect of corrosion which may take place during their designed working life.\n\nTo ensure effective and economical designs for protection against corrosion, information on the presence of any corrosive material in the ground and the range of fluctuation of ground water table should be obtained."
+    },
+    {
+      "clause": "2.6.2",
+      "title": "Concrete Foundations",
+      "printed_page": 30,
+      "source_pdf_page": 37,
+      "markdown": "### **2.6.2 CONCRETE FOUNDATIONS**\n\nProvisions for corrosion protection of concrete foundations should be given in the foundation plans where:\n\n- (a) sulphate, chloride, aggressive chemical or other agents causing deterioration is present in the ground;\n- (b) alkalis are present in the concrete and a high moisture content environment exists;\n- (c) the foundations are constructed on a landfill site; or\n- (d) damage by abrasion may occur.\n\nTo avoid the alkali-aggregate reaction occurring in reinforced concrete structures, the"
+    },
+    {
+      "clause": "2.6.3",
+      "title": "Steel Piles",
+      "printed_page": 31,
+      "source_pdf_page": 38,
+      "markdown": "### 2.6.3 STEEL PILES\n\nProvisions for corrosion protection of steel piles should be given in the foundation plans where:\n\n- (a) sulphate, chloride, aggressive chemical or other agents causing deterioration is present in the ground;\n- (b) the piles are placed at the splash and tidal zones of the sea;\n- (c) the piles are in contact with other metals;\n- (d) stray direct electric current is present; or\n- (e) damage by abrasion may occur."
+    },
+    {
+      "clause": "2.6.4",
+      "title": "Marine Foundations",
+      "printed_page": 31,
+      "source_pdf_page": 38,
+      "markdown": "### 2.6.4 MARINE FOUNDATIONS\n\nCorrosion protection of marine foundations should be provided in accordance with acceptable standards or codes of practice for design of maritime structures, such as “Port Works Design Manual Part 1” published by Civil Engineering and Development Department. The following should be considered as general guidelines:\n\n#### (1) Concrete\n\nConcrete should be of high density and low permeability. It should not be inferior to grade C45 and the water/cement ratio should not exceed 0.38. Condensed silica fume should be added to reduce the permeability of concrete. The cementitious content should be 380 to 450 kg/m<sup>3</sup>, of which the dry mass of condensed silica fume should be within 5 to 10% range by mass of the cementitious content.\n\nNominal concrete cover to all reinforcement in all exposure zone should be 75 mm.\n\nCrack widths of concrete within tidal and splash zone should not exceed 0.1 mm under typical average long term loading conditions, which may be **increased by a factor of 1.25 for flexural crack width design and control purpose.**\n\nCorrect use of pulverized fuel ash in the concrete mix may increase resistance of concrete against sulphate attack.\n\n#### (2) Steel\n\nAll structural steelwork above seabed level, whether fully immersed, within the tidal or splash zones, or generally above the splash zone, should be fully"
+    },
+    {
+      "clause": "2.7",
+      "title": "Foundation Plans",
+      "printed_page": 32,
+      "source_pdf_page": 39,
+      "markdown": "## **2.7 FOUNDATION PLANS**\n\nFoundation plans should consist of adequate and relevant information so as to demonstrate the entire physical and conceptual designs. A typical foundation plan should include the following two parts:\n\n### **(1) A Foundation Plan:**\n\n- (a) a block plan showing the location of the site;\n- (b) details showing the characteristic features of the site and environments including locations of ground investigation boreholes, adjacent and nearby buildings and structures with foundations, lands, streets, utility services, slopes, nullahs, retaining walls and the like;\n- (c) layout arrangement, identification, expected depths and founding levels, structural details and material specifications of the foundations;\n- (d) for piled foundations, item (c) should include size, shape, cut-off level and structural details of the pile element, as well as details of pile shoe, pile head, splices and the pile to pile cap connections;\n- (e) layout arrangement of the pile caps if applicable;\n- (f) bearing capacity of foundations and method of verification on site;\n- (g) specification of structural materials;\n- (h) magnitude of characteristic dead, imposed and wind loads and their critical combinations acting on the foundations (for piled foundations, this should be given for each pile or each group of piles);\n- (i) installation specifications, including the founding criteria, method of installation, etc.;\n- (j) for piled foundations, item (i) should include method of controlling and"
+    },
+    {
+      "clause": "2.8",
+      "title": "Foundation Design in Scheduled Areas",
+      "printed_page": 33,
+      "source_pdf_page": 40,
+      "markdown": "## **2.8 FOUNDATION DESIGN IN SCHEDULED AREAS**\n\n### **2.8.1 GENERAL**\n\nIn accordance with the Fifth Schedule to the Buildings Ordinance, there are five Scheduled Areas specified in Hong Kong at present. These areas are:\n\n<table><thead><tr><th><u>Area No.</u></th><th><u>Scheduled Areas</u></th></tr></thead><tbody><tr><td>1</td><td>Mid-levels</td></tr><tr><td>2</td><td>North-west New Territories</td></tr><tr><td>3</td><td>Railway Protection Areas</td></tr><tr><td>4</td><td>Ma On Shan</td></tr><tr><td>5</td><td>Sewage Tunnel Protection Areas</td></tr></tbody></table>\n\nParticular requirements for foundation design in the Scheduled Areas are given in the relevant PNAP issued by the Building Authority. When planning and designing foundations in the Scheduled Areas, reference should be made to these PNAP."
+    },
+    {
+      "clause": "2.8.1",
+      "title": "General",
+      "printed_page": 33,
+      "source_pdf_page": 40,
+      "markdown": "### **2.8.1 GENERAL**\n\nIn accordance with the Fifth Schedule to the Buildings Ordinance, there are five Scheduled Areas specified in Hong Kong at present. These areas are:\n\n<table><thead><tr><th><u>Area No.</u></th><th><u>Scheduled Areas</u></th></tr></thead><tbody><tr><td>1</td><td>Mid-levels</td></tr><tr><td>2</td><td>North-west New Territories</td></tr><tr><td>3</td><td>Railway Protection Areas</td></tr><tr><td>4</td><td>Ma On Shan</td></tr><tr><td>5</td><td>Sewage Tunnel Protection Areas</td></tr></tbody></table>\n\nParticular requirements for foundation design in the Scheduled Areas are given in the relevant PNAP issued by the Building Authority. When planning and designing foundations in the Scheduled Areas, reference should be made to these PNAP."
+    },
+    {
+      "clause": "2.8.2.1",
+      "title": "General",
+      "printed_page": 34,
+      "source_pdf_page": 41,
+      "markdown": "### 2.8.2.1 GENERAL\n\nThe geology of Scheduled Area No. 2 (North-west New Territories) and Scheduled Area No. 4 (Ma On Shan) comprises superficial deposits overlying metamorphosed sedimentary strata (meta-siltstones, meta-sandstones and marble) as well as igneous rocks. The marble usually has a karstic upper surface with solution features. Large cavities with or without infilled material may be present within the marble.\n\nFoundation design in karst marble requires careful consideration of the karst morphology, loading intensity and layout of load bearing elements. The main problem affecting the design is the potential presence of overhangs, channels and cavities. The stability of the pile foundation will depend on the particular geometry of such karst features and the rock mass properties.\n\nGiven that karstic marble and the related complex and adverse geological features could give rise to difficulties and uncertainties in foundation design and construction, ensuring sufficient geotechnical input is of the essence."
+    },
+    {
+      "clause": "2.8.2.2",
+      "title": "Marble Rock Mass Classification",
+      "printed_page": 34,
+      "source_pdf_page": 41,
+      "markdown": "### 2.8.2.2 MARBLE ROCK MASS CLASSIFICATION\n\nThe karst morphology of a marble rock mass may be interpreted using the marble rock mass classification system given in Table 2.5. Under this system, the marble rock mass is classified in terms of MQD, which is an index devised to measure the degree of dissolution voids and the physical and mechanical implications of fractures or cavity-affected rock mass. MQD should be calculated for each drill hole according to the definition and illustration given in Figure 2.6.\n\n**Table 2.5 Classification of Marble Rock Mass**\n\n<table border=\"1\"><thead><tr><th>Marble Class</th><th>MQD Range (%)</th><th>Rock Mass Quality</th><th>Features</th></tr></thead><tbody><tr><td>I</td><td><math>75 &lt; \\text{MQD} \\leq 100</math></td><td>Very Good</td><td>Rock with widely spaced fractures and unaffected by dissolution</td></tr><tr><td>II</td><td><math>50 &lt; \\text{MQD} \\leq 75</math></td><td>Good</td><td>Rock slightly affected by dissolution, or slightly fractured rock essentially unaffected by dissolution</td></tr><tr><td>III</td><td><math>25 &lt; \\text{MQD} \\leq 50</math></td><td>Fair</td><td>Fractured rock or rock moderately affected by dissolution</td></tr><tr><td>IV</td><td><math>10 &lt; \\text{MQD} \\leq 25</math></td><td>Poor</td><td>Very fractured rock or rock seriously affected by dissolution</td></tr><tr><td>V</td><td><math>\\text{MQD} \\leq 10</math></td><td>Very Poor</td><td>Rock similar to Class IV marble except that cavities can be very large and continuous</td></tr></tbody></table>"
+    },
+    {
+      "clause": "2.8.2.4",
+      "title": "Foundations Bearing on Marble Bedrock",
+      "printed_page": 38,
+      "source_pdf_page": 45,
+      "markdown": "#### 2.8.2.4 FOUNDATIONS BEARING ON MARBLE BEDROCK\n\n##### (1) General Requirements\n\nBy adopting pile foundations bearing on marble rock, and where the ground floor slab is designed to be suspended between the piles, the risk of structural instability or damage due to the formation of sinkholes as a result of collapse of cavities should be minimized. The installation of piles should be carefully controlled to avoid creating sinkholes.\n\nThe design of pile foundations in marble bedrock requires special attention to the mutual influence of different piling techniques and karst features, together with proper geotechnical and geological input.\n\n##### (2) End Bearing Bored Piles\n\nFor end bearing bored piles, the rock mass within the zone of influence of the foundation load should comprise Marble Class I or II. Reference should be made to the relevant PNAP issued by the Building Authority."
+    },
+    {
+      "clause": "2.9",
+      "title": "Foundation Design in Designated Area",
+      "printed_page": 40,
+      "source_pdf_page": 47,
+      "markdown": "## 2.9 FOUNDATION DESIGN IN DESIGNATED AREA\n\nDesignated Area is an area with complex geology, which may impose significant constraints on the foundation design and construction. In some cases, the foundations might prove to be so costly that adjustment of the layout of the development or even site abandonment is warranted. A very comprehensive ground investigation is usually called for in order to identify all the adverse geological features. Reference should be made to the relevant PNAP issued by the Building Authority for the locations and other information for the Designated Area."
+    },
+    {
+      "clause": "2.10",
+      "title": "Foundation Design in Sloping Ground",
+      "printed_page": 40,
+      "source_pdf_page": 47,
+      "markdown": "## 2.10 FOUNDATION DESIGN IN SLOPING GROUND\n\nWhere the foundation has imposed additional loads on slopes or retaining walls, or the groundwater regime has been affected, the stability of the affected slopes or retaining walls should be checked as part of the foundation design."
+    },
+    {
+      "clause": "3.1",
+      "title": "General",
+      "printed_page": 41,
+      "source_pdf_page": 48,
+      "markdown": "#### **3.1 GENERAL**\n\nAn adequate site investigation should be undertaken to provide all the necessary information for the design and construction of foundations. For this purpose, a site investigation report should be prepared, giving details of the results of any documentary studies, site surveys and ground investigations, together with the appraisal of the surface and subsurface conditions of the site.\n\nSite investigations should be carried out in accordance with GEOGUIDE 2 and GEOGUIDE 3, and should comply with the provisions of this code of practice."
+    },
+    {
+      "clause": "3.2",
+      "title": "Documentary Studies",
+      "printed_page": 41,
+      "source_pdf_page": 48,
+      "markdown": "#### **3.2 DOCUMENTARY STUDIES**\n\nDocumentary studies should be carried out before planning a site investigation. Useful information is available in the Geotechnical Information Unit of the Civil Engineering Library in the Civil Engineering and Development Department. However, care should be taken in using any ground investigation data obtained from previous building projects. The accuracy of such data should be verified before they are used in the design of foundations. Any doubtful data should be discarded."
+    },
+    {
+      "clause": "3.3",
+      "title": "Site Survey",
+      "printed_page": 41,
+      "source_pdf_page": 48,
+      "markdown": "#### **3.3 SITE SURVEY**\n\nThe site survey should include a detailed survey of the land, structures and services within and adjacent to the site. All relevant information obtained should be shown on the foundation plan.\n\n##### **(1) Topographical Survey**\n\nThe topographical survey should identify the topography of the area, including the nature and conditions of the land within and adjacent to the site. The following should be checked to identify any sloping conditions within or nearby the site:\n\n- (a) any land with an average gradient measured from boundary to boundary, or across any 50 m strip of the site, greater than 15°; and\n- (b) any slope with an average gradient greater than 15° within the site or within 50 m from the site boundaries.\n\n##### **(2) Geological Study**\n\nThe geological study should identify all geological information of the site, including any particular geological features, rock outcrops, previous landslides and site formation works, etc. for developing the geological model and ground model."
+    },
+    {
+      "clause": "3.4",
+      "title": "Ground Investigation",
+      "printed_page": 43,
+      "source_pdf_page": 50,
+      "markdown": "### **3.4 GROUND INVESTIGATION**\n\n#### **3.4.1 GENERAL**\n\nGround investigation works involve the field works carried out to obtain information on the ground conditions, such as drillholes, excavation and probing, installation of instruments, sampling and field testing, and the laboratory testing of samples obtained from such operations.\n\nAll ground investigation field works, except field density tests, should be carried out by a RSC (Ground Investigation Field Works) and under appropriate supervision requirements given in the Code of Practice for Site Supervision, whereas all laboratory testing of samples and field density tests should be carried out by laboratories accredited under the HOKLAS. The test results should be reported in a HOKLAS endorsed test certificate.\n\nSufficient ground investigation works should be carried out to ensure that adequate information on the subsurface conditions within and nearby the site can be obtained prior to the design of the foundation.\n\nIf an existing ground investigation result that has been carried out without complying the supervision requirements given in the Code of Practice for Site Supervision is to be used, reliability of such record should be ascertained."
+    },
+    {
+      "clause": "3.4.1",
+      "title": "General",
+      "printed_page": 43,
+      "source_pdf_page": 50,
+      "markdown": "#### **3.4.1 GENERAL**\n\nGround investigation works involve the field works carried out to obtain information on the ground conditions, such as drillholes, excavation and probing, installation of instruments, sampling and field testing, and the laboratory testing of samples obtained from such operations.\n\nAll ground investigation field works, except field density tests, should be carried out by a RSC (Ground Investigation Field Works) and under appropriate supervision requirements given in the Code of Practice for Site Supervision, whereas all laboratory testing of samples and field density tests should be carried out by laboratories accredited under the HOKLAS. The test results should be reported in a HOKLAS endorsed test certificate.\n\nSufficient ground investigation works should be carried out to ensure that adequate information on the subsurface conditions within and nearby the site can be obtained prior to the design of the foundation.\n\nIf an existing ground investigation result that has been carried out without complying the supervision requirements given in the Code of Practice for Site Supervision is to be used, reliability of such record should be ascertained."
+    },
+    {
+      "clause": "3.4.2",
+      "title": "Supervision for Ground Investigation Works",
+      "printed_page": 44,
+      "source_pdf_page": 51,
+      "markdown": "### **3.4.2 SUPERVISION FOR GROUND INVESTIGATION WORKS**\n\nProper supervision should be provided for the carrying out of all ground investigation works. To ensure quality of the works, supervision for the different stages of pre-design ground investigation field works should comply with the requirements set out in the relevant PNAP or code of practice issued by the Buildings Department."
+    },
+    {
+      "clause": "3.4.3",
+      "title": "Preparation of Ground Investigation Reports",
+      "printed_page": 44,
+      "source_pdf_page": 51,
+      "markdown": "### **3.4.3 PREPARATION OF GROUND INVESTIGATION REPORTS**\n\nTo substantiate the design of the foundation, a proper ground investigation report should be compiled. The ground investigation report should include adequate information for the design of the foundation and the subsequent construction works, and/or for other purposes such as site formation works, when required. For detailed requirements of the contents of ground investigation reports, reference should be made to GEOGUIDE 2, and the relevant PNAP and code of practice issued by the Buildings Department."
+    },
+    {
+      "clause": "3.4.4",
+      "title": "Soil and Rock Sampling",
+      "printed_page": 44,
+      "source_pdf_page": 51,
+      "markdown": "### **3.4.4 SOIL AND ROCK SAMPLING**\n\nGood quality soil samples and continuous rock cores from drillholes should be obtained for both geological logging and laboratory testing. Laboratory tests should be carried out for characterizing the materials and determining the relevant design parameters. These include classification tests to establish the general properties of the ground and strength and compressibility tests to determine the input parameters for foundation design based on principles of soil and rock mechanics."
+    },
+    {
+      "clause": "3.4.5",
+      "title": "Number and Disposition of Boreholes/Trial Pits",
+      "printed_page": 44,
+      "source_pdf_page": 51,
+      "markdown": "### **3.4.5 NUMBER AND DISPOSITION OF BOREHOLES/TRIAL PITS**\n\nThe disposition and spacing of boreholes/trial pits should be such as to reveal any significant changes in properties, thickness or depth of the strata. The number of boreholes/trial pits required will vary with the size, type and performance requirements of the structure, the general condition of the site and the completeness or otherwise of available geological records.\n\nIt should be noted that the ground conditions in Hong Kong, including bedrock levels, may vary significantly within a short distance. The number of boreholes/trial pits should be sufficient to reveal such variation.\n\nWhere it is intended to have the foundation rest on rock, sufficient boreholes should be provided to construct a representative geological model and establish the rockhead level for foundation design."
+    },
+    {
+      "clause": "3.4.6",
+      "title": "Depth of Ground Investigation",
+      "printed_page": 45,
+      "source_pdf_page": 52,
+      "markdown": "### 3.4.6 DEPTH OF GROUND INVESTIGATION\n\nBoreholes and trial pits should be carried out to sufficient depth such that all strata that are likely to be affected by the foundation loads will be adequately explored. The depth of ground investigation will depend on the type of the structure, the size, shape and disposition of the loaded areas and the nature of the strata. In general, the following should be considered:\n\n- (a) Care should be taken to ensure that boulders are not mistaken for bedrock, particularly on sites where borings are made through highly weathered rock. Where bedrock is encountered, it should be proved by coring to a minimum depth of 5 m.\n- (b) Where compressible cohesive soils are likely to contribute significantly to the settlement of the foundations, the investigation should reach such depth where stress increase would cause insignificant strain or displacement.\n- (c) For the design of a pile foundation or for the settlement analysis of the foundation, the exploration should be deep enough to cover the characteristics of the underlying strata.\n- (d) For spread footings, the investigation depth should be:\n  - (i) 5 m into rock; or\n  - (ii) a depth that can be readily demonstrated that the induced strain and displacement are negligible.\n\nDue to the complex ground conditions in Scheduled Area Nos. 2 and 4 and the Designated Area of Northshore Lantau, more extensive ground investigation works are normally required (see clauses 3.5 and 3.6)."
+    },
+    {
+      "clause": "3.4.7",
+      "title": "Groundwater",
+      "printed_page": 45,
+      "source_pdf_page": 52,
+      "markdown": "### 3.4.7 GROUNDWATER\n\nGroundwater may be critical in foundation design and construction. Particularly where dewatering is likely to be required, adequate information on groundwater and geological conditions including permeability, compressibility and consolidation characteristics of the various soil strata, particle size analyses and other test results relevant to the consideration of dewatering activities and preventive measures against settlement should be obtained.\n\nIt is generally necessary to install standpipes or piezometers to measure the groundwater levels over an extended period of time for accurate identification of the groundwater conditions and verification of design assumptions.\n\nWhere the groundwater or soil may contain constituents in amounts sufficient to damage or affect the foundation structures, chemical analysis of samples of the groundwater and soil should be carried out. Protection of the foundation structures from the effect of such constituents or other appropriate measures should be provided if found necessary."
+    },
+    {
+      "clause": "3.5",
+      "title": "Ground Investigation in Scheduled Areas",
+      "printed_page": 46,
+      "source_pdf_page": 53,
+      "markdown": "### **3.5 GROUND INVESTIGATION IN SCHEDULED AREAS**\n\nGround investigation works in the Scheduled Areas are subject to special control under the Buildings Ordinance and Building Regulations. Approval of the ground investigation plan as prescribed under regulation 8(1)(l) of the Building (Administration) Regulations and consent from the Building Authority are required before the commencement of works on site.\n\nParticular requirements for ground investigation in the Scheduled Areas are given in the relevant PNAP issued by the Building Authority. When planning the ground investigation for foundation works in the Scheduled Areas, reference should be made to these PNAP."
+    },
+    {
+      "clause": "3.6",
+      "title": "Ground Investigation within Designated Area",
+      "printed_page": 46,
+      "source_pdf_page": 53,
+      "markdown": "### **3.6 GROUND INVESTIGATION WITHIN THE DESIGNATED AREA**\n\nGround investigation works within the Designated Area are subject to special administrative procedures, including supervision requirements in accordance with the Code of Practice for Site Supervision.\n\nGround investigation for a site within the Designated Area is best carried out in stages, with the initial stages of the investigation being completed prior to the finalization of general building plans for the site. Some deep drillholes may be required, in particular to check for the possible presence of deep weathering profiles. Geological input to the planning of the ground investigation is of the essence."
+    },
+    {
+      "clause": "4.1",
+      "title": "General Requirements",
+      "printed_page": 47,
+      "source_pdf_page": 54,
+      "markdown": "### **4.1 GENERAL REQUIREMENTS**\n\nA shallow foundation should be structurally adequate to sustain all the applied loads and transmit them safely to the ground without undue settlement. It should generally be constructed of reinforced concrete, and rest on a rock or soil stratum with adequate bearing capacity at a shallow depth from ground level.\n\nA shallow foundation should neither overload the foundations or structures of adjacent buildings or the ground supporting such foundations or structures, nor render any instability to any hillside or slope, nor interfere with any drain, nullah, sewer or other services in its vicinity."
+    },
+    {
+      "clause": "4.2",
+      "title": "Allowable Bearing Pressure and Settlement",
+      "printed_page": 47,
+      "source_pdf_page": 54,
+      "markdown": "### **4.2 ALLOWABLE BEARING PRESSURE AND SETTLEMENT**\n\n#### **4.2.1 SHALLOW FOUNDATIONS ON CATEGORIES 1(a), 1(b), 1(c), 1(d) OR 2 ROCK**\n\nThe allowable bearing pressure may be determined in accordance with clause 2.2.\n\n#### **4.2.2 SHALLOW FOUNDATIONS ON SOIL**\n\n##### **(1) Design Procedures**\n\nThe allowable bearing pressure should be determined in accordance with clause 2.2. The settlements of the foundation should be estimated and checked in accordance with clauses 2.3.1 and 2.3.2 respectively.\n\nA flow chart of procedures for design of shallow foundations is given in Figure 4.1."
+    },
+    {
+      "clause": "4.2.1",
+      "title": "Shallow Foundations on Categories 1(a), 1(b), 1(c), 1(d) or 2 Rock",
+      "printed_page": 47,
+      "source_pdf_page": 54,
+      "markdown": "#### **4.2.1 SHALLOW FOUNDATIONS ON CATEGORIES 1(a), 1(b), 1(c), 1(d) OR 2 ROCK**\n\nThe allowable bearing pressure may be determined in accordance with clause 2.2."
+    },
+    {
+      "clause": "4.2.2",
+      "title": "Shallow Foundations on Soil",
+      "printed_page": 47,
+      "source_pdf_page": 54,
+      "markdown": "#### **4.2.2 SHALLOW FOUNDATIONS ON SOIL**\n\n##### **(1) Design Procedures**\n\nThe allowable bearing pressure should be determined in accordance with clause 2.2. The settlements of the foundation should be estimated and checked in accordance with clauses 2.3.1 and 2.3.2 respectively.\n\nA flow chart of procedures for design of shallow foundations is given in Figure 4.1."
+    },
+    {
+      "clause": "4.3",
+      "title": "Structural Requirements",
+      "printed_page": 49,
+      "source_pdf_page": 56,
+      "markdown": "## **4.3 STRUCTURAL REQUIREMENTS**\n\nStructural design of shallow reinforced concrete foundations should be carried out in accordance with the Code of Practice for Structural Use of Concrete.\n\nThe stability of shallow foundations should satisfy the provisions of clause 2.5.4."
+    },
+    {
+      "clause": "4.4",
+      "title": "Common Types of Shallow Foundations",
+      "printed_page": 49,
+      "source_pdf_page": 56,
+      "markdown": "## **4.4 COMMON TYPES OF SHALLOW FOUNDATIONS**\n\nThere are three types of shallow foundations commonly used in Hong Kong, namely pad footing, strip footing and raft foundation.\n\n### **4.4.1 PAD FOOTINGS**\n\nIn the design of pad footings not founded on rock, the probable total settlements of individual footings and the probable differential settlements between footings should be estimated and checked in accordance with clauses 2.3.1 and 2.3.2 respectively. In some cases, it may be necessary to enlarge some footings in order to avoid significant differences in bearing pressures and settlements among footings supporting the same building. Where differential settlements may occur between these individual footings, the elements of the superstructure should be adequately designed for the bending moments and shear forces caused by the differential settlements."
+    },
+    {
+      "clause": "4.4.1",
+      "title": "Pad Footings",
+      "printed_page": 49,
+      "source_pdf_page": 56,
+      "markdown": "### **4.4.1 PAD FOOTINGS**\n\nIn the design of pad footings not founded on rock, the probable total settlements of individual footings and the probable differential settlements between footings should be estimated and checked in accordance with clauses 2.3.1 and 2.3.2 respectively. In some cases, it may be necessary to enlarge some footings in order to avoid significant differences in bearing pressures and settlements among footings supporting the same building. Where differential settlements may occur between these individual footings, the elements of the superstructure should be adequately designed for the bending moments and shear forces caused by the differential settlements."
+    },
+    {
+      "clause": "4.4.2",
+      "title": "Strip Footings",
+      "printed_page": 50,
+      "source_pdf_page": 57,
+      "markdown": "#### **4.4.2 STRIP FOOTINGS**\n\nThe requirements for pad footings should also apply to strip footings.\n\nThe founding conditions for a strip footing should be consistent to avoid differential settlements along its length. However, where differential settlements along its length may occur, the strip footing should be designed with adequate strength to resist the effect of the differential settlement."
+    },
+    {
+      "clause": "4.4.3",
+      "title": "Raft Foundations",
+      "printed_page": 50,
+      "source_pdf_page": 57,
+      "markdown": "#### **4.4.3 RAFT FOUNDATIONS**\n\nThe requirements for pad and strip footings should also apply to raft foundations.\n\nWhere it is necessary to design a raft for differential settlements, the raft should be designed with adequate strength to resist the effect of the differential settlements in both directions."
+    },
+    {
+      "clause": "5.1",
+      "title": "General",
+      "printed_page": 51,
+      "source_pdf_page": 58,
+      "markdown": "### 5.1 GENERAL\n\nAll pile foundations should be durable, of adequate load carrying capacity and suitable for the ground conditions on which the foundations rest. The piles should be able to withstand the expected wear and deterioration throughout the intended design working life of the superstructure that they support.\n\nThe allowable load on pile foundations shall be determined by:\n\n- (a) acceptable foundation engineering principles; or\n- (b) tests on the foundations on site,\n\nwith an adequate factor of safety appropriate to the type of pile, taking into account the ground conditions, the method of installation, group effects and the allowable displacements of the structures supported by the foundation.\n\n#### 5.1.1 COMMON PILE FOUNDATION TYPES\n\nThe pile foundation types that are commonly used in Hong Kong and their particular requirements are given in clause 5.4.1 to 5.4.12.\n\n#### 5.1.2 GROUP EFFECT\n\nA pile group exists when frictional piles installed in soil are closely placed such that the load carrying capacity and settlement behaviour of a pile may be affected by other piles.\n\nIn such case, a group reduction factor determined by recognized foundation engineering principles shall be applied to the total allowable load carrying capacities of any group of piles. A group reduction factor of 0.85 may be considered as generally acceptable for a group of 5 or more vertically loaded piles. Other values of group reduction factor may be used having considered the particular ground condition of the site and justified by recognized engineering principles.\n\nGenerally, group reduction factors need not be applied where:\n\n- (a) the centre-to-centre spacings are of more than three times the perimeter of the piles or the circumscribed rectangles in the case of steel H-piles; or\n- (b) the load capacity of the piles is derived from end-bearing; or\n- (c) the piles are rock-socketed piles; or\n- (d) the piles are driven to refusal with the toes resting closely onto bedrock (see clause 5.4.11(2)(b)); or\n- (e) the piles are driven to sound bearing strata, e.g. soil with SPT N-value  $\\geq 200$ ."
+    },
+    {
+      "clause": "5.1.1",
+      "title": "Common Pile Foundation Types",
+      "printed_page": 51,
+      "source_pdf_page": 58,
+      "markdown": "#### 5.1.1 COMMON PILE FOUNDATION TYPES\n\nThe pile foundation types that are commonly used in Hong Kong and their particular requirements are given in clause 5.4.1 to 5.4.12."
+    },
+    {
+      "clause": "5.1.2",
+      "title": "Group Effect",
+      "printed_page": 51,
+      "source_pdf_page": 58,
+      "markdown": "#### 5.1.2 GROUP EFFECT\n\nA pile group exists when frictional piles installed in soil are closely placed such that the load carrying capacity and settlement behaviour of a pile may be affected by other piles.\n\nIn such case, a group reduction factor determined by recognized foundation engineering principles shall be applied to the total allowable load carrying capacities of any group of piles. A group reduction factor of 0.85 may be considered as generally acceptable for a group of 5 or more vertically loaded piles. Other values of group reduction factor may be used having considered the particular ground condition of the site and justified by recognized engineering principles.\n\nGenerally, group reduction factors need not be applied where:\n\n- (a) the centre-to-centre spacings are of more than three times the perimeter of the piles or the circumscribed rectangles in the case of steel H-piles; or\n- (b) the load capacity of the piles is derived from end-bearing; or\n- (c) the piles are rock-socketed piles; or\n- (d) the piles are driven to refusal with the toes resting closely onto bedrock (see clause 5.4.11(2)(b)); or\n- (e) the piles are driven to sound bearing strata, e.g. soil with SPT N-value  $\\geq 200$ ."
+    },
+    {
+      "clause": "5.1.3",
+      "title": "Minimum Pile Spacing",
+      "printed_page": 52,
+      "source_pdf_page": 59,
+      "markdown": "### 5.1.3 MINIMUM PILE SPACING\n\nThe spacing of piles shall be determined with due regard to the nature of the ground, the method of construction, the group effects and shall be sufficient to prevent damage to the piles or any adjacent construction.\n\nFor driven piles and other piles, which derive their capacities mainly from frictional resistance, the minimum pile spacing shall be not less than the length of the perimeter of the pile or 1 m, whichever is the greater, and the piles shall be placed at not less than half the length of the perimeter of the pile or 500 mm, whichever is the greater, from the site boundary. For steel H-piles, the perimeter should be taken as  $2(b+d)$ , where  $b$  and  $d$  are the overall breadth and depth of the section.\n\nFor piles that derive their capacities mainly from bond strength of grout or concrete in rock sockets, e.g. mini-piles and socketed steel H-piles, the minimum pile spacing should be 750 mm or two times the outer diameter of external steel casing, whichever is the greater.\n\nFor bored piles and the like which derive their capacities mainly from end bearing, the minimum clear spacing between the surfaces of adjacent piles should be based on practical considerations of positional and verticality tolerances of piles. It is recommended to provide a nominal minimum clear horizontal spacing of 500 mm between shaft surfaces or edge of bell-outs, as appropriate."
+    },
+    {
+      "clause": "5.1.4",
+      "title": "Horizontal Restraints to Piles and Pile Caps",
+      "printed_page": 52,
+      "source_pdf_page": 59,
+      "markdown": "### 5.1.4 HORIZONTAL RESTRAINTS TO PILES AND PILE CAPS\n\nPiles and pile caps shall have adequate lateral stability and be able to cope with any allowed construction tolerance. For driven piles and small diameter piles, adequate horizontal restraints in at least two directions shall be provided to individual piles or pile caps."
+    },
+    {
+      "clause": "5.1.5",
+      "title": "Piles Providing Resistance against Sliding",
+      "printed_page": 52,
+      "source_pdf_page": 59,
+      "markdown": "### 5.1.5 PILES PROVIDING RESISTANCE AGAINST SLIDING\n\nWhere piles are required to provide lateral resistance against sliding, it should be demonstrated that the piles and the supporting ground have adequate lateral capacities to satisfy the requirement specified in clause 2.5.4(2)(a) or 2.5.4(3)(a)."
+    },
+    {
+      "clause": "5.1.6",
+      "title": "Piles Providing Resistance against Uplift, Overturning and Buoyancy ..",
+      "printed_page": 52,
+      "source_pdf_page": 59,
+      "markdown": "### 5.1.6 PILES PROVIDING RESISTANCE AGAINST UPLIFT, OVERTURNING AND BUOYANCY\n\nWhere piles are required to provide anchorage resistance against uplift, overturning and/or buoyancy, it should be demonstrated that the piles and the supporting ground have adequate anchorage capacities to satisfy the requirements specified in clause 2.5.4. The requirements may be deemed to be satisfied by demonstrating that each pile in a pile foundation satisfies the following conditions:\n\n- (a)  $D_{\\min} + 0.9R_u - 2.0I_a - 1.5U_a(\\text{or } 1.1U_p) - 1.5W_k \\geq 0$ ; and\n- (b)  $D_{\\min} + R_a - I_a - U_a - W_k \\geq 0$"
+    },
+    {
+      "clause": "5.1.7",
+      "title": "Pile Group Settlement",
+      "printed_page": 53,
+      "source_pdf_page": 60,
+      "markdown": "### **5.1.7 PILE GROUP SETTLEMENT**\n\nThe equivalent raft method may be used to calculate the settlement due to total load including NSF acting on the pile group. For groups of piles supported predominately by soil resistance along the pile shafts, equivalent raft may be taken as the level at a depth equal to two thirds of the pile depth measured below any soft soil layer. For groups of piles supported by end-bearing or sockets in hard rock stratum, the equivalent raft may be taken as the toe level of the pile group."
+    },
+    {
+      "clause": "5.2",
+      "title": "Negative Skin Friction",
+      "printed_page": 53,
+      "source_pdf_page": 60,
+      "markdown": "## **5.2 NEGATIVE SKIN FRICTION**\n\n### **5.2.1 DESIGN REQUIREMENT**\n\nWhere pile foundations are installed through strata which are likely to undergo consolidation after the foundations are in place, the frictional resistance of the strata and the overlying soils shall not be taken into account in the determination of the load carrying capacity of the foundations. The downward frictional force exerted from the strata and the overlying soils, commonly named as NSF, should be considered in the foundation design by using either the Conventional Approach or the Alternative Approach given in clauses 5.2.2 and 5.2.3 respectively.\n\nNSF on a pile may be reduced by coating the pile surface with bitumen or asphalt. Usually a proprietary system should be used. Extreme care should be taken to avoid damage of the coating. It may be necessary to demonstrate by site trials that the coating will not be damaged during the pile installation. Other details, such as the use of a double skin permanent liner infilled with inert flexible material, may also be considered in reducing or eliminating NSF."
+    },
+    {
+      "clause": "5.2.1",
+      "title": "Design Requirement",
+      "printed_page": 53,
+      "source_pdf_page": 60,
+      "markdown": "### **5.2.1 DESIGN REQUIREMENT**\n\nWhere pile foundations are installed through strata which are likely to undergo consolidation after the foundations are in place, the frictional resistance of the strata and the overlying soils shall not be taken into account in the determination of the load carrying capacity of the foundations. The downward frictional force exerted from the strata and the overlying soils, commonly named as NSF, should be considered in the foundation design by using either the Conventional Approach or the Alternative Approach given in clauses 5.2.2 and 5.2.3 respectively.\n\nNSF on a pile may be reduced by coating the pile surface with bitumen or asphalt. Usually a proprietary system should be used. Extreme care should be taken to avoid damage of the coating. It may be necessary to demonstrate by site trials that the coating will not be damaged during the pile installation. Other details, such as the use of a double skin permanent liner infilled with inert flexible material, may also be considered in reducing or eliminating NSF."
+    },
+    {
+      "clause": "5.2.2",
+      "title": "Conventional Approach",
+      "printed_page": 54,
+      "source_pdf_page": 61,
+      "markdown": "## 5.2.2 CONVENTIONAL APPROACH\n\nIn this approach, the downward frictional forces exerted from the strata and the overlying soils shall be considered as imposed load. That is usually achieved by demonstrating that the following conditions are satisfied:\n\n$$P_{ns} \\geq G_k + Q_k + NSF; \\text{ and}$$\n$$P_{nw} \\geq G_k + Q_k + W_k + NSF$$\n\nwhere  $P_{ns}$  is the pile capacity without wind,  \n $P_{nw}$  is the pile capacity with wind,  \n $G_k$  is the dead load,  \n $Q_k$  is the live load,  \n $W_k$  is the wind load, and  \nNSF is the negative skin friction.\n\nUnless more accurate assessment is made, the following equation may be used to estimate the NSF acting on a pile:\n\n$$NSF = \\int_0^l \\beta \\sigma' p dl$$\n\nwhere  $\\sigma'$  = the effective vertical overburden pressure;  \n $\\beta$  = the shaft resistance coefficient;  \n $p$  = the perimeter of the pile, or perimeter of the circumscribed rectangle in the case of H-pile;  \n $l$  = the depth of the consolidation strata; and  \n $dl$  = the elemental length of the pile.\n\nThe value of the shaft resistance coefficient,  $\\beta$ , for the estimation of negative skin friction should be assessed based on basic soil mechanics principles. However, in the absence of more accurate assessment, an empirical value of  $\\beta = 0.25$  may be assumed.\n\nWhere a pile group exists and a group reduction factor has been applied in accordance with clause 5.1.2, the same reduction factor may also be applied to the NSF."
+    },
+    {
+      "clause": "5.2.3",
+      "title": "Alternative Approach",
+      "printed_page": 54,
+      "source_pdf_page": 61,
+      "markdown": "## 5.2.3 ALTERNATIVE APPROACH\n\nIn the alternative approach, the ground-bearing capacity, the structural integrity and the settlement behaviour of the pile foundation are considered separately under the following criteria:\n\n(a) The allowable ground-bearing capacity of the piles should be adequate to resist the total loads on the piles excluding NSF, i.e.\n\n$$P_c \\geq G_k + Q_k; \\text{ and}$$\n$$P_{cw} \\geq G_k + Q_k + W_k$$\n\nwhere  $P_c$  is the allowable ground-bearing capacity of the piles without wind,  \n $P_{cw}$  is the allowable ground-bearing capacity of the piles with wind,  \n $G_k$ ,  $Q_k$  and  $W_k$  are as defined in clause 5.2.2."
+    },
+    {
+      "clause": "5.3",
+      "title": "Load Capacity of Piles",
+      "printed_page": 55,
+      "source_pdf_page": 62,
+      "markdown": "### 5.3 LOAD CAPACITY OF PILES\n\nThe allowable load capacity of a pile should be determined from its structural strength and the resistance of ground supporting the pile. The allowable load capacity of a pile group should take into account the group effect described in clause 5.1.2.\n\n#### 5.3.1 STRUCTURAL STRENGTH\n\nThe structural strength of a pile should be determined in accordance with the appropriate limitations of design stresses as given in clause 2.5.5. For piles embedded in soft strata, the buckling capacity of the piles should be checked.\n\n#### 5.3.2 GROUND RESISTANCE FOR PILES IN COMPRESSION\n\nThe ultimate or allowable bearing capacities of driven and non-driven piles may be assessed by the following methods:\n\n##### (1) Driven Piles\n\nFor driven piles, the ultimate bearing capacity may be assessed by using any one or more of the following methods:\n\n- (a) a dynamic formula based on the data obtained from test driving the pile on site;\n- (b) a static formula based on design parameters of the supporting soil obtained from suitable tests; or\n- (c) loading test of the pile on site.\n\nA suitable factor of safety should be adopted when deriving the allowable bearing capacity of the piles. In general, a factor of safety not less than 3 should be used for a static formula and those formulae for which lower factors"
+    },
+    {
+      "clause": "5.3.1",
+      "title": "Structural Strength",
+      "printed_page": 55,
+      "source_pdf_page": 62,
+      "markdown": "#### 5.3.1 STRUCTURAL STRENGTH\n\nThe structural strength of a pile should be determined in accordance with the appropriate limitations of design stresses as given in clause 2.5.5. For piles embedded in soft strata, the buckling capacity of the piles should be checked."
+    },
+    {
+      "clause": "5.3.2",
+      "title": "Ground Resistance for Piles in Compression",
+      "printed_page": 55,
+      "source_pdf_page": 62,
+      "markdown": "#### 5.3.2 GROUND RESISTANCE FOR PILES IN COMPRESSION\n\nThe ultimate or allowable bearing capacities of driven and non-driven piles may be assessed by the following methods:\n\n##### (1) Driven Piles\n\nFor driven piles, the ultimate bearing capacity may be assessed by using any one or more of the following methods:\n\n- (a) a dynamic formula based on the data obtained from test driving the pile on site;\n- (b) a static formula based on design parameters of the supporting soil obtained from suitable tests; or\n- (c) loading test of the pile on site.\n\nA suitable factor of safety should be adopted when deriving the allowable bearing capacity of the piles. In general, a factor of safety not less than 3 should be used for a static formula and those formulae for which lower factors"
+    },
+    {
+      "clause": "5.3.3",
+      "title": "Ground Resistance for Piles Subjected to Uplift Forces",
+      "printed_page": 57,
+      "source_pdf_page": 64,
+      "markdown": "### **5.3.3 GROUND RESISTANCE FOR PILES SUBJECTED TO UPLIFT FORCES**\n\n#### **(1) General**\n\nPiles subject to uplift forces should satisfy the requirements of the ultimate anchorage resistance  $R_u$  & the allowable anchorage resistance  $R_a$  of the piles stipulated in clause 5.1.6.\n\nThe anchorage resistance of the piles to resist uplifting force can be determined from sub-clauses (2) and (3) below as appropriate.\n\n- (a) Anchorage resistance of piles\n\nIn general, the anchorage resistance of a pile may be taken as:\n\n$R_a$  = allowable uplift resistance of pile shaft + effective self weight of pile; and\n\n$R_u$  = ultimate uplift resistance of pile shaft + effective self weight of pile"
+    },
+    {
+      "clause": "5.3.4",
+      "title": "Ground Resistance for Piles Subjected to Lateral Load",
+      "printed_page": 64,
+      "source_pdf_page": 71,
+      "markdown": "### 5.3.4 GROUND RESISTANCE FOR PILES SUBJECTED TO LATERAL LOAD\n\nIn the design of piles resisting lateral forces, consideration should be given to:\n\n- (a) the resistance of the soil or rock against lateral force, taking into account the group effect where appropriate;\n- (b) the structural capacity of the pile; and\n- (c) where pile deflection exceeds 25mm, P- $\\Delta$  effect has to be addressed.\n\nThe lateral load capacity of a pile should be determined by recognized foundation engineering methods with due regard on the characteristics of surrounding soil, the characteristics of the pile or pile group, and the interaction between the surrounding soil and the pile or pile group as appropriate.\n\nWhen methods based on simplified assumptions and graphical solutions are used in the analysis, the parameters adopted should represent the characteristics of the pile and the soil. For granular soil, values of constants of horizontal sub-grade reaction ( $n_h$ ) given in Table 5.1 may be adopted. To allow for pile group effect, the reduction factor given in Table 5.2 shall be applied to the constant of horizontal subgrade reaction.\n\n**Table 5.1 Correlation of Constant of Horizontal Subgrade Reaction with SPT N-values for Granular Soil**\n\n<table border=\"1\">\n<thead>\n<tr>\n<th>SPT N-value</th>\n<th><math>n_h</math> for dry or moist sand (kN/m<sup>2</sup>/m)</th>\n<th><math>n_h</math> for submerged sand (kN/m<sup>2</sup>/m)</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>4 to 10</td>\n<td>2 200</td>\n<td>1 300</td>\n</tr>\n<tr>\n<td>11 to 30</td>\n<td>6 600</td>\n<td>4 400</td>\n</tr>\n<tr>\n<td>31 to 50</td>\n<td>17 600</td>\n<td>10 700</td>\n</tr>\n</tbody>\n</table>\n\n**Table 5.2 Reduction Factor for Constant of Horizontal Subgrade Reaction for Laterally Loaded Pile Group**\n\n<table border=\"1\">\n<thead>\n<tr>\n<th>Ratio of pile spacing to pile diameter</th>\n<th>Reduction factor for <math>n_h</math></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>3</td>\n<td>0.25</td>\n</tr>\n<tr>\n<td>4</td>\n<td>0.40</td>\n</tr>\n<tr>\n<td>6</td>\n<td>0.70</td>\n</tr>\n<tr>\n<td>8</td>\n<td>1.00</td>\n</tr>\n</tbody>\n</table>\n\nNotes: (1) Pile spacing normal to the direction of loading has no influence, provided that the spacing is greater than 2.5 pile diameter.  \n (2) Subgrade reaction is to be reduced in the direction of loading.  \n (3) For the ratio of pile spacing to pile diameter less than 3, alternative methods (e.g. elastic continuum method etc.) for checking the effect of lateral load on pile group should be used."
+    },
+    {
+      "clause": "5.4",
+      "title": "Common Pile Types",
+      "printed_page": 65,
+      "source_pdf_page": 72,
+      "markdown": "## **5.4 COMMON PILE TYPES**\n\nThis clause contains the particular requirements for some specific types of pile commonly used in Hong Kong.\n\n### **5.4.1 STEEL H-PILES/STEEL TUBULAR PILES**\n\nSteel H-piles and tubular piles are usually installed by driving or pre-boring. The design of steel H-piles and tubular piles should follow the recommendations given in clauses 5.1 to 5.3.\n\nIn addition to those stated in clause 2.7, the foundation plan for such piles should also include:\n\n- (a) the physical properties and chemical composition of the piles, especially where the sectional properties are not covered by international standards;\n- (b) the details of pile splice and pile head;\n- (c) the details of protection of pile tips where hard driving is anticipated; and\n- (d) the orientation of steel H-piles designed to resist lateral loads.\n\n#### *Spliced Piles*\n\nWhen the piles are to be lengthened, splices can be made by welding and the following requirements should be complied with:\n\n- (a) Workmanship of welding of the splice including certification of welder test, welding procedure specification and welding procedure test should comply"
+    },
+    {
+      "clause": "5.4.1",
+      "title": "Steel H-Piles/Steel Tubular Piles",
+      "printed_page": 65,
+      "source_pdf_page": 72,
+      "markdown": "### **5.4.1 STEEL H-PILES/STEEL TUBULAR PILES**\n\nSteel H-piles and tubular piles are usually installed by driving or pre-boring. The design of steel H-piles and tubular piles should follow the recommendations given in clauses 5.1 to 5.3.\n\nIn addition to those stated in clause 2.7, the foundation plan for such piles should also include:\n\n- (a) the physical properties and chemical composition of the piles, especially where the sectional properties are not covered by international standards;\n- (b) the details of pile splice and pile head;\n- (c) the details of protection of pile tips where hard driving is anticipated; and\n- (d) the orientation of steel H-piles designed to resist lateral loads.\n\n#### *Spliced Piles*\n\nWhen the piles are to be lengthened, splices can be made by welding and the following requirements should be complied with:\n\n- (a) Workmanship of welding of the splice including certification of welder test, welding procedure specification and welding procedure test should comply"
+    },
+    {
+      "clause": "5.4.2",
+      "title": "Socketed Steel H-Piles",
+      "printed_page": 66,
+      "source_pdf_page": 73,
+      "markdown": "#### **5.4.2 SOCKETED STEEL H-PILES**\n\nSocketed steel H-piles are installed by inserting steel H-piles into pre-bored holes sunk into bedrock, and subsequently grouting the holes with cementitious materials.\n\n##### **(1) Design Principles**\n\nThe following design principles should be adopted in general:\n\n- (a) The rock socket should be formed in the rock as defined in Table 2.1;\n- (b) The design bond strength between the rock and grout should not exceed the allowable value given in clause 2.2.2;\n- (c) The design bond strength between the grout and the steel H-pile should not exceed the allowable value given in clause 2.5.5(4);\n- (d) The grout should be non-shrink and have a minimum characteristic strength of 30 MPa at 28 days; and\n- (e) Rock sockets subjected to lateral load should be checked for any additional stresses induced.\n\n##### **(2) Construction Considerations**\n\nThe following should be given due consideration when installing socketed steel H-piles:"
+    },
+    {
+      "clause": "5.4.3",
+      "title": "Precast Reinforced Concrete Piles",
+      "printed_page": 67,
+      "source_pdf_page": 74,
+      "markdown": "#### **5.4.3 PRECAST REINFORCED CONCRETE PILES**\n\nPrecast reinforced concrete piles may be used for low or medium rise buildings on ground without a significant amount of boulders or corestones.\n\nIn the design of precast reinforced concrete piles, stresses during lifting, transporting and driving of the pile should also be considered. Hard driving of the pile should be avoided. Special consideration should be given to the very high stresses that may occur at the head and toe of the piles."
+    },
+    {
+      "clause": "5.4.4",
+      "title": "Precast Prestressed Spun Concrete Piles",
+      "printed_page": 67,
+      "source_pdf_page": 74,
+      "markdown": "#### **5.4.4 PRECAST PRESTRESSED SPUN CONCRETE PILES**\n\nThese piles should be driven to relatively stiff stratum with sufficient embedded length in residual soil or decomposed rock in order to develop the high bearing capacity and minimize the amount of long-term settlement. The effect of soil movement and percussion during driving on the stability of any adjacent building, structure, land, street and services should be carefully assessed.\n\nStringent requirements on performance test and quality control are usually required for this type of pile.\n\nWhere it is necessary to drive the pile into thick layer of stiff soil, steel conical pile shoes with cross stiffener should be used."
+    },
+    {
+      "clause": "5.4.5",
+      "title": "Driven Cast-in-Place Concrete Piles",
+      "printed_page": 68,
+      "source_pdf_page": 75,
+      "markdown": "## 5.4.5 DRIVEN CAST-IN-PLACE CONCRETE PILES\n\nDriven cast-in-place concrete pile should have a maximum size of 750 mm in diameter and is installed by driving a capped steel casing to the required level with concrete placed into the casing subsequently. Joint or splice of the steel casing should be properly designed to avoid breakage during driving. The design of the pile should be in accordance with the provision of clauses 5.1 to 5.3.\n\nIn order not to disturb the stability of the ground or the integrity of newly formed cast-in-place piles, driving of the piles, or any operation that may induce vibration or ground movement such as chiseling and excavation, should not be carried out within a distance less than 5-times the pile diameter from an unfilled pile excavation or a cast-in-place concrete pile with concrete placed in less than 24 hours."
+    },
+    {
+      "clause": "5.4.6",
+      "title": "Small Diameter Bored Piles",
+      "printed_page": 68,
+      "source_pdf_page": 75,
+      "markdown": "## 5.4.6 SMALL DIAMETER BORED PILES\n\n### (1) General\n\nSmall diameter bored piles should have a diameter not exceeding 750 mm. They may be formed by boring casing into the ground and subsequently filling the hole with concrete/grout. The pile resistance is usually derived from shaft friction but could also be combined with end bearing in soil or rock with due consideration of strain compatibility. The design of the pile should be in accordance with the provision of clauses 5.1 to 5.3.\n\nThe contribution of friction from any fill or marine deposit layer, if exists, should usually be ignored unless it can be proved that there is no possibility of future consolidation. NSF should be considered in accordance with the provision of clause 5.2.\n\n### (2) Continuous Flight Auger Pile\n\nContinuous flight auger pile (CFA pile) is a particular type of small diameter bored pile. It is formed by drilling a hole to the required depth in soil by using a continuous flight auger. Cement grout is pumped through an orifice in the auger while the auger is withdrawn from the hole. A reinforcement cage is lowered into the grout while it is still in a fluid state.\n\nThe allowable bearing capacity of CFA pile founded on soil  $R_{bc}$  in kN may be determined by the following equation:\n\n$$R_{bc} = \\mu N_{av} p L + 5 N_b A_b$$\n\nwhere  $\\mu$  = friction factor\n\n$N_{av}$  = average SPT N-value along pile shaft but not exceeding 40\n\n$p$  = perimeter of pile in m\n\n$L$  = length of pile in m\n\n$A_b$  = bearing area of the pile base in  $m^2$\n\n$N_b$  = SPT N-value at pile base but not exceeding 200"
+    },
+    {
+      "clause": "5.4.7",
+      "title": "Large Diameter Bored Piles",
+      "printed_page": 69,
+      "source_pdf_page": 76,
+      "markdown": "#### **5.4.7 LARGE DIAMETER BORED PILES**\n\nLarge diameter bored piles should be greater than 750 mm in pile shaft diameter which should be taken as the outer diameter of the temporary steel casing. It is usually installed by machine boring to the required level with concrete filling the bored hole subsequently. The boring operation should be carried out under water or in a suitable fluid such as bentonite and no dewatering for the excavation should be permitted. Steel temporary casing should be used to line and support the hole to the full depth in soil at any time during the boring operation until concreting. In firm ground, such as in completely or highly decomposed rocks, other suitable means of support such as a bentonite slurry with sufficient hydraulic head may be used to maintain the stability of the excavation."
+    },
+    {
+      "clause": "5.4.8",
+      "title": "Mini-Piles",
+      "printed_page": 70,
+      "source_pdf_page": 77,
+      "markdown": "#### **5.4.8 MINI-PILES**\n\n##### **(1) General**\n\nA mini-pile usually consists of a number of steel reinforcing bars encased by grout inside a drill hole. It is mainly used to resist compression or tension loads. A mini-pile shall satisfy the following requirements:\n\n- (a) not more than five steel bars with diameter not exceeding 50 mm;\n- (b) outer diameter of casing not exceeding 450 mm;\n- (c) pile capacity under working loads without wind not exceeding 2350 kN.\n\nIf a mini-pile cannot meet any one or more of the above requirements, it should be individually considered. Trial piles may be required to justify the performance of such pile.\n\n##### **(2) Design Principles**\n\nThe following design principles should be adopted in general:\n\n- (a) The structural capacity of a mini-pile should be derived solely from the steel bars. Contributions from the grout and steel casing should be ignored because of the relatively high stress in the steel bars and strain"
+    },
+    {
+      "clause": "5.4.9",
+      "title": "Barrettes",
+      "printed_page": 72,
+      "source_pdf_page": 79,
+      "markdown": "#### **5.4.9 BARRETTES**\n\nBarrettes, or barrette piles are installed by machine excavation into a bentonite slurry filled trench down to the founding level, inserting the reinforcement cage and concreting the excavated trench by tremie method. They are usually of rectilinear sections and founded by end bearing on rock. Other founding criteria may also be used provided that their suitability is demonstrated. The design of the pile should be in accordance with the provision of clauses 5.1 to 5.3.\n\nThe bentonite slurry in the excavated trench should be of sufficient hydraulic head to maintain the stability of the trench, including any surcharge from adjacent structures and construction loads. Rigid reinforced concrete guide walls are usually provided to maintain alignment and verticality of the excavation."
+    },
+    {
+      "clause": "5.4.10",
+      "title": "Hand-Dug Caissons",
+      "printed_page": 73,
+      "source_pdf_page": 80,
+      "markdown": "#### 5.4.10 HAND-DUG CAISSONS\n\nHand-dug caisson works have been banned for general use because of safety and health reasons. However foundation plans including hand-dug caisson works may still be approved when it can be demonstrated that any of the following circumstances exists:\n\n- (a) the depth of the hand-dug caissons does not exceed 3 m and the diameter of the inscribed circle of the hand-dug caissons is not less than 1.5 m;\n- (b) for the site concerned:\n  - (i) the use of a hand-dug caissons is the only practical construction method; or\n  - (ii) there is no other safe engineering alternative."
+    },
+    {
+      "clause": "5.4.11",
+      "title": "Steel H-Piles Driven to Bedrock",
+      "printed_page": 73,
+      "source_pdf_page": 80,
+      "markdown": "#### 5.4.11 STEEL H-PILES DRIVEN TO BEDROCK\n\n##### (1) General Considerations\n\nThis clause may be used for steel H-piles driven to bedrock which is not steeper than 25 degree from the horizontal. For steeper bedrock, the case should be individually considered and more stringent requirements than those given in this clause may be required.\n\nWhere the bedrock is relatively shallow and the soil strata do not have adequate strength to allow the founding of piles, steel H-piles driven to refusal with pile bases terminated on or very close to bedrock are sometimes proposed. However, this type of piles often poses the following problems:\n\n- (a) the pile bases are susceptible to damage due to hard driving at or near the bedrock;\n- (b) the pile bases could easily be deflected at the rock surface particularly where the bedrock profile is sloping or undulating;\n- (c) the piles are prone to have buckling or stability problem, as the relatively shallow and weak soil strata above bedrock may not provide adequate lateral resistance to the piles.\n\nWhere the above problems could not be satisfactorily coped with, other foundation options such as rock-socketed piles should be considered. Where the RSE has confidence in the successful installation of this type of piles, he or she may either use any recognized engineering method to cope with the above problems, or follow the guidance on design principles and construction requirements given in items (2) and (3) below.\n\n##### (2) Design Principles\n\n- (a) The structural design of the steel H-pile should comply with the requirements given in clause 2.5.5(4);"
+    },
+    {
+      "clause": "5.4.12",
+      "title": "Steel H Shear Piles",
+      "printed_page": 76,
+      "source_pdf_page": 83,
+      "markdown": "#### **5.4.12 STEEL H SHEAR PILES**\n\nSteel H shear pile is a common type of shear piles that are provided to resist lateral loads only. They are not designed to resist vertical loads. As such, they are usually terminated at shallower depths than the vertical load resisting piles. The design of shear capacities of the piles should be in accordance with clause 5.3.4.\n\nAll shear piles should be adequately embedded into the pile cap to ensure the compatibility of rotation and displacement between the pile cap and the shear piles.\n\nWhere shear piles are used in combination with other types of pile foundations, due consideration on the compatibility between these different types of piles should be given."
+    },
+    {
+      "clause": "5.5",
+      "title": "Pile Caps",
+      "printed_page": 76,
+      "source_pdf_page": 83,
+      "markdown": "### **5.5 PILE CAPS**\n\nThe distribution of pile loads through the pile cap should generally be carried out by flexible cap analysis that takes into consideration the axial and bending stiffnesses of the piles and the pile cap, and the interaction effects between piles, except where the distribution of pile loads is statically determinate. The connections between pile and pile cap should then be designed accordingly, taking into consideration all the forces including any tension or bending moment that may act on the connections.\n\nMini-piles should be designed with no bending stiffness at their connections to the pile cap and the rock socket. In this connection, particular care should be taken to ensure the piles and pile cap system has sufficient stability. Reference should also be made to clause 5.4.8(2)(h).\n\nReinforcement design and detailing of pile caps should generally comply with the requirements given in the Code of Practice for Structural Use of Concrete. However, for pile cap not less than 800 mm thick, where there are steel H-piles extending into the pile cap, the spacing of a pair of reinforcing bars may be increased to a maximum of 400 mm provided that:\n\n- (a) each reinforcing bar is no farther than 250 mm from the next adjacent reinforcing bar; and\n- (b) the 400 mm spacing between the pair of reinforcing bars should be trimmed with an additional bar so that the bar spacing is reduced to not more than 200 mm. The additional bar should have 90 degree hooks at the ends which should be extended into the webs or welded to the flanges of the H section. The cross-sectional area of the additional bar should not be less than 50% of the larger size of the adjacent reinforcing bars, and should not be considered in the strength design of the pile cap."
+    },
+    {
+      "clause": "6.1",
+      "title": "Basements and Hollow Boxes",
+      "printed_page": 77,
+      "source_pdf_page": 84,
+      "markdown": "### **6.1 BASEMENTS AND HOLLOW BOXES**\n\nA basement or hollow box may be used as a foundation to support the superstructures. In the design of basements or hollow boxes, the general design requirements as specified in Chapter 2 should be complied with.\n\nThe vertical resistance of ground supporting a basement or hollow box may consist of one or more of the following components:\n\n- (a) end bearing at the bases of the side-walls;\n- (b) end bearing at the bottom slabs; and\n- (c) bond or frictional resistance on the external surfaces of the side walls.\n\nThe horizontal resistance of ground provided for basements or hollow boxes may consist of one or more of the following components:\n\n- (a) passive resistance of soil;\n- (b) bond or frictional resistance on the external surfaces of the side walls; and\n- (c) bond or frictional resistance at the bases of the side walls and/or the bottom slab.\n\nWhere the vertical or horizontal resistance is derived from more than one component, it should be demonstrated that all components of the resistance can be mobilized simultaneously without causing unacceptable disturbance to the ground or adjacent structures and services.\n\nConcrete for the side walls and base slabs of a basement or hollow box should be sufficiently watertight and not inferior to grade C35.\n\nStability against buoyancy should be checked in accordance with the provision of clause 2.5.4. The stability against buoyancy before the completion of the superstructure should also be checked. The worst groundwater condition and the effect of possible fluctuations in the groundwater table and of possible flooding during and after construction should be considered.\n\nThe design of the permanent structures should take into account the stresses that may have developed during the various stages of the construction sequence."
+    },
+    {
+      "clause": "6.2",
+      "title": "Diaphragm Walls",
+      "printed_page": 77,
+      "source_pdf_page": 84,
+      "markdown": "### **6.2 DIAPHRAGM WALLS**\n\nA diaphragm wall may be used as a temporary lateral support wall for deep excavation or the permanent wall of a basement, or it may be designed for both temporary and permanent uses. It may also be used to support vertical loads."
+    },
+    {
+      "clause": "6.3",
+      "title": "Retaining Walls",
+      "printed_page": 78,
+      "source_pdf_page": 85,
+      "markdown": "### **6.3 RETAINING WALLS**\n\nThe design and construction of retaining walls shall comply with the requirements of the Building (Construction) Regulations.\n\nRetaining walls may be designed in accordance with “Guide to Retaining Wall Design” (GEOGUIDE 1) published by GEO. Reinforced fill retaining walls may be designed in accordance with “Guide to Reinforced Fill Structure and Slope Design” (GEOGUIDE 6) published by GEO.\n\nThe design of retaining walls should also comply with the requirements specified in Chapter 2 where:\n\n- (a) the retaining walls are used as foundation to support a building or other structure; or\n- (b) the retaining walls are used to resist external surcharge loads from foundations or other structures."
+    },
+    {
+      "clause": "6.4",
+      "title": "Ground Anchors",
+      "printed_page": 79,
+      "source_pdf_page": 86,
+      "markdown": "## **6.4 GROUND ANCHORS**\n\nGround anchors may be used to resist uplift forces in foundation structures. They may be prestressed or unstressed.\n\nThe use of permanent prestressed ground anchors in a project imposes a long-term monitoring commitment on the maintenance parties, which usually involves appreciable recurrent cost and, should deficiencies be revealed, remedial works may be difficult and expensive. The past records show that compliance with this criterion by the owners is not practically viable. For these reasons, permanent ground anchors requiring long-term monitoring are considered as short-lived temporary building works and should not be incorporated into a permanent building.\n\nIn exceptional circumstances where permanent ground anchors are to be used, their provision and installation should be in accordance with the requirements and procedures given in “Model Specification for Prestressed Ground Anchors” (GEOSPEC 1) published by GEO.\n\nMonitoring of prestressed ground anchors is essential throughout their service life to ensure their continued satisfactory performance. The parties responsible for subsequent maintenance should be consulted and their agreement should be obtained before prestressed ground anchors are adopted and that they should be provided with a complete set of ‘as built’ details."
+    },
+    {
+      "clause": "6.5",
+      "title": "Re-use of Existing Foundations",
+      "printed_page": 79,
+      "source_pdf_page": 86,
+      "markdown": "## **6.5 RE-USE OF EXISTING FOUNDATIONS**\n\n### **6.5.1 GENERAL**\n\nExisting foundations that can meet the current design and construction requirements may be reused when reliable information of the existing foundations as stipulated in clause 2.7 and as-built foundation records including certified true copies of foundation record plans and construction reports retrieved from the Buildings Department or other government departments are available.\n\nA comprehensive testing scheme should be implemented to verify the integrity, durability, suitability of the existing foundations to be reused. There are numerous factors affecting the requirements of the testing scheme. The guidance given in clauses 6.5.2 to 6.5.5 may be used as a reference for establishing the testing scheme.\n\nShould the testing scheme reveal any deviation from the conditions assumed in the re-use of the foundations, the foundation design should be amended accordingly, and additional foundations should be provided if necessary.\n\nWhere old and new foundations are to be used together to support a building or structure, the possible differential settlements between the old and new foundations and the preloading effect on the old foundations should be considered.\n\nAdequate precautionary measures and extreme care should be taken to avoid any"
+    },
+    {
+      "clause": "6.5.1",
+      "title": "General",
+      "printed_page": 79,
+      "source_pdf_page": 86,
+      "markdown": "### **6.5.1 GENERAL**\n\nExisting foundations that can meet the current design and construction requirements may be reused when reliable information of the existing foundations as stipulated in clause 2.7 and as-built foundation records including certified true copies of foundation record plans and construction reports retrieved from the Buildings Department or other government departments are available.\n\nA comprehensive testing scheme should be implemented to verify the integrity, durability, suitability of the existing foundations to be reused. There are numerous factors affecting the requirements of the testing scheme. The guidance given in clauses 6.5.2 to 6.5.5 may be used as a reference for establishing the testing scheme.\n\nShould the testing scheme reveal any deviation from the conditions assumed in the re-use of the foundations, the foundation design should be amended accordingly, and additional foundations should be provided if necessary.\n\nWhere old and new foundations are to be used together to support a building or structure, the possible differential settlements between the old and new foundations and the preloading effect on the old foundations should be considered.\n\nAdequate precautionary measures and extreme care should be taken to avoid any"
+    },
+    {
+      "clause": "6.5.2",
+      "title": "General Requirements on Testing",
+      "printed_page": 80,
+      "source_pdf_page": 87,
+      "markdown": "### **6.5.2 GENERAL REQUIREMENTS ON TESTING**\n\nThe testing scheme should include the following investigations and testing:\n\n- (a) Additional ground investigation to assess the conditions of bearing strata, the existence of any corrosive ingredient such as chloride, sulphate or biochemicals in the ground, the tidal or ground water fluctuation that may affect the corrosion of the pile;\n- (b) Visual inspection of structural conditions of the existing foundations near the ground surface/cut-off level of existing piles;\n- (c) Load tests, proof core-drilling tests or any other suitable tests to confirm the load-carrying capacity, integrity and material properties of the existing foundations; and\n- (d) Pile head condition including any anchorage bars or starter bars at cut-off levels should be inspected, and an inspection report should be included as part of the testing scheme."
+    },
+    {
+      "clause": "6.5.3",
+      "title": "Large Size Concrete Piles",
+      "printed_page": 80,
+      "source_pdf_page": 87,
+      "markdown": "### **6.5.3 LARGE SIZE CONCRETE PILES**\n\nCommon large size concrete piles to be reused are large diameter bored piles and hand-dug caissons. The testing scheme should include the following:\n\n- (a) Dimension measurements and setting-outs of each reuse pile;\n- (b) Proof core-drilling test on each reuse pile to verify the concrete strength, founding level and founding condition. The proof core-drilling test should be carried out in accordance with clause 8.5. At least three samples evenly distributed along the length of the concrete core should be taken for compression tests to assess the in-situ concrete strengths; and\n- (c) Visual inspection on the pile conditions to determine if tests on sulphate and chloride content and carbonation should be carried out or not."
+    },
+    {
+      "clause": "6.5.4",
+      "title": "Small Size Concrete Piles",
+      "printed_page": 80,
+      "source_pdf_page": 87,
+      "markdown": "### **6.5.4 SMALL SIZE CONCRETE PILE**\n\nCommon small size concrete piles to be reused are small diameter bored piles, precast reinforced concrete piles and precast prestressed spun concrete piles. The testing scheme should include the following:\n\n- (a) Dimension measurements and setting-outs of each reuse pile;\n- (b) Visual inspection of pile head at the existing cut-off level of each reuse pile;\n- (c) Re-driving of each driven pile to set, if applicable;"
+    },
+    {
+      "clause": "6.5.5",
+      "title": "Steel Piles and Mini-Piles",
+      "printed_page": 81,
+      "source_pdf_page": 88,
+      "markdown": "#### **6.5.5 STEEL PILES AND MINI-PILES**\n\nCommon steel piles to be reused are driven steel H-pile, socketed steel H-piles and mini-piles. The testing scheme should include the following:\n\n- (a) Visual inspection of pile head at the existing cut-off level of each reuse pile;\n- (b) Re-driving of each driven pile to set;\n- (c) Dynamic load tests to verify the structural conditions and load carrying capacities of at least 20% of the reuse driven steel piles; and\n- (d) Load tests in accordance with clause 8.4 on at least 5% of the reuse piles."
+    },
+    {
+      "clause": "6.5.6",
+      "title": "Concrete Footings",
+      "printed_page": 81,
+      "source_pdf_page": 88,
+      "markdown": "#### **6.5.6 CONCRETE FOOTINGS**\n\nThe testing scheme should include the following:\n\n- (a) Dimension measurements and setting-outs of each reuse footing;\n- (b) Proof core-drilling tests on each reuse footing to verify the concrete strength, founding level and founding stratum condition. At least three samples should be taken for compression tests to assess the in-situ concrete strengths; and\n- (c) Visual inspection on the footing conditions to determine if tests on sulphate and chloride content and carbonation should be carried out or not."
+    },
+    {
+      "clause": "7.1",
+      "title": "General",
+      "printed_page": 82,
+      "source_pdf_page": 89,
+      "markdown": "### **7.1 GENERAL**\n\nFoundation works should be carried out such that:\n\n- (a) the foundation is constructed in accordance with the plans approved by the Building Authority;\n- (b) suitable methods and sequence are adopted so as not to render inadequate the margin of safety of, or impair the stability of, or cause damage to any building, structure, land, street or services; and\n- (c) adequate precautionary and protective measures are provided to assure the safety of the workers on site, all persons near the site, and adjacent buildings, structures, lands, streets and services.\n\n#### **7.1.1 GENERAL REQUIREMENTS**\n\nAll foundation works, except where the penetration depth of the foundation element does not exceed 3 m, are specialized work in the foundation category and shall be carried out by a RSC (Foundation Works).\n\nFoundation works should comply with:\n\n- (a) the requirements of site safety supervision as stipulated in the Code of Practice for Site Safety Supervision and Technical Memorandum for Supervision Plans; and\n- (b) the requirements of quality supervision (see clause 7.1.2).\n\n#### **7.1.2 QUALITY SUPERVISION FOR FOUNDATION WORKS**\n\nThe foundations are important structural elements of a building or structure. Adequate supervision should be provided to ensure that the quality of the foundation works in respect of materials, general arrangement, installation procedures, workmanship and testing are up to the required standards and conform with all relevant provisions of this Code of Practice. Reference should be made to the relevant PNAP issued by the Building Authority for requirements of quality supervision for foundation works.\n\n#### **7.1.3 CONSTRUCTION MATERIALS**\n\n##### **(1) Concrete and grout**\n\nSampling of concrete and compression testing of concrete test cubes should be carried out in accordance with the methods specified in CS1. Testing should be carried out by a HOKLAS accredited laboratory. The test results should be reported on a HOKLAS Endorsed Test Certificate. Concreting for cast-in-situ piles should be in one continuous operation."
+    },
+    {
+      "clause": "7.1.1",
+      "title": "General Requirements",
+      "printed_page": 82,
+      "source_pdf_page": 89,
+      "markdown": "#### **7.1.1 GENERAL REQUIREMENTS**\n\nAll foundation works, except where the penetration depth of the foundation element does not exceed 3 m, are specialized work in the foundation category and shall be carried out by a RSC (Foundation Works).\n\nFoundation works should comply with:\n\n- (a) the requirements of site safety supervision as stipulated in the Code of Practice for Site Safety Supervision and Technical Memorandum for Supervision Plans; and\n- (b) the requirements of quality supervision (see clause 7.1.2)."
+    },
+    {
+      "clause": "7.1.2",
+      "title": "Quality Supervision for Foundation Works",
+      "printed_page": 82,
+      "source_pdf_page": 89,
+      "markdown": "#### **7.1.2 QUALITY SUPERVISION FOR FOUNDATION WORKS**\n\nThe foundations are important structural elements of a building or structure. Adequate supervision should be provided to ensure that the quality of the foundation works in respect of materials, general arrangement, installation procedures, workmanship and testing are up to the required standards and conform with all relevant provisions of this Code of Practice. Reference should be made to the relevant PNAP issued by the Building Authority for requirements of quality supervision for foundation works."
+    },
+    {
+      "clause": "7.1.3",
+      "title": "Construction Materials",
+      "printed_page": 82,
+      "source_pdf_page": 89,
+      "markdown": "#### **7.1.3 CONSTRUCTION MATERIALS**\n\n##### **(1) Concrete and grout**\n\nSampling of concrete and compression testing of concrete test cubes should be carried out in accordance with the methods specified in CS1. Testing should be carried out by a HOKLAS accredited laboratory. The test results should be reported on a HOKLAS Endorsed Test Certificate. Concreting for cast-in-situ piles should be in one continuous operation."
+    },
+    {
+      "clause": "7.1.4",
+      "title": "Excavation",
+      "printed_page": 83,
+      "source_pdf_page": 90,
+      "markdown": "### **7.1.4 EXCAVATION**\n\nFoundation works often require excavation, which, even if shallow, can be dangerous if not properly designed. Adequate precautionary and protective measures should be provided to ensure that the excavation works are properly protected and the foundation works are carried out safely."
+    },
+    {
+      "clause": "7.2",
+      "title": "Effect of Foundation Works on Adjacent Structures and Land",
+      "printed_page": 83,
+      "source_pdf_page": 90,
+      "markdown": "## **7.2 EFFECT OF FOUNDATION WORKS ON ADJACENT STRUCTURES AND LAND**\n\n### **7.2.1 ASSESSMENT OF THE EFFECT OF FOUNDATION WORKS**\n\nThe effect of the foundation works on surrounding land, structures and services should be assessed. The assessment should include:\n\n- (a) a detailed report on the structural conditions of all nearby buildings, structures and existing services and the geotechnical condition of the nearby land likely to be affected by the foundation works within a minimum distance of 50 m measured from the site boundary;\n- (b) estimation of the effect of the foundation works on the nearby buildings, structures, services and lands, with particular attention given to works that will induce vibration, dewatering works, and excavation and lateral support works;\n- (c) estimation of the response of the nearby buildings, structures, services and land to the effect of the foundation works;\n- (d) proposals of measures to mitigate the effect and response mentioned in items (b) and (c) above; and\n- (e) proposals of the preventive and precautionary measures, monitoring scheme and contingency plans to be undertaken before and during construction."
+    },
+    {
+      "clause": "7.2.1",
+      "title": "Assessment of the Effect of Foundation Works",
+      "printed_page": 83,
+      "source_pdf_page": 90,
+      "markdown": "### **7.2.1 ASSESSMENT OF THE EFFECT OF FOUNDATION WORKS**\n\nThe effect of the foundation works on surrounding land, structures and services should be assessed. The assessment should include:\n\n- (a) a detailed report on the structural conditions of all nearby buildings, structures and existing services and the geotechnical condition of the nearby land likely to be affected by the foundation works within a minimum distance of 50 m measured from the site boundary;\n- (b) estimation of the effect of the foundation works on the nearby buildings, structures, services and lands, with particular attention given to works that will induce vibration, dewatering works, and excavation and lateral support works;\n- (c) estimation of the response of the nearby buildings, structures, services and land to the effect of the foundation works;\n- (d) proposals of measures to mitigate the effect and response mentioned in items (b) and (c) above; and\n- (e) proposals of the preventive and precautionary measures, monitoring scheme and contingency plans to be undertaken before and during construction."
+    },
+    {
+      "clause": "7.2.2",
+      "title": "Shoring and Underpinning",
+      "printed_page": 84,
+      "source_pdf_page": 91,
+      "markdown": "## 7.2.2 SHORING AND UNDERPINNING\n\nDetails of any shoring or underpinning to any building, structure, land or services required as precautionary measures should be included in the foundation proposal."
+    },
+    {
+      "clause": "7.2.3",
+      "title": "Monitoring Plan",
+      "printed_page": 84,
+      "source_pdf_page": 91,
+      "markdown": "## 7.2.3 MONITORING PLAN\n\nWhere the construction of a foundation may affect any building, structure, land, street or services, a monitoring plan should be provided. It should contain:\n\n- (a) sufficient monitoring stations for the detailed monitoring of movement and vibration in any building, structure, land, street or services;\n- (b) sufficient piezometers for the detailed monitoring of the ground water conditions;\n- (c) the frequency at which the readings will be recorded or taken;\n- (d) the action levels and the contingency measures to be undertaken.\n\nThe construction activities on site should also be properly recorded so that they may be correlated with the monitoring readings if necessary. Such correlation can often explain why some apparently abnormal readings are recorded.\n\nThe monitoring plan should include a system of three triggering levels, namely the alert, alarm and action levels respectively and the corresponding contingency measures to be carried out when the triggering levels are reached. An example is given in Table 7.1.\n\n**Table 7.1 Example of the Contingency Measures for Three Triggering Levels**\n\n<table border=\"1\"><thead><tr><th>Triggering level</th><th>Contingency measures</th></tr></thead><tbody><tr><td>Alert</td><td>The monitoring should be enhanced by increasing the frequency of monitoring measurements and the number of check points.</td></tr><tr><td>Alarm</td><td>The method of installation of the pile foundation should be reviewed with the purpose of mitigating the detrimental effects arising from vibration or ground settlement.</td></tr><tr><td>Action</td><td>The corresponding site works should be suspended. Construction activities should not be resumed until the necessary remedial and preventive measures have been completed satisfactorily.</td></tr></tbody></table>"
+    },
+    {
+      "clause": "7.2.4",
+      "title": "Ground Settlement",
+      "printed_page": 84,
+      "source_pdf_page": 91,
+      "markdown": "## 7.2.4 GROUND SETTLEMENT\n\nThe ground movements arising from pile driving or other foundation works depend on several factors including construction method and sequence, sub-soil geology, groundwater conditions, layout and details of the foundation works and workmanship. Excessive ground movements caused by foundation works may be detrimental to adjacent buildings or structures, especially those supported by shallow foundations, or piles with inadequate lateral resistance or foundations with inherently low factors of safety."
+    },
+    {
+      "clause": "7.2.5",
+      "title": "Dewatering",
+      "printed_page": 85,
+      "source_pdf_page": 92,
+      "markdown": "## 7.2.5 DEWATERING\n\nDewatering may cause undue settlement of buildings, structures, streets, land and underground services if not properly designed and carried out. Where dewatering is to be undertaken, an assessment of the effects of dewatering on the adjoining buildings, structures, streets, land and underground services should be made. Recharging should be considered where appropriate. A monitoring scheme in accordance with the provisions of clause 7.2.3 should be provided.\n\nThe groundwater table during construction should be properly controlled such that it would be maintained within the limits permitted in the dewatering design. In case the groundwater table is lowered below the permitted limits, the designer should be informed and appropriate action such as suspension of the dewatering should be taken immediately."
+    },
+    {
+      "clause": "7.2.6",
+      "title": "Vibration",
+      "printed_page": 85,
+      "source_pdf_page": 92,
+      "markdown": "## 7.2.6 VIBRATION\n\nVibration caused by foundation works should not induce cracks, settlement or other damage to any building, structure, land, street or services. Special attention should be given if there are any buildings or structures supported by shallow foundations bearing on loose sand or silty soils, which are prone to densification when subject to vibration."
+    },
+    {
+      "clause": "7.2.7",
+      "title": "Public Relations Plan for Piling Works",
+      "printed_page": 87,
+      "source_pdf_page": 94,
+      "markdown": "## 7.2.7 PUBLIC RELATIONS PLAN FOR PILING WORKS\n\nPiling works (including installation of temporary pile walls for excavation and lateral support works) will inevitably cause disturbance to the occupants of nearby buildings. While every effort should be made to keep such disturbance to the minimum, a good PR Plan is equally important. PR Plan should be implemented to notify the nearby occupants in advance of the forthcoming pile driving operations, to facilitate communication between the affected occupants and the contractor, to minimize possible complaints, and to enable the AP/RSE/RSC to handle complaints in a timely and effective manner. The PR Plan should include the following information which should generally be given in both Chinese and English:\n\n1. (a) Background of the project, including the construction programme and a list of vibration-generating construction activities;\n2. (b) Name and method of contact with the AP, RSE, RGE and RSC of the project;\n3. (c) Organization chart including a PR officer;\n4. (d) Objectives of the PR Plan;\n5. (e) List of concerned groups, e.g. Owners' Corporation, Mutual Aid Committee, District Council;\n6. (f) List of vibration sensitive nearby buildings, structures or services;\n7. (g) Schedule of public relations activities such as briefing session; posting notices, issuing reminders of any forthcoming and duration of hard driving, continuous vibration activities or similar activities;\n8. (h) List of telephone hotlines and contact persons for public enquiries;"
+    },
+    {
+      "clause": "7.2.8",
+      "title": "Blasting",
+      "printed_page": 88,
+      "source_pdf_page": 95,
+      "markdown": "### 7.2.8 BLASTING\n\nIf blasting is to be carried out as part of the foundation works, it must be properly designed and controlled such that it will not adversely affect the stability of any adjacent slope, retaining wall, building, structures and services through ground vibrations or other effects. Adequate measures must also be provided to protect the safety of the workers and the public against possible flyrock.\n\nWhen blasting is to be adopted for foundation works, reference should be made to the following:\n\n- (a) Regulation 23 of the Building (Construction) Regulations;\n- (b) Regulation 46 of the Dangerous Goods (General) Regulations;\n- (c) PNAP APP-24 - Railway Protection\n- (d) PNAP APP-72 - Control of Blasting; and\n- (e) General Specification for Civil Engineering Works."
+    },
+    {
+      "clause": "7.3",
+      "title": "Foundation Records and Reports",
+      "printed_page": 88,
+      "source_pdf_page": 95,
+      "markdown": "## 7.3 FOUNDATION RECORDS AND REPORTS\n\nThe Building Authority requires the submission of record plans, report and a specified form certifying the completion of the foundation works by the relevant personnel upon completion of the works.\n\n### *Foundation Record Plans*\n\nRecord plans should include details of the characteristic features of the site and the identification, location, size, depth and level of each foundation unit as constructed.\n\n### *Foundation Report*\n\nThe report should include:\n\n- (a) the date of construction/installation, the quality and quantity of materials used and any necessary test on the bearing strata for each foundation unit;\n- (b) the driving performance and verification of the design assumption made on vibration predication for driven piles;"
+    },
+    {
+      "clause": "7.4",
+      "title": "Pile Construction",
+      "printed_page": 89,
+      "source_pdf_page": 96,
+      "markdown": "## **7.4 PILE CONSTRUCTION**\n\n### **7.4.1 DRIVING TEST AND TRIAL PILES**\n\nFor driven piles, test driving should be conducted to verify the design assumptions made for the piles and founding strata prior to driving any other piles.\n\nWhere special ground conditions exist or when a new type of piles is to be used, trial piles may be required to be carried out before the installation of other working piles in order to verify the design assumptions and the performance of the pile. The trial piles should also be tested by the imposition of test loads in accordance with the procedures and criteria specified in clause 8.4 upon installation.\n\n### **7.4.2 TEST BORING**\n\nWhere boring is carried out with the drilling bit that advances ahead of the steel casing and the drill hole is larger than 450 mm, the following problems may occur:\n\n- (a) overbreak/ground loss resulting in undue disturbance to sub-soil – usually due to the presence of problematic soil layers such as bouldery reclamation fill, improper operation of the boring equipment, or the use of ineffective or worn-out drilling bits; and\n- (b) excessive drawdown of water table – usually due to adverse geology in the soil/rock strata such as the presence of permeable rock joints.\n\nTherefore, test boring is required to assess the following:\n\n- (a) the safety and suitability of the boring method and equipment;\n- (b) the drawdown of ground water table and ground settlements that may be induced by the boring operation for reviewing the proposed monitoring plan; and\n- (c) the range of anticipated rates of advancement of the boring operation for different soil or rock strata for control of the boring operation for working piles.\n\nThe following should be specified in the test boring proposal:\n\n- (a) details of the boring machine to be used on site, including the complete operating mechanism of the drill bit;\n- (b) the maximum volume of air supply and pressure to be applied in different soil and rock strata;"
+    },
+    {
+      "clause": "7.4.1",
+      "title": "Driving Test and Trial Piles",
+      "printed_page": 89,
+      "source_pdf_page": 96,
+      "markdown": "### **7.4.1 DRIVING TEST AND TRIAL PILES**\n\nFor driven piles, test driving should be conducted to verify the design assumptions made for the piles and founding strata prior to driving any other piles.\n\nWhere special ground conditions exist or when a new type of piles is to be used, trial piles may be required to be carried out before the installation of other working piles in order to verify the design assumptions and the performance of the pile. The trial piles should also be tested by the imposition of test loads in accordance with the procedures and criteria specified in clause 8.4 upon installation."
+    },
+    {
+      "clause": "7.4.2",
+      "title": "Test Boring",
+      "printed_page": 89,
+      "source_pdf_page": 96,
+      "markdown": "### **7.4.2 TEST BORING**\n\nWhere boring is carried out with the drilling bit that advances ahead of the steel casing and the drill hole is larger than 450 mm, the following problems may occur:\n\n- (a) overbreak/ground loss resulting in undue disturbance to sub-soil – usually due to the presence of problematic soil layers such as bouldery reclamation fill, improper operation of the boring equipment, or the use of ineffective or worn-out drilling bits; and\n- (b) excessive drawdown of water table – usually due to adverse geology in the soil/rock strata such as the presence of permeable rock joints.\n\nTherefore, test boring is required to assess the following:\n\n- (a) the safety and suitability of the boring method and equipment;\n- (b) the drawdown of ground water table and ground settlements that may be induced by the boring operation for reviewing the proposed monitoring plan; and\n- (c) the range of anticipated rates of advancement of the boring operation for different soil or rock strata for control of the boring operation for working piles.\n\nThe following should be specified in the test boring proposal:\n\n- (a) details of the boring machine to be used on site, including the complete operating mechanism of the drill bit;\n- (b) the maximum volume of air supply and pressure to be applied in different soil and rock strata;"
+    },
+    {
+      "clause": "7.4.3",
+      "title": "Pre-Drilling",
+      "printed_page": 90,
+      "source_pdf_page": 97,
+      "markdown": "#### **7.4.3 PRE-DRILLING**\n\nFor piles founded on rock or rock socket, sufficient pre-drilling should be carried out to identify the depth and quality of the founding rock. Such pre-drilling should be sunk at least 5 m into the category of rock specified for founding or forming of rock socket, or the designed rock socket length of the pile, whichever is the deeper.\n\nFor large diameter bored piles, barrettes and the like, pre-drilling should be carried out for each pile.\n\nFor mini-piles, socketed steel H-piles, steel H-piles driven to bedrock and similar small diameter bored piles founding on rock or rock socket, pre-drilling should be carried out such that the tip of every pile should be within 5 m distance from a pre-drilling hole. The pre-drilling should be sunk at least 5 m into the category of rock specified for founding or forming of rock socket, or the designed rock socket length of the nearest pile, whichever is the deeper."
+    },
+    {
+      "clause": "7.4.4",
+      "title": "Post Construction Proof Drilling",
+      "printed_page": 90,
+      "source_pdf_page": 97,
+      "markdown": "#### **7.4.4 POST CONSTRUCTION PROOF DRILLING**\n\n##### *Large Diameter Bored Piles, Barrettes and the Like*\n\nTo ascertain the soundness of the interface, interface proof drilling should be carried out at the concrete/rock interface for each of the large diameter bored piles, barrettes and the like. The core-drilling should cover at least 1 m above and below the interface.\n\n##### *Socketed H-piles, H-piles driven to bedrock and Mini-piles*\n\nTo verify the quality of rock for founding or forming of rock socket, additional proof drill holes should be sunk at least 5 m below the as-built top level of the rock socket, or the as-built rock socket length of the nearest pile, whichever is the deeper. The recommended number of such drill holes should be at least two for sites with 100 or less piles; or 1% of the number of piles for sites with more than 100 piles (any fraction of a drill hole so calculated should be construed as one additional drill hole). An assessment report with a rockhead contour plan based on the ground investigation, the pre-drilling and the post-installation drilling is required when submitting the piling record plan to the Building Authority."
+    },
+    {
+      "clause": "7.4.5",
+      "title": "Proof Tests",
+      "printed_page": 91,
+      "source_pdf_page": 98,
+      "markdown": "## 7.4.5 PROOF TESTS\n\nIn accordance with the Building (Construction) Regulations, proof tests are required to be conducted on pile foundation works carrying vertical or lateral loads. The procedures and criteria for proof tests described in Chapter 8 should generally be followed.\n\nAlternative procedures and acceptance criteria other than test loading or proof core-drilling with sound justification based on recognized foundation engineering principles and relevant to a particular site and building may also be adopted, provided that the following are submitted to the Building Authority to demonstrate the suitability of the proposed method of testing:\n\n- (a) relevant recognized engineering principles for the proposed proof test;\n- (b) detailed procedures of testing and acceptance criteria;\n- (c) interpretation of the test results; and\n- (d) any verification tests performed to justify the parameters to be used in the proof test."
+    },
+    {
+      "clause": "7.4.6",
+      "title": "Further on Site Tests",
+      "printed_page": 91,
+      "source_pdf_page": 98,
+      "markdown": "## 7.4.6 FURTHER ON SITE TESTS\n\nWhenever doubt exists as to the design assumption or load carrying capacity of any pile foundation, further on site tests should be carried out."
+    },
+    {
+      "clause": "7.5",
+      "title": "Construction Tolerances",
+      "printed_page": 91,
+      "source_pdf_page": 98,
+      "markdown": "## 7.5 CONSTRUCTION TOLERANCES\n\nPermissible deviations should be specified only for those dimensions that are important to the construction, performance or appearance of the structure. Guidance on the accuracy is provided in Table 7.4. More stringent tolerances may be necessary for certain applications and these should be noted in the design and included in the specifications.\n\n**Table 7.4 Construction Tolerances**\n\n<table border=\"1\">\n<thead>\n<tr>\n<th rowspan=\"2\">Foundation type</th>\n<th colspan=\"3\">Permissible deviation<sup>(1)</sup></th>\n</tr>\n<tr>\n<th>Position on plan</th>\n<th>Verticality</th>\n<th>Dimensions</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1. Mini-piles</td>\n<td><math>\\pm 15</math> mm<sup>(2)</sup></td>\n<td>1 in 100</td>\n<td><math>\\pm 3\\%</math></td>\n</tr>\n<tr>\n<td>2. Piles for marine structures</td>\n<td><math>\\pm 150</math> mm</td>\n<td>1 in 25</td>\n<td><math>\\pm 3\\%</math></td>\n</tr>\n<tr>\n<td>3. Piles other than items 1 and 2</td>\n<td><math>\\pm 75</math> mm</td>\n<td>1 in 75</td>\n<td><math>\\pm 3\\%</math></td>\n</tr>\n<tr>\n<td>4. Rafts, ground beams, pile caps and footings</td>\n<td><math>\\pm 50</math> mm</td>\n<td>N/A</td>\n<td><math>\\pm 3\\%</math></td>\n</tr>\n</tbody>\n</table>\n\nNotes:\n\n- (1) The permissible deviation should not result in any part of the foundation element extending outside the site boundary.\n- (2) Subject to justification, the value may be increased to a value not exceeding  $\\pm 75$  mm."
+    },
+    {
+      "clause": "7.6",
+      "title": "Ground Treatment",
+      "printed_page": 92,
+      "source_pdf_page": 99,
+      "markdown": "## **7.6 GROUND TREATMENT**\n\nWhere improvement of the load carrying capacity of the ground is to be achieved by ground treatment, adequate proof of the suitability of the method and materials to be used should be given. Where ground treatment has been carried out, adequate tests of the treated ground should be carried out.\n\nWhere the ground treatment may affect any building, structure, land, street or services, adequate precautionary measures shall be taken."
+    },
+    {
+      "clause": "7.7",
+      "title": "Control of Nuisance",
+      "printed_page": 92,
+      "source_pdf_page": 99,
+      "markdown": "## **7.7 CONTROL OF NUISANCE**\n\nConstruction site of foundation works may cause environmental nuisance affecting not only the workers on site but also occupants of adjoining buildings and the general public. Appropriate steps should be taken to prevent such nuisance.\n\n### **(1) Noise**\n\nReference should be made to the Noise Control Ordinance (Cap 400) for detailed requirements in this respect.\n\nIn particular, a permit from the Environmental Protection Department is required for carrying out percussive piling operation.\n\nAdequate measures to reduce noise should be taken to meet the requirements of the Environmental Protection Department, if necessary.\n\n### **(2) Smoke and fume**\n\nReference should be made to the Air Pollution Control Ordinance (Cap 311) for detailed requirements in this respect.\n\nEmission of excessive black smoke or fume from diesel hammer is actionable under the Air Pollution Control Ordinance (Cap 311) which is enforced by Environmental Protection Department.\n\n### **(3) Waste water and chemical waste**\n\nReference should be made to the Public Health and Municipal Services Ordinance (Cap 132) for detailed requirements in this respect.\n\nIn particular, muddy water or chemical waste from a construction site should not be discharged into the drainage system. Any contractor acting against this will be required by the Drainage Services Department to indemnify the Government against costs due to such act.\n\n### **(4) Vibration**\n\nIn addition to the provision of clause 7.2.6, vibration should not create unacceptable discomfort to the occupants of nearby buildings."
+    },
+    {
+      "clause": "7.8",
+      "title": "Foundation Works in Scheduled Areas",
+      "printed_page": 93,
+      "source_pdf_page": 100,
+      "markdown": "## **7.8 FOUNDATION WORKS IN SCHEDULED AREAS**\n\n### **7.8.1 GENERAL**\n\nFor foundation works in the Scheduled Areas, there are usually special requirements imposed by the Building Authority. These may include settlement monitoring, control on vibration and performance review of the foundation works. Before commencement of the works, reference should be made to the relevant PNAP issued by the Building Authority.\n\n### **7.8.2 PERFORMANCE REVIEW AND SETTLEMENT MONITORING FOR SCHEDULED AREA NOS. 2 AND 4**\n\nPerformance reviews in Scheduled Area Nos. 2 and 4, when required, usually include a review of the ground conditions encountered during pile driving, pile installation or foundation construction, and an assessment of the effects of pile driving on the surroundings and construction records. It should also contain the results and an assessment of the pile load tests. The review should demonstrate that the foundation works have been adequately inspected and the construction records adequately assessed in the course of construction and that any necessary changes in the design have been undertaken and the foundation plans have been suitably amended and approved.\n\nFor buildings founded on marble, settlement monitoring using precise levelling or other approved methods should be arranged. The monitoring should commence as soon as possible after the completion of foundation works and should be continued until the issue of occupation permit. Readings should be taken at intervals sufficiently close to minimize scatter, with a frequency not less than monthly. The monitoring should be carried out by a qualified land surveyor."
+    },
+    {
+      "clause": "7.8.1",
+      "title": "General",
+      "printed_page": 93,
+      "source_pdf_page": 100,
+      "markdown": "### **7.8.1 GENERAL**\n\nFor foundation works in the Scheduled Areas, there are usually special requirements imposed by the Building Authority. These may include settlement monitoring, control on vibration and performance review of the foundation works. Before commencement of the works, reference should be made to the relevant PNAP issued by the Building Authority."
+    },
+    {
+      "clause": "8.1",
+      "title": "General",
+      "printed_page": 94,
+      "source_pdf_page": 101,
+      "markdown": "### 8.1 GENERAL\n\nTesting of foundations may be required for one or more of the following purposes:\n\n- (a) to ascertain the performance of the foundation under load;\n- (b) to establish or justify the design parameters; and\n- (c) to verify the structural integrity of the foundation units.\n\nThe type of test selected and the number of tests required should be appropriate to the type of foundation and suitable for the purpose required.\n\nExcept standard penetration tests (see clause 8.3) and proof core-drilling test (see clause 8.5), all tests specified in this Chapter should be carried out by a HOKLAS accredited laboratory."
+    },
+    {
+      "clause": "8.2",
+      "title": "Plate Load Test",
+      "printed_page": 94,
+      "source_pdf_page": 101,
+      "markdown": "### 8.2 PLATE LOAD TEST\n\n#### (1) General\n\nPlate load test may be used to verify:\n\n- (a) the allowable bearing capacity; and\n- (b) by means of back-analysis, the value of Young's modulus of soils adopted in the settlement calculations.\n\nHowever, the results of the test may not be able to reflect the behaviour of all soil strata affected by the footing. In addition, any extrapolation of the test results to a footing larger than the test plate must be carried out with caution, in particular, for non-homogeneous ground conditions.\n\nThe plate load test should be carried out at the founding level or a level that can reflect the groundwater condition and the behaviour of soil strata affected by the foundation.\n\n#### (2) Test Procedures and Acceptance Criteria\n\nAny suitable test procedures and acceptance criteria with full justification may be used. The following may be considered as suitable test procedures and acceptance criteria for plate load tests on cohesionless soils:\n\n- (a) The loading plate should not be less than 300 mm, square or circular.\n- (b) The test load adopted should not be less than  $3W_t$ , so that the significant stress on soil and settlement can be obtained.  $W_t$  is the test load obtained as follows:"
+    },
+    {
+      "clause": "8.3",
+      "title": "Standard Penetration Test",
+      "printed_page": 96,
+      "source_pdf_page": 103,
+      "markdown": "### 8.3 STANDARD PENETRATION TEST\n\nSPT is commonly carried out to assess the degree of compactness and consistency of granular soils. In general, the N values refer to the uncorrected N values before carrying out the foundation works. The use of SPT results for cohesive soils, such as marine deposits, alluvial deposits, etc. should be treated with extreme caution. Details of the equipment and procedures for carrying out the tests are given in GEOGUIDE 2."
+    },
+    {
+      "clause": "8.4",
+      "title": "Compression Loading Test",
+      "printed_page": 96,
+      "source_pdf_page": 103,
+      "markdown": "### 8.4 COMPRESSION LOADING TEST\n\nImposition of test loads to a pile is considered to be most realistic in reflecting the performance of the pile and is widely used for driven piles, small diameter bored piles, socketed piles and mini-piles.\n\nWhen carrying out loading tests:\n\n- (a) The pile should be load tested at the cut-off level with no allowance for group effect;\n- (b) The test load should be applied in two equal increments up to the design pile capacity under working load, then released and reapplied in four equal increments up to twice the design pile capacity under working load and maintained for at least 72 hours before removal;\n- (c) The load at each incremental stage should be held for a period of ten minutes or longer until the rate of settlement is less than 0.05 mm in ten minutes;\n- (d) The test load should be measured by a calibrated load measuring device and also by a calibrated pressure gauge in the hydraulic system;\n- (e) For piles resisting axial load with a diameter or least lateral dimension not exceeding 750 mm, the test is deemed to be unsatisfactory if any of the following conditions apply:\n  - (i) the maximum settlement at the head of the pile during the test exceeds the value\n\n$$\\frac{2WL}{AE} + \\frac{D}{120} + 4\\text{mm},$$\n\nwhere W is the design pile capacity under working load in kN;\n\nL is the length of the pile in mm (For piles with rock sockets, L should be measured to the centre of the rock socket. For piles without rock sockets, L may generally be measured to the pile toe;\n\nA is the cross-section area of the pile in mm<sup>2</sup>;\n\nE is the Young's modulus for the material of the pile in kN/mm<sup>2</sup>; and\n\nD is the least lateral dimension of the pile in mm;"
+    },
+    {
+      "clause": "8.5",
+      "title": "Proof Core-Drilling Test",
+      "printed_page": 97,
+      "source_pdf_page": 104,
+      "markdown": "## 8.5 PROOF CORE-DRILLING TEST\n\nProof core-drilling test is commonly used in large diameter bored piles, barrettes and the like which can reveal the soundness of the founding rock, concrete and the interface between the pile and the rock. When carrying out proof core-drilling tests:\n\n- (a) the core-drilling should be taken through the full depth of the pile and carried down to a distance of at least half a diameter of the pile base, or 600 mm, whichever is larger, into the ground upon which the pile is founded;\n- (b) the completed core so taken should be properly marked and arranged in proper order for inspection;\n- (c) the concrete cores should not show evidence of honeycombing or segregation of individual constituent materials;\n- (d) any rock core obtained should be visually examined to conform with the required rock material specified in the design;\n- (e) the cores should also be examined to confirm the adequacy of the interface between the concrete and rock; and\n- (f) where piles are founded on soil, standard penetration tests should be carried out at a maximum interval of 1.5 m from the pile founding level down to a distance of at least three times the diameter of the pile base, or 5 m, whichever is larger, to verify the required soil strength."
+    },
+    {
+      "clause": "8.6",
+      "title": "Sonic Logging",
+      "printed_page": 97,
+      "source_pdf_page": 104,
+      "markdown": "## 8.6 SONIC LOGGING\n\nSonic logging is one of the most commonly used non-destructive pile integrity tests for cast-in-place concrete piles, diaphragm walls and barrettes. It is based on the measurement of the propagation time of a sonic transmission between two"
+    },
+    {
+      "clause": "8.7",
+      "title": "Sonic Echo Test",
+      "printed_page": 98,
+      "source_pdf_page": 105,
+      "markdown": "## **8.7 SONIC ECHO TEST**\n\nThis is a rapid test carried out at the pile top. A sonic wave is generated at the pile head, e.g. by striking the pile head with a hand-held hammer. The wave travels down the pile and is reflected back up the pile from the pile toe. Any defect in the length of the pile may cause intermediate echo being recorded. With an assumed propagation velocity for the sonic wave, the length of the pile and the location of the defect can be determined.\n\nThe test may be used for checking the continuity of concrete and steel bearing piles.\n\nThe test should be carried out at least seven days after casting of concrete so that accurate propagation velocity can be applied.\n\nThe test should not be used beyond its limitations which include the following:\n\n- (a) it is not suitable for piles with joints;\n- (b) it is sensitive to small bulbs or necks in the pile;\n- (c) the length to diameter ratio of the pile should not exceed 30 for accurate measurement;\n- (d) ground vibration due to other construction operation could affect the signals;\n- (e) response can be highly distorted for anomalies near the pile head; and\n- (f) diagonal cracks or change in concrete quality may not be easily identified from the test results."
+    },
+    {
+      "clause": "8.8",
+      "title": "Vibration Test",
+      "printed_page": 98,
+      "source_pdf_page": 105,
+      "markdown": "## **8.8 VIBRATION TEST**\n\nThis is also a rapid test carried out at the pile top. A force of constant amplitude over a broad frequency band, preferably from 0 to 5000 Hz, is applied, and the velocity in relation to this applied force is measured simultaneously, at the pile head. The applied force may be generated from an electro-dynamic vibrator or a small hand-held hammer fitted with an internal load cell. The velocity at the pile head is measured"
+    },
+    {
+      "clause": "8.9",
+      "title": "Dynamic Load Test for Driven Piles",
+      "printed_page": 99,
+      "source_pdf_page": 106,
+      "markdown": "## 8.9 DYNAMIC LOAD TEST FOR DRIVEN PILES\n\nThe dynamic load test, which measures the dynamic response at the pile top resulting from the impact of a driving hammer, can be used to estimate pile capacity, monitor hammer performance, energy transfer at impact and pile-driving stresses, and detect any defect in the pile. The pile capacity can be estimated from the data of the dynamic load test by appropriate methods based on wave propagation theory. Methods such as those with oversimplified assumptions and parameters used for the analysis may not be considered as appropriate methods.\n\nDynamic load test reveals the mobilized pile capacity at the time of testing. A hammer with a capacity large enough to cause sufficient pile movement such that the resistance of the pile can be fully mobilized should be used to generate a stress wave. A minimum pile penetration of about 2 to 3 mm per blow should be achieved where practicable, particularly if it is required to predict the pile capacity.\n\nIn view of the limited studies and results on correlation between dynamic load test and static load test in Hong Kong, dynamic load test has not been generally accepted as proof test for foundations under normal circumstances. It may however be used for the following purposes:\n\n- (a) to detect pile defects;\n- (b) to identify defective piles within a large group of piles;\n- (c) to differentiate piles with lower pile capacities within a large group of piles;\n- (d) to monitor the driving resistance and driving stresses in the pile; and\n- (e) to check the consistency of hammer efficiency."
+    },
+    {
+      "clause": "8.10",
+      "title": "Tension Loading Test",
+      "printed_page": 100,
+      "source_pdf_page": 107,
+      "markdown": "## 8.10 TENSION LOADING TEST\n\nIf reaction piles are used for tension test, to minimize interaction effects, the reaction piles should be located as far from the test pile as practicable. The reaction pile should be at least three test pile diameters, or 2 m, whichever is larger, from the test pile, measured centre to centre. Where the spacing is less than this, corrections for possible pile interaction should be made. The test may follow the following procedures:\n\n- (a) The pile should be load tested at the cut-off level with no allowance for group effect;\n- (b) The test load should be applied in two equal increments up to the design pile capacity under working load, then released and reapplied in four equal increments up to twice the design pile capacity under working load and maintained for at least 72 hours before removal;\n- (c) The load at each incremental stage should be held for a period of ten minutes or longer until the rate of extension is less than 0.05 mm in ten minutes; and\n- (d) The test load should be measured by a calibrated load measuring device and also by a calibrated pressure gauge in the hydraulic system.\n\nThe test should be deemed to be unsatisfactory if any one of the following conditions applies:\n\n- (a) the maximum extension at the head of the pile during the test exceeds the elastic extension plus 4 mm;\n- (b) when the rate of recovery after the removal of the maximum test load is less than 0.1 mm/hour observed in a period of not less than 15 minutes, the residual extension at the head of the pile exceeds the greater of 4 mm and 25% of the maximum pile head extension during the test; or\n- (c) there is structural failure in the test pile.\n\nIn calculating the elastic axial extension of mini-pile or socketed steel H-pile, the following criteria should be adopted:\n\n- (a) the contribution from cement grout should be ignored; and\n- (b) the contribution from steel casing if used should be considered.\n\nThe maximum test load should not result in the test pile or anchor being stressed beyond the yield stress. Where the design uplift capacity of the test pile is based on bond and tensile stresses which are taken as 50% of the corresponding values in"
+    },
+    {
+      "clause": "8.11",
+      "title": "Lateral Load Test",
+      "printed_page": 101,
+      "source_pdf_page": 108,
+      "markdown": "## **8.11 LATERAL LOAD TEST**\n\nLateral load test of piles may be carried out by:\n\n- (a) jacking between two piles; or\n- (b) jacking a test pile against a suitable structure that could provide the reaction for the jacking force.\n\nIn the first method, both piles can be considered as test piles. It may be necessary to demonstrate that the spacing of the piles is adequate. In the second method, the suitable structure may be a temporary 'deadman' or weighted platform formed for the test.\n\nLateral load tests are usually carried out for the purpose of verifying the design parameters and method. In such case, accurate information of the strata along the full depth of the pile is required and analysis should be carried out prior to testing to predict the behaviour of the pile under the test load. The performance of the pile on site should be measured and compared with the predicted behaviour.\n\nThe test should be carried out at the cut-off level of piles and may follow the procedures in Table 8.1 When carrying out lateral load tests, measurements should be taken to record the lateral displacement at the pile heads of the test piles."
+    },
+    {
+      "clause": "8.12",
+      "title": "Ultrasonic Echo Sounder Test",
+      "printed_page": 103,
+      "source_pdf_page": 110,
+      "markdown": "## 8.12 ULTRASONIC ECHO SOUNDER TEST\n\nThe ultrasonic echo sounder test may be used to measure the profile of the excavation for a pile shaft, such as the dimensions of bell-outs of bored piles. It is also used to check verticality of excavation where accurate construction is required.\n\nThe equipment consists of a sensor, a winch and a recorder. In the test, the sensor is lowered into the excavation to measure the distance between the four faces of the sensor and the wall of the excavation. The sensor is prevented from twisting when it is lowered into the excavation, usually by means of guide wires. The recorder will then produce a graphical record of the measured distances against depth.\n\nThe sensor measures distances by emitting an ultrasonic pulse, and measuring the time taken for an echo to return to the sensor. The velocity of the pulse is dependent on the density of the fluid used in the excavation. In-situ calibration of the sensor under the excavation fluid is normally required. Bubbles and sediment suspended in the excavation fluid can affect the accuracy of the measurement. Therefore, the excavation fluid should be left to stand after excavation to allow bubbles entrained in the fluid to dissipate and any suspended sediment to settle.\n\nThe equipment should not be used beyond its limitations, such as the dimensions that it can measure, the range of density of the excavation fluid that it may be used."
+    }
+  ]
+}

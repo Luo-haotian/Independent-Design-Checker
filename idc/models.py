@@ -30,6 +30,23 @@ class ReviewStatus(str, Enum):
     REJECTED = "REJECTED"
 
 
+class PageRole(str, Enum):
+    COVER = "cover"
+    TOC = "toc"
+    CALCULATION = "calculation"
+    DRAWING = "drawing"
+    SUPPORTING = "supporting"
+    UNKNOWN = "unknown"
+
+
+class CommentAssessment(str, Enum):
+    ACCEPTABLE = "ACCEPTABLE"
+    REQUIRES_CORRECTION = "REQUIRES_CORRECTION"
+    INFORMATION_REQUIRED = "INFORMATION_REQUIRED"
+    PENDING_CONFIRMATION = "PENDING_CONFIRMATION"
+    NOT_ASSESSED = "NOT_ASSESSED"
+
+
 @dataclass(slots=True)
 class SourceEvidence:
     source_file: str
@@ -37,6 +54,55 @@ class SourceEvidence:
     quote: str = ""
     extraction_method: str = "text"
     confidence: float = 1.0
+
+
+@dataclass(slots=True)
+class PageClassification:
+    page: int
+    role: PageRole
+    title: str = ""
+    confidence: float = 0.0
+    reasons: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class NormalizedSubmission:
+    review_profile: str
+    pages: list[PageClassification] = field(default_factory=list)
+    calculation_pages: list[int] = field(default_factory=list)
+    drawing_pages: list[int] = field(default_factory=list)
+    supporting_pages: list[int] = field(default_factory=list)
+    uncertain_pages: list[int] = field(default_factory=list)
+    reviewed_pages: list[int] = field(default_factory=list)
+    deferred_pages: list[int] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
+class CodeEvidence:
+    code_name: str
+    edition: str
+    clause: str
+    printed_page: int | None = None
+    source_pdf_page: int | None = None
+    excerpt: str = ""
+    verified: bool = False
+    edition_confirmed: bool = False
+    note: str = ""
+
+
+@dataclass(slots=True)
+class ReviewComment:
+    comment_no: int
+    location: str
+    submitted_content: str
+    basis_and_comment: str
+    required_action: str
+    assessment: CommentAssessment
+    confidence: float
+    note: str = ""
+    evidence: list[SourceEvidence] = field(default_factory=list)
+    code_evidence: list[CodeEvidence] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -109,6 +175,11 @@ class ReviewRun:
     unprocessed_pages: list[int] = field(default_factory=list)
     facts: list[ExtractedFact] = field(default_factory=list)
     checks: list[CheckResult] = field(default_factory=list)
+    submission_structure: NormalizedSubmission | None = None
+    comments: list[ReviewComment] = field(default_factory=list)
+    code_evidence: list[CodeEvidence] = field(default_factory=list)
+    artifact_manifest: dict[str, str] = field(default_factory=dict)
+    executive_summary: str = ""
     ai_observations: list[str] = field(default_factory=list)
     audit_events: list[AuditEvent] = field(default_factory=list)
     created_at: str = field(default_factory=utc_now)

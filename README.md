@@ -1,6 +1,6 @@
 # Independent Design Checker
 
-IDC v0.17 is an evidence-aware structural review application. Hong Kong is the default review context, while the codes declared by the submitted report take priority. A project may declare several HK, BS, EN, GB, or other standards; IDC records that complete basis and never substitutes one concrete code merely because the jurisdiction is Hong Kong. The application preserves the existing CLI, OCR, desktop GUI, server, QA-record batch, Grok/Kimi narrative review, Word report, Docker, and PyInstaller workflows.
+IDC v0.17 is an evidence-aware, calculation-first structural review application. It classifies the submitted PDF before review, focuses engineering checking on calculation and supporting pages, records drawings for later development, and delivers actionable reviewer comments separately from technical maintenance records. Hong Kong is the default review context, while the codes declared by the submitted report take priority. A project may declare several HK, BS, EN, GB, or other standards; IDC records that complete basis and never substitutes one concrete code merely because the jurisdiction is Hong Kong. The application preserves the existing CLI, OCR, desktop GUI, server, QA-record batch, Grok/Kimi narrative review, Word report, Docker, and PyInstaller workflows.
 
 ## Trust Model
 

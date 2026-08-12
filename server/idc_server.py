@@ -29,7 +29,9 @@ from config import (  # noqa: E402
     is_provider_configured,
 )
 from idc.persistence import ReviewStore  # noqa: E402
+from idc.profiles import REVIEW_PROFILES  # noqa: E402
 from idc.retention import cleanup_expired_files  # noqa: E402
+from idc.submission import format_page_ranges  # noqa: E402
 from main_ocr import TESSERACT_AVAILABLE, CheckerOCR  # noqa: E402
 from qa_records import run_qa_batch  # noqa: E402
 
@@ -85,6 +87,7 @@ header { background: #ffffff; border-bottom: 1px solid var(--line); }
 .brand { font-weight: 700; font-size: 18px; color: var(--brand); }
 .status-pill { border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; color: var(--muted); font-size: 13px; background: #fff; }
 main { max-width: 980px; margin: 0 auto; padding: 28px 24px 52px; }
+.result-main { max-width: 1200px; }
 .layout { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 20px; align-items: start; }
 .panel { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 22px; }
 h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: 0; }
@@ -98,8 +101,10 @@ button, .button { display: inline-flex; align-items: center; justify-content: ce
 button:hover, .button:hover { background: var(--brand-dark); }
 .button.secondary { background: #eef3f9; color: var(--brand); border: 1px solid #c8d7e8; }
 .meta { display: grid; gap: 10px; margin-top: 12px; }
-.meta div { display: flex; justify-content: space-between; gap: 14px; border-bottom: 1px solid #eef1f5; padding-bottom: 8px; font-size: 14px; }
+.meta div { display: grid; grid-template-columns: minmax(90px, auto) minmax(0, 1fr); align-items: start; gap: 14px; border-bottom: 1px solid #eef1f5; padding-bottom: 8px; font-size: 14px; }
 .meta span:first-child { color: var(--muted); }
+.meta strong { min-width: 0; text-align: right; overflow-wrap: anywhere; word-break: break-word; }
+.settings-path { font: 600 12px/1.4 Consolas, "Courier New", monospace; }
 .status { font-weight: 700; }
 .queued { color: var(--warn); }
 .running { color: var(--brand); }
@@ -108,9 +113,33 @@ button:hover, .button:hover { background: var(--brand-dark); }
 .log { white-space: pre-wrap; background: #111827; color: #e5e7eb; border-radius: 8px; padding: 14px; min-height: 180px; overflow: auto; font: 13px/1.5 Consolas, monospace; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
 .note { font-size: 13px; color: var(--muted); }
+.profile-card { margin-top: 20px; padding: 16px; border: 1px solid #c8d7e8; border-radius: 8px; background: #f7faff; }
+.profile-card h3 { margin: 0 0 7px; font-size: 15px; color: var(--brand); }
+.profile-card p { margin-bottom: 9px; font-size: 13px; }
+.profile-card ul { margin: 6px 0 0; padding-left: 19px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.comment-preview { margin-top: 24px; }
+.comment-preview-header { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin-bottom: 10px; }
+.comment-preview-header h2 { margin-bottom: 2px; }
+.comment-preview-header p { margin: 0; font-size: 13px; }
+.comment-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+.comment-table { width: 100%; min-width: 900px; border-collapse: collapse; table-layout: fixed; font-size: 13px; line-height: 1.42; }
+.comment-table th { padding: 10px; background: var(--brand); color: #fff; text-align: left; vertical-align: top; }
+.comment-table td { padding: 11px 10px; border-top: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; word-break: break-word; }
+.comment-table tbody tr:nth-child(even) { background: #f8fafc; }
+.comment-table .comment-no { text-align: center; font-weight: 700; }
+.comment-table .comment-note { margin-top: 7px; color: var(--muted); font-size: 12px; }
+.assessment { display: inline-block; margin-top: 7px; border-radius: 999px; padding: 3px 7px; font-size: 11px; font-weight: 700; letter-spacing: .01em; }
+.assessment-requires-correction { background: #fee4e2; color: var(--bad); }
+.assessment-information-required { background: #fff3d6; color: #7a4b00; }
+.assessment-pending-confirmation { background: #eaf0f8; color: var(--brand); }
+.confidence { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; }
+.empty-comments { border: 1px dashed var(--line); border-radius: 8px; padding: 16px; background: #f8fafc; color: var(--muted); }
 @media (max-width: 780px) {
   .layout, .row { grid-template-columns: 1fr; }
   main, .topbar { padding-left: 16px; padding-right: 16px; }
+  .meta div { grid-template-columns: 1fr; gap: 4px; }
+  .meta strong { text-align: left; }
+  .comment-preview-header { display: block; }
 }
 </style>
 """
@@ -233,6 +262,7 @@ def _run_job(job_id: str) -> None:
             if checker.last_review_run:
                 store.save_run(checker.last_review_run)
             elapsed = round(time.time() - started, 1)
+            structure = checker.last_review_run.submission_structure if checker.last_review_run else None
             _update_job(
                 job_id,
                 status="completed",
@@ -241,6 +271,11 @@ def _run_job(job_id: str) -> None:
                 elapsed_seconds=elapsed,
                 review_run_id=checker.last_review_run.run_id if checker.last_review_run else "",
                 json_path=checker.last_json_file or "",
+                standard_package_path=checker.last_standard_package_file or "",
+                calculation_pages=format_page_ranges(structure.calculation_pages) if structure else "None",
+                drawing_pages=format_page_ranges(structure.drawing_pages) if structure else "None",
+                supporting_pages=format_page_ranges(structure.supporting_pages) if structure else "None",
+                uncertain_pages=format_page_ranges(structure.uncertain_pages) if structure else "None",
             )
             _append_log(job_id, f"Report completed in {elapsed} seconds.")
             _append_log(job_id, f"Output: {checker.last_report_file}")
@@ -388,12 +423,33 @@ def index():
         <div class="meta">
           <div><span>Max upload</span><strong>{{ max_upload_mb }} MB</strong></div>
           <div><span>Workers</span><strong>{{ workers }}</strong></div>
-          <div><span>Uploads</span><strong>{{ upload_dir }}</strong></div>
-          <div><span>Reports</span><strong>{{ report_dir }}</strong></div>
+          <div><span>Uploads</span><strong class="settings-path">{{ upload_dir }}</strong></div>
+          <div><span>Reports</span><strong class="settings-path">{{ report_dir }}</strong></div>
+        </div>
+        <div class="profile-card" id="review-profile-card">
+          <h3 id="profile-title">Review package</h3>
+          <p id="profile-purpose"></p>
+          <p><strong>Expected package</strong><br><span id="profile-package"></span></p>
+          <strong style="font-size:13px">Review focus</strong>
+          <ul id="profile-focus"></ul>
+          <p class="note" style="margin-top:10px">Drawing pages are identified but are not assessed in v0.17.</p>
         </div>
       </aside>
     </div>
   </main>
+  <script>
+    const reviewProfiles = {{ review_profiles|tojson }};
+    const reviewType = document.getElementById('struct_type');
+    function renderProfile() {
+      const profile = reviewProfiles[reviewType.value];
+      document.getElementById('profile-title').textContent = profile.label + ' review mode';
+      document.getElementById('profile-purpose').textContent = profile.purpose;
+      document.getElementById('profile-package').textContent = profile.expected_package;
+      document.getElementById('profile-focus').innerHTML = profile.review_focus.map(item => '<li>' + item + '</li>').join('');
+    }
+    reviewType.addEventListener('change', renderProfile);
+    renderProfile();
+  </script>
 </body>
 </html>
         """,
@@ -411,6 +467,15 @@ def index():
         provider_labels={provider: get_provider_label(provider) for provider in VALID_API_PROVIDERS},
         token_query=_safe_token_query(),
         csrf_token=_csrf_token(),
+        review_profiles={
+            key: {
+                "label": value.label,
+                "purpose": value.purpose,
+                "expected_package": value.expected_package,
+                "review_focus": list(value.review_focus),
+            }
+            for key, value in REVIEW_PROFILES.items()
+        },
     )
 
 
@@ -566,6 +631,11 @@ def create_job():
         "completed_at": "",
         "elapsed_seconds": "",
         "report_path": "",
+        "standard_package_path": "",
+        "calculation_pages": "",
+        "drawing_pages": "",
+        "supporting_pages": "",
+        "uncertain_pages": "",
         "log": ["Upload received. Waiting for worker."],
     }
     with jobs_lock:
@@ -713,6 +783,28 @@ def qa_job_status(job_id: str):
     )
 
 
+def _comment_preview(payload: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """Prepare the same actionable comment set shown in the human Word report."""
+    actionable = {"REQUIRES_CORRECTION", "INFORMATION_REQUIRED", "PENDING_CONFIRMATION"}
+    preview: list[dict[str, Any]] = []
+    for raw in (payload or {}).get("comments", []):
+        assessment = str(raw.get("assessment", "")).upper()
+        if assessment not in actionable:
+            continue
+        try:
+            confidence = min(1.0, max(0.0, float(raw.get("confidence", 0.0))))
+        except (TypeError, ValueError):
+            confidence = 0.0
+        item = dict(raw)
+        item["assessment"] = assessment
+        item["assessment_label"] = assessment.replace("_", " ").title()
+        item["assessment_class"] = assessment.lower().replace("_", "-")
+        item["confidence_label"] = "High" if confidence >= 0.8 else "Medium" if confidence >= 0.5 else "Low"
+        item["confidence_percent"] = round(confidence * 100)
+        preview.append(item)
+    return preview
+
+
 @app.get("/jobs/<job_id>")
 def job_status(job_id: str):
     _require_token()
@@ -722,6 +814,9 @@ def job_status(job_id: str):
 
     token_query = _safe_token_query()
     download_url = url_for("download_report", job_id=job_id) + token_query if job.get("report_path") else ""
+    package_url = url_for("download_standard_package", job_id=job_id) + token_query if job.get("standard_package_path") else ""
+    review_payload = store.get_payload(job["review_run_id"]) if job.get("review_run_id") else None
+    preview_comments = _comment_preview(review_payload)
     refresh_tag = "" if job["status"] in {"completed", "failed"} else '<meta http-equiv="refresh" content="5">'
     return render_template_string(
         """
@@ -741,7 +836,7 @@ def job_status(job_id: str):
       <div class="status-pill">Job {{ job.id }}</div>
     </div>
   </header>
-  <main>
+  <main class="result-main">
     <section class="panel">
       <h1>{{ job.filename }}</h1>
       <p>Status: <span class="status {{ job.status }}">{{ job.status|upper }}</span></p>
@@ -750,14 +845,65 @@ def job_status(job_id: str):
         <div><span>OCR mode</span><strong>{{ job.ocr_mode }}</strong></div>
         <div><span>API provider</span><strong>{{ provider_label }}</strong></div>
         <div><span>Model</span><strong>{{ job.model or default_model }}</strong></div>
+        <div><span>Calculation pages reviewed</span><strong>{{ job.calculation_pages or "-" }}</strong></div>
+        <div><span>Supporting pages used</span><strong>{{ job.supporting_pages or "-" }}</strong></div>
+        <div><span>Drawing pages (not assessed)</span><strong>{{ job.drawing_pages or "-" }}</strong></div>
+        <div><span>Pages needing confirmation</span><strong>{{ job.uncertain_pages or "-" }}</strong></div>
         <div><span>Created</span><strong>{{ job.created_at }}</strong></div>
         <div><span>Started</span><strong>{{ job.started_at or "-" }}</strong></div>
         <div><span>Completed</span><strong>{{ job.completed_at or "-" }}</strong></div>
       </div>
+      {% if job.review_run_id %}
+      <div class="comment-preview">
+        <div class="comment-preview-header">
+          <div>
+            <h2>IDC Review Comments</h2>
+            <p>Review the actionable comments below before downloading the formal Word report.</p>
+          </div>
+          <span class="status-pill">{{ preview_comments|length }} actionable</span>
+        </div>
+        {% if preview_comments %}
+        <div class="comment-table-wrap" role="region" aria-label="IDC review comments" tabindex="0">
+          <table class="comment-table">
+            <colgroup>
+              <col style="width:6%"><col style="width:16%"><col style="width:22%"><col style="width:30%"><col style="width:26%">
+            </colgroup>
+            <thead><tr>
+              <th>No.</th><th>Where</th><th>Submitted content / issue</th><th>Basis and IDC comment</th><th>Required action / assessment / confidence</th>
+            </tr></thead>
+            <tbody>
+            {% for comment in preview_comments %}
+              <tr>
+                <td class="comment-no">{{ comment.comment_no }}</td>
+                <td>{{ comment.location or "Location not confirmed" }}</td>
+                <td>{{ comment.submitted_content or "—" }}</td>
+                <td>
+                  {{ comment.basis_and_comment or "—" }}
+                  {% if comment.note %}<div class="comment-note"><strong>Note:</strong> {{ comment.note }}</div>{% endif %}
+                </td>
+                <td>
+                  {{ comment.required_action or "Provide clarification for review." }}<br>
+                  <span class="assessment assessment-{{ comment.assessment_class }}">{{ comment.assessment_label }}</span>
+                  <span class="confidence">Evidence confidence: {{ comment.confidence_label }} ({{ comment.confidence_percent }}%)</span>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-comments">No actionable or pending comments were produced for this review run.</div>
+        {% endif %}
+        <p class="note" style="margin-top:10px">Confidence describes the reliability of the available evidence; it is not a structural safety rating.</p>
+      </div>
+      {% endif %}
       <div class="actions">
         <a class="button secondary" href="/{{ token_query }}">New Upload</a>
         {% if download_url %}
-        <a class="button" href="{{ download_url }}">Download Report</a>
+        <a class="button" href="{{ download_url }}">Download Word Report</a>
+        {% endif %}
+        {% if package_url %}
+        <a class="button secondary" href="{{ package_url }}">Download Standard Package</a>
         {% endif %}
         {% if job.review_run_id %}
         <a class="button secondary" href="{{ url_for('structured_results', job_id=job.id) }}">Download Structured JSON</a>
@@ -788,6 +934,8 @@ def job_status(job_id: str):
         job=job,
         log_text="\n".join(job["log"]),
         download_url=download_url,
+        package_url=package_url,
+        preview_comments=preview_comments,
         token_query=token_query,
         provider_label=get_provider_label(job.get("provider")),
         default_model=get_default_model(job.get("provider")),
@@ -807,6 +955,18 @@ def download_report(job_id: str):
     if not report_path.exists() or REPORT_DIR not in report_path.parents:
         abort(404)
     return send_file(report_path, as_attachment=True)
+
+
+@app.get("/jobs/<job_id>/standard-package")
+def download_standard_package(job_id: str):
+    _require_token()
+    job = _job_snapshot(job_id)
+    if not job or not job.get("standard_package_path"):
+        abort(404)
+    package_path = Path(job["standard_package_path"]).resolve()
+    if not package_path.is_file() or REPORT_DIR not in package_path.parents or package_path.suffix.lower() != ".zip":
+        abort(404)
+    return send_file(package_path, as_attachment=True)
 
 
 @app.get("/jobs/<job_id>/results.json")

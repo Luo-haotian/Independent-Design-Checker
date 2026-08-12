@@ -52,6 +52,12 @@ IDC v0.17 adds page-level evidence, report-declared multi-code basis resolution,
   - Release candidates: `C:\Users\11131\Documents\IDC-Archive\2026-08-12-v0.17-release-candidates`, 205.45 MiB. `release-candidate-inventory.json` records the four executable hashes, source commit, test evidence, embedded profiles, and limitations.
   - Cleanup: intermediate build/spec output, the isolated build environment, and superseded concrete-default/deprecated-import candidates were removed after verification.
   - Source commit: `dbca38c`.
+- M08 - Added the calculation-first submission and human-report workflow.
+  - Submission pages are classified as cover, contents, calculation, drawing, supporting or unknown before checking; drawing pages are deferred in v0.17.
+  - Calculation/supporting/uncertain candidates are normalized and reviewed through shared Building or Temporary profiles, then merged into one structured comment set.
+  - Local text-only Concrete, Foundation and Steel clause indexes validate candidate citations without allowing an HK-jurisdiction fallback.
+  - The human Word report now contains review scope, executive summary, actionable comment schedule and overall notes; maintenance provenance is delivered in the Standard Package ZIP.
+  - The Server shows review-mode guidance and classified page ranges, and provides both report and standard-package downloads.
 
 ## In Progress
 

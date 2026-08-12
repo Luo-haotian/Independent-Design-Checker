@@ -10,7 +10,78 @@ from .beam_checks import BeamCheckInput, load_beam_inputs, run_beam_checks
 from .code_basis import AUTO_CODE_PACK_ID, resolve_code_basis
 from .facts import load_reviewed_facts, reviewed_input_kind
 from .ingestion import DocumentExtraction
-from .models import CheckResult, CheckStatus, ReviewRun, ReviewStatus
+from .models import (
+    CheckResult,
+    CheckStatus,
+    CommentAssessment,
+    NormalizedSubmission,
+    ReviewComment,
+    ReviewRun,
+    ReviewStatus,
+)
+
+
+def _append_check_comments(run: ReviewRun) -> None:
+    for check in run.checks:
+        if check.status in {CheckStatus.PASS, CheckStatus.NOT_APPLICABLE}:
+            continue
+        if check.status == CheckStatus.FAIL:
+            assessment = CommentAssessment.REQUIRES_CORRECTION
+        elif check.status == CheckStatus.CONFLICT:
+            assessment = CommentAssessment.PENDING_CONFIRMATION
+        elif check.status == CheckStatus.OUT_OF_SCOPE:
+            assessment = CommentAssessment.NOT_ASSESSED
+        else:
+            assessment = CommentAssessment.INFORMATION_REQUIRED
+        pages = sorted({item.page for item in check.evidence if item.page is not None})
+        location = f"PDF page {', '.join(map(str, pages))}" if pages else check.title
+        run.comments.append(
+            ReviewComment(
+                comment_no=len(run.comments) + 1,
+                location=location,
+                submitted_content=check.message or check.title,
+                basis_and_comment=(
+                    f"Structured check {check.rule_id}: {check.formula}. "
+                    f"References recorded: {', '.join(check.citations) or 'none'}."
+                ),
+                required_action="Resolve the structured check result and provide page evidence before approval.",
+                assessment=assessment,
+                confidence=min((item.confidence for item in check.evidence), default=0.5),
+                note="; ".join(check.limitations),
+                evidence=list(check.evidence),
+            )
+        )
+
+
+def _append_scope_comments(run: ReviewRun) -> None:
+    structure = run.submission_structure
+    if structure and structure.uncertain_pages:
+        pages = ", ".join(map(str, structure.uncertain_pages))
+        run.comments.append(
+            ReviewComment(
+                comment_no=len(run.comments) + 1,
+                location=f"PDF page(s) {pages}",
+                submitted_content="The page role could not be classified with sufficient confidence.",
+                basis_and_comment="The page remains in the processing record but cannot support an acceptable or not acceptable conclusion until its role is confirmed.",
+                required_action="Confirm whether the page belongs to the calculation, supporting information, drawing or administrative package.",
+                assessment=CommentAssessment.PENDING_CONFIRMATION,
+                confidence=0.4,
+                note="Page-classification uncertainty.",
+            )
+        )
+    if not run.code_basis.declared_codes:
+        run.comments.append(
+            ReviewComment(
+                comment_no=len(run.comments) + 1,
+                location="Calculation design basis",
+                submitted_content="No explicit applicable structural design code was identified in the submitted calculation package.",
+                basis_and_comment="IDC does not adopt a Hong Kong code solely from the selected jurisdiction.",
+                required_action="State the applicable design code, edition/amendment status and clauses used for the submitted formulas and design checks.",
+                assessment=CommentAssessment.INFORMATION_REQUIRED,
+                confidence=0.9,
+                note="Missing report-declared code support.",
+            )
+        )
 
 
 def create_review_run(
@@ -21,6 +92,9 @@ def create_review_run(
     code_as_of: str | None = None,
     input_overrides: str | Path | None = None,
     ai_observations: list[str] | None = None,
+    submission_structure: NormalizedSubmission | None = None,
+    comments: list[ReviewComment] | None = None,
+    executive_summary: str = "",
     provider: str | None = None,
     model: str | None = None,
 ) -> ReviewRun:
@@ -40,6 +114,9 @@ def create_review_run(
         processed_pages=extraction.processed_pages,
         unprocessed_pages=extraction.unprocessed_pages,
         ai_observations=list(ai_observations or []),
+        submission_structure=submission_structure,
+        comments=list(comments or []),
+        executive_summary=executive_summary,
         model_provider=provider,
         model_name=model,
     )
@@ -61,6 +138,8 @@ def create_review_run(
                 )
             )
             run.status = ReviewStatus.READY_FOR_REVIEW
+            _append_check_comments(run)
+            _append_scope_comments(run)
             return run
         beams: list[BeamCheckInput] = load_beam_inputs(input_overrides, extraction.source_path)
         for beam in beams:
@@ -82,6 +161,8 @@ def create_review_run(
                     )
                 )
     run.status = ReviewStatus.READY_FOR_REVIEW
+    _append_check_comments(run)
+    _append_scope_comments(run)
     return run
 
 
