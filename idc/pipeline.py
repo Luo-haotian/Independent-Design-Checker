@@ -76,7 +76,7 @@ def deterministic_summary(run: ReviewRun) -> str:
             "",
         ])
     else:
-        lines.extend(["## Structured Checks", "", "| Rule | Status | Demand | Capacity | Utilisation | Evidence pages |", "| --- | --- | ---: | ---: | ---: | --- |"]) 
+        lines.extend(["## Structured Checks", "", "| Rule | Status | Demand | Capacity | Utilisation | Evidence pages |", "| --- | --- | ---: | ---: | ---: | --- |"])
         for item in run.checks:
             pages = sorted({e.page for e in item.evidence if e.page is not None})
             utilisation = "" if item.utilisation is None else f"{item.utilisation:.3f}"

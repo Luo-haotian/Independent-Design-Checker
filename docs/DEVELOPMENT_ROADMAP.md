@@ -31,15 +31,20 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
   - Interfaces: CLI, OCR CLI, and both desktop GUIs accept a pinned code pack, reviewer-confirmed beam-fact JSON, JSON export, and the optional critic toggle.
   - Verification: sanitized pass/fail, missing-evidence, conflict, deep-beam, boundary, and JSON loader cases passed locally.
   - Engineering status: formulas and scope remain pending responsible structural engineer approval.
-  - Commit: recorded in the M04 milestone commit.
+  - Commit: `f45069c`.
+- M05 - Added SQLite run/fact/result/audit persistence, signed fact edits and decisions, 30-day raw-file retention, and server security controls.
+  - Security: access tokens are exchanged at login and held in an HTTP-only same-site session; URL/form token propagation was removed; mutating routes require CSRF tokens.
+  - Server: structured result download, fact-edit, and approval/rejection endpoints were added while preserving prior routes.
+  - Archive uploads: member count, member size, total expanded size, compression ratio, duplicate output name, and path containment are validated.
+  - Verification: restart persistence, audit history, required reviewer/reason, retention, traversal, duplicate-name, and ZIP-ratio cases passed locally.
+  - Commit: recorded in the M05 milestone commit.
 
 ## In Progress
 
-- M05 - Add persistent jobs, signed reviewer decisions, audit events, retention, and server security hardening.
+- M06 - Complete test/CI, packaging, deployment, documentation, and visual report verification.
 
 ## Planned
 
-- M06 - Extend CLI, GUI, server, JSON, and Word outputs; add tests, CI, packaging verification, and documentation.
 - M07 - Push the branch and open a draft pull request for review.
 
 ## Blocked

@@ -305,7 +305,13 @@ def write_operator_report(
 
 def collect_pdf_inputs(input_dir: Path, work_dir: Path) -> list[Path]:
     """Collect PDFs from uploaded files and safely extract ZIP packages."""
+    max_members = int(os.environ.get("IDC_ZIP_MAX_MEMBERS", "200"))
+    max_member_bytes = int(os.environ.get("IDC_ZIP_MAX_MEMBER_MB", "100")) * 1024 * 1024
+    max_total_bytes = int(os.environ.get("IDC_ZIP_MAX_TOTAL_MB", "500")) * 1024 * 1024
+    max_ratio = float(os.environ.get("IDC_ZIP_MAX_RATIO", "100"))
     pdfs: list[Path] = []
+    used_names: set[str] = set()
+    total_uncompressed = 0
     extract_dir = work_dir / "extracted"
     extract_dir.mkdir(parents=True, exist_ok=True)
 
@@ -317,16 +323,43 @@ def collect_pdf_inputs(input_dir: Path, work_dir: Path) -> list[Path]:
             continue
 
         with zipfile.ZipFile(path) as archive:
-            for member in archive.infolist():
+            members = [item for item in archive.infolist() if not item.is_dir()]
+            if len(members) > max_members:
+                raise ValueError(f"ZIP has more than {max_members} files: {path.name}")
+            for member in members:
                 member_name = member.filename.replace("\\", "/")
                 if member.is_dir() or not member_name.lower().endswith(".pdf"):
                     continue
+                if member.file_size > max_member_bytes:
+                    raise ValueError(f"ZIP member exceeds the size limit: {member_name}")
+                total_uncompressed += member.file_size
+                if total_uncompressed > max_total_bytes:
+                    raise ValueError("ZIP uncompressed PDF total exceeds the configured limit.")
+                if member.compress_size == 0 and member.file_size > 0:
+                    raise ValueError(f"Suspicious zero-size compressed member: {member_name}")
+                if member.compress_size and member.file_size / member.compress_size > max_ratio:
+                    raise ValueError(f"ZIP compression ratio exceeds the limit: {member_name}")
                 target_name = Path(member_name).name
                 if not target_name:
                     continue
-                target = extract_dir / f"{path.stem}_{target_name}"
+                safe_name = f"{path.stem}_{target_name}"
+                folded = safe_name.casefold()
+                if folded in used_names:
+                    raise ValueError(f"Duplicate archive output name: {safe_name}")
+                used_names.add(folded)
+                target = (extract_dir / safe_name).resolve()
+                if extract_dir.resolve() not in target.parents:
+                    raise ValueError(f"Unsafe ZIP member path: {member_name}")
+                written = 0
                 with archive.open(member) as source, open(target, "wb") as output:
-                    output.write(source.read())
+                    while True:
+                        block = source.read(1024 * 1024)
+                        if not block:
+                            break
+                        written += len(block)
+                        if written > max_member_bytes:
+                            raise ValueError(f"Expanded ZIP member exceeds the size limit: {member_name}")
+                        output.write(block)
                 pdfs.append(target)
 
     return sorted(pdfs, key=lambda item: item.name.lower())

@@ -37,6 +37,11 @@ server_uploads/
 server_reports/
 .venv-server/
 output/
+idc_data/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # Local review samples and temporary validation outputs
 report sample/

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import hmac
+import secrets
 import sys
 import threading
 import time
@@ -11,9 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlencode
-
-from flask import Flask, abort, redirect, render_template_string, request, send_file, url_for
+from flask import Flask, abort, jsonify, redirect, render_template_string, request, send_file, session, url_for
 from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -23,6 +23,8 @@ if str(BASE_DIR) not in sys.path:
 from main_ocr import CheckerOCR, TESSERACT_AVAILABLE  # noqa: E402
 from config import API_PROVIDER, available_providers, get_default_model, get_provider_label, is_provider_configured  # noqa: E402
 from qa_records import run_qa_batch  # noqa: E402
+from idc.persistence import ReviewStore  # noqa: E402
+from idc.retention import cleanup_expired_files  # noqa: E402
 
 UPLOAD_DIR = Path(os.environ.get("IDC_SERVER_UPLOAD_DIR", BASE_DIR / "server_uploads")).resolve()
 REPORT_DIR = Path(os.environ.get("IDC_SERVER_REPORT_DIR", BASE_DIR / "server_reports")).resolve()
@@ -33,13 +35,18 @@ VALID_STRUCT_TYPES = {"building", "temporary"}
 VALID_OCR_MODES = {"auto", "force", "no-ocr"}
 VALID_QA_EXTENSIONS = {".pdf", ".zip"}
 VALID_API_PROVIDERS = set(available_providers())
+DATA_DIR = Path(os.environ.get("IDC_DATA_DIR", BASE_DIR / "idc_data")).resolve()
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
-app.config["SECRET_KEY"] = os.environ.get("IDC_SERVER_SECRET_KEY", "idc-local-server")
+app.config["SECRET_KEY"] = os.environ.get("IDC_SERVER_SECRET_KEY") or secrets.token_hex(32)
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax")
+store = ReviewStore(DATA_DIR / "reviews.sqlite3")
+cleanup_expired_files([UPLOAD_DIR, REPORT_DIR])
 
 executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 jobs: dict[str, dict[str, Any]] = {}
@@ -99,24 +106,55 @@ button:hover, .button:hover { background: var(--brand-dark); }
 
 
 def _token_from_request() -> str:
-    return (
-        request.headers.get("X-IDC-Token")
-        or request.args.get("token")
-        or request.form.get("token")
-        or ""
-    ).strip()
+    return (request.headers.get("X-IDC-Token") or "").strip()
 
 
 def _require_token() -> None:
-    if ACCESS_TOKEN and _token_from_request() != ACCESS_TOKEN:
+    header_ok = bool(ACCESS_TOKEN and hmac.compare_digest(_token_from_request(), ACCESS_TOKEN))
+    if ACCESS_TOKEN and not (header_ok or session.get("idc_authenticated") is True):
         abort(403)
 
 
 def _safe_token_query() -> str:
-    token = _token_from_request()
-    if ACCESS_TOKEN and token:
-        return "?" + urlencode({"token": token})
     return ""
+
+
+@app.errorhandler(403)
+def access_denied(error):
+    if ACCESS_TOKEN and not request.headers.get("X-IDC-Token") and request.method == "GET":
+        return redirect(url_for("login"))
+    return error
+
+
+def _csrf_token() -> str:
+    token = session.get("csrf_token")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session["csrf_token"] = token
+    return token
+
+
+def _require_csrf() -> None:
+    expected = session.get("csrf_token", "")
+    supplied = request.headers.get("X-CSRF-Token") or request.form.get("csrf_token") or ""
+    if not expected or not hmac.compare_digest(str(expected), str(supplied)):
+        abort(403, "Invalid CSRF token.")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if not ACCESS_TOKEN:
+        session["idc_authenticated"] = True
+        return redirect(url_for("index"))
+    error = ""
+    if request.method == "POST":
+        if hmac.compare_digest(request.form.get("access_token", ""), ACCESS_TOKEN):
+            session.clear()
+            session["idc_authenticated"] = True
+            _csrf_token()
+            return redirect(url_for("index"))
+        error = "Invalid access token."
+    return render_template_string("""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>IDC Login</title>{{ css|safe }}</head><body><main><section class="panel"><h1>IDC Login</h1><p>{{ error }}</p><form method="post"><label>Access token</label><input name="access_token" type="password" required autocomplete="current-password"><div class="actions"><button type="submit">Sign in</button></div></form></section></main></body></html>""", css=BASE_CSS, error=error)
 
 
 def _job_snapshot(job_id: str) -> dict[str, Any] | None:
@@ -159,9 +197,18 @@ def _run_job(job_id: str) -> None:
             job["struct_type"],
             str(REPORT_DIR),
             force_ocr=force_ocr,
+            critic=job.get("critic", False),
+            critic_provider=job.get("critic_provider") or None,
+            jurisdiction=job.get("jurisdiction", "HK"),
+            code_pack=job.get("code_pack", "hk-bd-concrete-2020-amd-2024-04"),
+            code_as_of=job.get("code_as_of") or None,
+            export_json=True,
+            input_overrides=job.get("input_overrides") or None,
         )
 
         if success and checker.last_report_file and Path(checker.last_report_file).exists():
+            if checker.last_review_run:
+                store.save_run(checker.last_review_run)
             elapsed = round(time.time() - started, 1)
             _update_job(
                 job_id,
@@ -169,6 +216,8 @@ def _run_job(job_id: str) -> None:
                 report_path=checker.last_report_file,
                 completed_at=datetime.now().isoformat(timespec="seconds"),
                 elapsed_seconds=elapsed,
+                review_run_id=checker.last_review_run.run_id if checker.last_review_run else "",
+                json_path=checker.last_json_file or "",
             )
             _append_log(job_id, f"Report completed in {elapsed} seconds.")
             _append_log(job_id, f"Output: {checker.last_report_file}")
@@ -230,6 +279,7 @@ def healthz():
 
 @app.get("/")
 def index():
+    _require_token()
     tesseract_label = "ready" if TESSERACT_AVAILABLE else "not detected"
     api_label = f"{get_provider_label(API_PROVIDER)} {'configured' if is_provider_configured(API_PROVIDER) else 'missing'}"
     return render_template_string(
@@ -261,10 +311,7 @@ def index():
         <p style="color:#b42318;font-weight:700">The default API provider is not configured on the server. Ask IT to edit the project .env file before uploading.</p>
         {% endif %}
         <form action="{{ url_for('create_job') }}" method="post" enctype="multipart/form-data">
-          {% if token_required %}
-          <label for="token">Access token</label>
-          <input id="token" name="token" type="password" autocomplete="current-password" required>
-          {% endif %}
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
           <label for="pdf_file">PDF file</label>
           <input id="pdf_file" name="pdf_file" type="file" accept="application/pdf,.pdf" required>
           <div class="row">
@@ -284,6 +331,15 @@ def index():
               </select>
             </div>
           </div>
+          <div class="row">
+            <div><label for="jurisdiction">Jurisdiction</label><input id="jurisdiction" name="jurisdiction" value="HK" required></div>
+            <div><label for="code_pack">Code pack</label><input id="code_pack" name="code_pack" value="hk-bd-concrete-2020-amd-2024-04" required></div>
+          </div>
+          <div class="row">
+            <div><label for="code_as_of">Code basis date</label><input id="code_as_of" name="code_as_of" type="date"></div>
+            <div><label for="beam_facts">Reviewed beam facts (JSON, optional)</label><input id="beam_facts" name="beam_facts" type="file" accept="application/json,.json"></div>
+          </div>
+          <label><input style="width:auto;min-height:auto" name="critic" type="checkbox" value="1"> Enable non-authoritative critic pass</label>
           <div class="row">
             <div>
               <label for="provider">API provider</label>
@@ -331,6 +387,7 @@ def index():
         providers=sorted(VALID_API_PROVIDERS),
         provider_labels={provider: get_provider_label(provider) for provider in VALID_API_PROVIDERS},
         token_query=_safe_token_query(),
+        csrf_token=_csrf_token(),
     )
 
 
@@ -368,10 +425,7 @@ def qa_index():
         <p style="color:#b42318;font-weight:700">The default API provider is not configured on the server. Ask IT to edit the project .env file before uploading.</p>
         {% endif %}
         <form action="{{ url_for('create_qa_job') }}" method="post" enctype="multipart/form-data">
-          {% if token_required %}
-          <label for="token">Access token</label>
-          <input id="token" name="token" type="password" autocomplete="current-password" required>
-          {% endif %}
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
           <label for="qa_files">PDF or ZIP files</label>
           <input id="qa_files" name="qa_files" type="file" accept="application/pdf,.pdf,.zip" multiple required>
           <div class="row">
@@ -429,12 +483,14 @@ def qa_index():
         providers=sorted(VALID_API_PROVIDERS),
         provider_labels={provider: get_provider_label(provider) for provider in VALID_API_PROVIDERS},
         token_query=_safe_token_query(),
+        csrf_token=_csrf_token(),
     )
 
 
 @app.post("/jobs")
 def create_job():
     _require_token()
+    _require_csrf()
     uploaded = request.files.get("pdf_file")
     if not uploaded or not uploaded.filename:
         abort(400, "No PDF file uploaded.")
@@ -448,6 +504,14 @@ def create_job():
     job_dir.mkdir(parents=True, exist_ok=True)
     input_path = job_dir / filename
     uploaded.save(input_path)
+    input_overrides = ""
+    facts_upload = request.files.get("beam_facts")
+    if facts_upload and facts_upload.filename:
+        if not secure_filename(facts_upload.filename).lower().endswith(".json"):
+            abort(400, "Beam facts must be JSON.")
+        facts_path = job_dir / "beam_facts.json"
+        facts_upload.save(facts_path)
+        input_overrides = str(facts_path)
     struct_type = request.form.get("struct_type", "building")
     ocr_mode = request.form.get("ocr_mode", "auto")
     provider = request.form.get("provider", API_PROVIDER).strip().lower()
@@ -466,6 +530,12 @@ def create_job():
         "ocr_mode": ocr_mode,
         "provider": provider,
         "model": request.form.get("model", "").strip(),
+        "jurisdiction": request.form.get("jurisdiction", "HK").strip().upper(),
+        "code_pack": request.form.get("code_pack", "hk-bd-concrete-2020-amd-2024-04").strip(),
+        "code_as_of": request.form.get("code_as_of", "").strip(),
+        "critic": request.form.get("critic") == "1",
+        "critic_provider": request.form.get("critic_provider", "").strip().lower(),
+        "input_overrides": input_overrides,
         "status": "queued",
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "started_at": "",
@@ -484,6 +554,7 @@ def create_job():
 @app.post("/qa/jobs")
 def create_qa_job():
     _require_token()
+    _require_csrf()
     uploads = [file for file in request.files.getlist("qa_files") if file and file.filename]
     if not uploads:
         abort(400, "No QA files uploaded.")
@@ -661,7 +732,19 @@ def job_status(job_id: str):
         {% if download_url %}
         <a class="button" href="{{ download_url }}">Download Report</a>
         {% endif %}
+        {% if job.review_run_id %}
+        <a class="button secondary" href="{{ url_for('structured_results', job_id=job.id) }}">Download Structured JSON</a>
+        {% endif %}
       </div>
+      {% if job.review_run_id %}
+      <form action="{{ url_for('review_decision', job_id=job.id) }}" method="post" style="margin-top:20px">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <h2>Signed Reviewer Decision</h2>
+        <div class="row"><div><label>Reviewer name</label><input name="reviewer" required></div><div><label>Decision</label><select name="decision"><option>APPROVED</option><option>REJECTED</option></select></div></div>
+        <label>Reason</label><input name="reason" required>
+        <div class="actions"><button type="submit">Record decision</button></div>
+      </form>
+      {% endif %}
     </section>
     <section class="panel" style="margin-top:20px">
       <h2>Processing Log</h2>
@@ -682,6 +765,7 @@ def job_status(job_id: str):
         provider_label=get_provider_label(job.get("provider")),
         default_model=get_default_model(job.get("provider")),
         refresh_tag=refresh_tag,
+        csrf_token=_csrf_token(),
     )
 
 
@@ -696,6 +780,56 @@ def download_report(job_id: str):
     if not report_path.exists() or REPORT_DIR not in report_path.parents:
         abort(404)
     return send_file(report_path, as_attachment=True)
+
+
+@app.get("/jobs/<job_id>/results.json")
+def structured_results(job_id: str):
+    _require_token()
+    job = _job_snapshot(job_id)
+    if not job or not job.get("review_run_id"):
+        abort(404)
+    payload = store.get_payload(job["review_run_id"])
+    if payload is None:
+        abort(404)
+    response = jsonify(payload)
+    response.headers["Content-Disposition"] = f'attachment; filename="{job_id}_review.json"'
+    return response
+
+
+@app.post("/jobs/<job_id>/facts/<path:fact_id>")
+def edit_fact(job_id: str, fact_id: str):
+    _require_token()
+    _require_csrf()
+    job = _job_snapshot(job_id)
+    if not job or not job.get("review_run_id"):
+        abort(404)
+    payload = request.get_json(silent=True) or request.form
+    try:
+        evidence = payload.get("evidence", [])
+        if isinstance(evidence, str):
+            import json
+            evidence = json.loads(evidence)
+        store.edit_fact(job["review_run_id"], fact_id, payload.get("value"), evidence=evidence, reviewer=payload.get("reviewer", ""), reason=payload.get("reason", ""))
+    except (ValueError, KeyError) as exc:
+        abort(400, str(exc))
+    return jsonify({"ok": True, "run_id": job["review_run_id"], "fact_id": fact_id})
+
+
+@app.post("/jobs/<job_id>/decision")
+def review_decision(job_id: str):
+    _require_token()
+    _require_csrf()
+    job = _job_snapshot(job_id)
+    if not job or not job.get("review_run_id"):
+        abort(404)
+    payload = request.get_json(silent=True) or request.form
+    try:
+        store.decide(job["review_run_id"], payload.get("decision", ""), reviewer=payload.get("reviewer", ""), reason=payload.get("reason", ""))
+    except (ValueError, KeyError) as exc:
+        abort(400, str(exc))
+    if request.is_json:
+        return jsonify({"ok": True, "decision": payload.get("decision", "").upper()})
+    return redirect(url_for("job_status", job_id=job_id))
 
 
 def run() -> None:
