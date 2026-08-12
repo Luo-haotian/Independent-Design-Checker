@@ -1,18 +1,19 @@
 # Independent Design Checker
 
-IDC v0.17 is an evidence-aware structural review application. Hong Kong is the default jurisdiction, but every project pins an explicit code pack. The application preserves the existing CLI, OCR, desktop GUI, server, QA-record batch, Grok/Kimi narrative review, Word report, Docker, and PyInstaller workflows.
+IDC v0.17 is an evidence-aware structural review application. Hong Kong is the default review context, while the codes declared by the submitted report take priority. A project may declare several HK, BS, EN, GB, or other standards; IDC records that complete basis and never substitutes one concrete code merely because the jurisdiction is Hong Kong. The application preserves the existing CLI, OCR, desktop GUI, server, QA-record batch, Grok/Kimi narrative review, Word report, Docker, and PyInstaller workflows.
 
 ## Trust Model
 
 - Only deterministic rules can return engineering `PASS` or `FAIL`.
 - AI narrative is labelled as an observation and cannot override a deterministic result.
 - Missing or conflicting required facts return `INSUFFICIENT_EVIDENCE` or `CONFLICT`.
+- Code-basis detection preserves report-declared standards in source order. Ambiguous member-code combinations require reviewer pinning.
 - Page evidence, source SHA-256, code basis, formulas, limitations, and audit decisions remain traceable.
 - The bundled HK rules are **pending responsible structural engineer approval** and are not a certified design service.
 
-## v0.17 Deterministic Scope
+## Layered Checking
 
-The first vertical slice covers non-prestressed, normal-depth, rectangular, singly reinforced RC beams: flexure, required/provided tension reinforcement, reinforcement limits, shear resistance, links, minimum links, and spacing. Deep, flanged, prestressed, axially loaded, and torsion-loaded beams return `OUT_OF_SCOPE`.
+The product layers are document coverage, code-basis recognition, evidence and conflict gates, deterministic rule adapters, AI observations, and signed human review. The first small deterministic adapter covers flexure and shear for a restricted RC member type; it is not the product identity and is not shown as the primary workflow in the UI. Unsupported members and code combinations remain traceably `OUT_OF_SCOPE`.
 
 ## Quick Start
 
@@ -29,16 +30,18 @@ Place official code PDFs outside the repository and set `IDC_CODE_LIBRARY`. The 
 
 ```powershell
 python main.py design.pdf --jurisdiction HK `
-  --code-pack hk-bd-concrete-2020-amd-2024-04 `
-  --code-as-of 2024-04-01 --input-overrides reviewed_beam_facts.json `
+  --code-pack auto `
+  --code-as-of 2024-04-01 --input-overrides reviewed_facts.json `
   --export-json
 ```
 
 The critic pass is optional and disabled by default. Enable it with `--critic`; its output remains non-authoritative.
 
-## Beam Fact Input
+`--code-pack auto` means report-declared codes first, with the general HK review profile only as context. Enter an exact validated pack ID only when a reviewer intentionally pins the basis.
 
-Deterministic checks require reviewer-confirmed values with page evidence. See [the user guide](docs/USER_GUIDE.md) for the JSON schema. No fact is inferred into a deterministic `PASS` without evidence.
+## Reviewed Fact Input
+
+Reviewed values use a generic facts/evidence JSON contract. Installed deterministic adapters may also accept a more specific member schema. See [the user guide](docs/USER_GUIDE.md). No fact is inferred into a deterministic `PASS` without evidence, and generic facts remain useful even when no rule adapter is installed.
 
 ## Server
 

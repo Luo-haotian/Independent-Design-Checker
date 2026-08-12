@@ -223,7 +223,7 @@ def _run_job(job_id: str) -> None:
             critic=job.get("critic", False),
             critic_provider=job.get("critic_provider") or None,
             jurisdiction=job.get("jurisdiction", "HK"),
-            code_pack=job.get("code_pack", "hk-bd-concrete-2020-amd-2024-04"),
+            code_pack=job.get("code_pack", "auto"),
             code_as_of=job.get("code_as_of") or None,
             export_json=True,
             input_overrides=job.get("input_overrides") or None,
@@ -356,11 +356,11 @@ def index():
           </div>
           <div class="row">
             <div><label for="jurisdiction">Jurisdiction</label><input id="jurisdiction" name="jurisdiction" value="HK" required></div>
-            <div><label for="code_pack">Code pack</label><input id="code_pack" name="code_pack" value="hk-bd-concrete-2020-amd-2024-04" required></div>
+            <div><label for="code_pack">Code selection</label><input id="code_pack" name="code_pack" value="auto" title="Use auto for report-declared codes, or enter a validated pack ID"></div>
           </div>
           <div class="row">
             <div><label for="code_as_of">Code basis date</label><input id="code_as_of" name="code_as_of" type="date"></div>
-            <div><label for="beam_facts">Reviewed beam facts (JSON, optional)</label><input id="beam_facts" name="beam_facts" type="file" accept="application/json,.json"></div>
+            <div><label for="reviewed_facts">Reviewed facts/evidence (JSON, optional)</label><input id="reviewed_facts" name="reviewed_facts" type="file" accept="application/json,.json"></div>
           </div>
           <label><input style="width:auto;min-height:auto" name="critic" type="checkbox" value="1"> Enable non-authoritative critic pass</label>
           <div class="row">
@@ -529,11 +529,11 @@ def create_job():
     input_path = job_dir / filename
     uploaded.save(input_path)
     input_overrides = ""
-    facts_upload = request.files.get("beam_facts")
+    facts_upload = request.files.get("reviewed_facts")
     if facts_upload and facts_upload.filename:
         if not secure_filename(facts_upload.filename).lower().endswith(".json"):
-            abort(400, "Beam facts must be JSON.")
-        facts_path = job_dir / "beam_facts.json"
+            abort(400, "Reviewed facts must be JSON.")
+        facts_path = job_dir / "reviewed_facts.json"
         facts_upload.save(facts_path)
         input_overrides = str(facts_path)
     struct_type = request.form.get("struct_type", "building")
@@ -555,7 +555,7 @@ def create_job():
         "provider": provider,
         "model": request.form.get("model", "").strip(),
         "jurisdiction": request.form.get("jurisdiction", "HK").strip().upper(),
-        "code_pack": request.form.get("code_pack", "hk-bd-concrete-2020-amd-2024-04").strip(),
+        "code_pack": request.form.get("code_pack", "auto").strip(),
         "code_as_of": request.form.get("code_as_of", "").strip(),
         "critic": request.form.get("critic") == "1",
         "critic_provider": request.form.get("critic_provider", "").strip().lower(),

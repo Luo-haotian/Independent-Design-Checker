@@ -13,7 +13,8 @@ from typing import Any
 
 from .models import CodeBasis
 
-DEFAULT_CODE_PACK_ID = "hk-bd-concrete-2020-amd-2024-04"
+DEFAULT_CODE_PACK_ID = "hk-report-declared-default"
+HK_CONCRETE_PACK_ID = "hk-bd-concrete-2020-amd-2024-04"
 REQUIRED_MANIFEST_FIELDS = {
     "id",
     "jurisdiction",
@@ -51,6 +52,7 @@ class CodePack:
             jurisdiction=self.jurisdiction,
             authority=self.manifest["authority"],
             code_pack_id=self.id,
+            deterministic_rule_pack_id=self.id if self.rules.get("rules") else None,
             edition=self.manifest["edition"],
             amendments=[item["title"] for item in self.manifest["amendments"]],
             as_of_date=as_of_date,

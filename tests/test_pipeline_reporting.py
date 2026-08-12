@@ -26,7 +26,7 @@ def test_json_and_word_contain_same_deterministic_record(tmp_path):
     pdf = tmp_path / "sanitized.pdf"
     document = fitz.open()
     page = document.new_page()
-    page.insert_text((72, 72), "Sanitized beam B1 evidence")
+    page.insert_text((72, 72), "Sanitized beam B1 evidence. Code of Practice for Structural Use of Concrete 2013 (2020 Edition).")
     document.save(pdf)
     document.close()
     inputs = tmp_path / "facts.json"
@@ -52,3 +52,46 @@ def test_no_overrides_produces_no_false_pass(tmp_path):
     run = create_review_run(ingest_pdf(pdf))
     assert run.checks == []
     assert "No deterministic PASS or FAIL was produced" in deterministic_summary(run)
+
+
+def test_generic_reviewed_facts_are_preserved_without_member_adapter(tmp_path):
+    pdf = tmp_path / "sanitized.pdf"
+    document = fitz.open()
+    page = document.new_page()
+    page.insert_text((72, 72), "Design basis includes Code of Practice on Wind Effects in Hong Kong 2019")
+    document.save(pdf)
+    document.close()
+    facts = tmp_path / "facts.json"
+    facts.write_text(
+        json.dumps(
+            {
+                "facts": [
+                    {
+                        "name": "wind_code",
+                        "value": "HK Wind Code 2019",
+                        "evidence": [{"source_file": "sanitized.pdf", "page": 1}],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    run = create_review_run(ingest_pdf(pdf), input_overrides=facts)
+    assert run.facts[0].name == "wind_code"
+    assert run.checks[0].status.value == "OUT_OF_SCOPE"
+    assert not any(item.status.value in {"PASS", "FAIL"} for item in run.checks)
+
+
+def test_bs_report_does_not_fall_back_to_hk_concrete_rules(tmp_path):
+    pdf = tmp_path / "bs.pdf"
+    document = fitz.open()
+    page = document.new_page()
+    page.insert_text((72, 72), "Concrete design is based on BS 8110:1997")
+    document.save(pdf)
+    document.close()
+    inputs = tmp_path / "facts.json"
+    make_inputs(inputs)
+    run = create_review_run(ingest_pdf(pdf), input_overrides=inputs)
+    assert "BS 8110" in run.code_basis.declared_codes
+    assert run.code_basis.deterministic_rule_pack_id is None
+    assert [item.rule_id for item in run.checks] == ["IDC-CODE-BASIS-001"]

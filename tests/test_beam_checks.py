@@ -5,7 +5,7 @@ import json
 import pytest
 
 from idc.beam_checks import BeamCheckInput, load_beam_inputs, run_beam_checks
-from idc.codepacks import load_code_pack
+from idc.codepacks import HK_CONCRETE_PACK_ID, load_code_pack
 from idc.models import CheckStatus, SourceEvidence
 
 BASE = {
@@ -27,51 +27,55 @@ def status(result, rule_id):
     return next(item.status for item in result if item.rule_id == rule_id)
 
 
+def hk_pack():
+    return load_code_pack(HK_CONCRETE_PACK_ID)
+
+
 def test_golden_flexure_and_shear_pass():
-    result = run_beam_checks(beam(), load_code_pack())
+    result = run_beam_checks(beam(), hk_pack())
     assert status(result, "HK-RC-BEAM-FLX-001") == CheckStatus.PASS
     assert status(result, "HK-RC-BEAM-SHR-001B") == CheckStatus.PASS
 
 
 def test_flexure_fail_for_low_steel():
-    result = run_beam_checks(beam(tension_steel_mm2=900), load_code_pack())
+    result = run_beam_checks(beam(tension_steel_mm2=900), hk_pack())
     assert status(result, "HK-RC-BEAM-FLX-001") == CheckStatus.FAIL
 
 
 def test_shear_fail_for_links_and_spacing():
-    result = run_beam_checks(beam(link_area_mm2=100, link_spacing_mm=400), load_code_pack())
+    result = run_beam_checks(beam(link_area_mm2=100, link_spacing_mm=400), hk_pack())
     assert status(result, "HK-RC-BEAM-SHR-001B") == CheckStatus.FAIL
 
 
 def test_missing_effective_depth_is_insufficient_evidence():
-    result = run_beam_checks(beam(effective_depth_mm=None), load_code_pack())
+    result = run_beam_checks(beam(effective_depth_mm=None), hk_pack())
     assert status(result, "IDC-EVIDENCE-FLEXURE-001") == CheckStatus.INSUFFICIENT_EVIDENCE
 
 
 def test_conflict_cannot_pass():
     item = beam()
     item.conflict_fields.add("design_moment_knm")
-    assert status(run_beam_checks(item, load_code_pack()), "IDC-EVIDENCE-FLEXURE-001") == CheckStatus.CONFLICT
+    assert status(run_beam_checks(item, hk_pack()), "IDC-EVIDENCE-FLEXURE-001") == CheckStatus.CONFLICT
 
 
 def test_deep_beam_is_out_of_scope():
-    result = run_beam_checks(beam(span_mm=1000), load_code_pack())
+    result = run_beam_checks(beam(span_mm=1000), hk_pack())
     assert result[0].status == CheckStatus.OUT_OF_SCOPE
 
 
 def test_scope_defaults_cannot_pass_without_evidence():
     item = beam()
     item.evidence.pop("section_type")
-    assert run_beam_checks(item, load_code_pack())[0].status == CheckStatus.INSUFFICIENT_EVIDENCE
+    assert run_beam_checks(item, hk_pack())[0].status == CheckStatus.INSUFFICIENT_EVIDENCE
 
 
 def test_service_actions_cannot_be_used_as_design_actions():
-    result = run_beam_checks(beam(design_action_basis="SLS"), load_code_pack())
+    result = run_beam_checks(beam(design_action_basis="SLS"), hk_pack())
     assert status(result, "IDC-EVIDENCE-FLEXURE-001") == CheckStatus.INSUFFICIENT_EVIDENCE
 
 
 def test_boundary_spacing_passes():
-    assert status(run_beam_checks(beam(link_spacing_mm=300), load_code_pack()), "HK-RC-BEAM-SHR-001B") == CheckStatus.PASS
+    assert status(run_beam_checks(beam(link_spacing_mm=300), hk_pack()), "HK-RC-BEAM-SHR-001B") == CheckStatus.PASS
 
 
 def test_list_input_loader(tmp_path):
@@ -89,7 +93,7 @@ def test_input_unit_conversion(tmp_path):
 
 
 def test_invalid_positive_input_is_error():
-    assert status(run_beam_checks(beam(width_mm=0), load_code_pack()), "IDC-EVIDENCE-FLEXURE-001") == CheckStatus.ERROR
+    assert status(run_beam_checks(beam(width_mm=0), hk_pack()), "IDC-EVIDENCE-FLEXURE-001") == CheckStatus.ERROR
 
 
 def test_invalid_evidence_page_is_rejected(tmp_path):

@@ -15,7 +15,7 @@ from config import (
     get_llm_config,
     get_provider_label,
 )
-from idc.codepacks import load_code_pack
+from idc.code_basis import resolve_code_basis
 from idc.ingestion import DocumentExtraction, ingest_pdf
 from idc.llm_review import review_document
 from idc.pipeline import create_review_run, deterministic_summary, export_review_json
@@ -344,7 +344,7 @@ class CheckerOCR:
         critic: bool = False,
         critic_provider: str | None = None,
         jurisdiction: str = "HK",
-        code_pack: str = "hk-bd-concrete-2020-amd-2024-04",
+        code_pack: str = "auto",
         code_as_of: str | None = None,
         export_json: bool = False,
         input_overrides: str | None = None,
@@ -363,7 +363,7 @@ class CheckerOCR:
             return False
 
         try:
-            load_code_pack(code_pack, jurisdiction=jurisdiction).code_basis(code_as_of)
+            resolve_code_basis(extraction, jurisdiction=jurisdiction, requested_pack_id=code_pack, code_as_of=code_as_of)
         except (FileNotFoundError, ValueError) as exc:
             print(f"ERROR: Code basis is invalid: {exc}")
             return False
@@ -478,10 +478,10 @@ OCR requires Tesseract:
     parser.add_argument("--force-ocr", action="store_true", help="Force OCR for all pages")
     parser.add_argument("--no-ocr", action="store_true", help="Disable OCR and use only text extraction")
     parser.add_argument("--jurisdiction", default="HK")
-    parser.add_argument("--code-pack", default="hk-bd-concrete-2020-amd-2024-04")
+    parser.add_argument("--code-pack", default="auto", help="auto prefers report-declared codes; or pin an exact pack ID")
     parser.add_argument("--code-as-of", default=None, help="Pinned code-basis date (YYYY-MM-DD)")
     parser.add_argument("--export-json", action="store_true", help="Write a structured review JSON file")
-    parser.add_argument("--input-overrides", default=None, help="Reviewer-confirmed beam facts JSON")
+    parser.add_argument("--input-overrides", default=None, help="Reviewer-confirmed facts/evidence JSON")
     parser.add_argument("--critic", action="store_true", help="Enable a non-authoritative second AI review")
     parser.add_argument("--critic-provider", choices=["grok", "kimi"], default=None)
     args = parser.parse_args()

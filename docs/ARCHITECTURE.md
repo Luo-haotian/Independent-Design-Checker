@@ -18,8 +18,8 @@ flowchart TD
 
 1. **Ingestion** computes the source SHA-256 and preserves page boundaries, extraction method, OCR diagnostics, images, warnings, and coverage.
 2. **Evidence and design-basis gates** reject missing, conflicting, unitless, or unreferenced required facts before capacity checks.
-3. **Code-pack registry** loads exactly the selected jurisdiction and version. Hong Kong is the default, not a fallback.
-4. **Deterministic rules** produce traceable `CheckResult` objects. The v0.17 engine is limited to the declared RC beam scope.
+3. **Code-basis resolver** preserves standards declared in the report, detects mixed HK/BS/EN/GB bases, and requires reviewer pinning where member-code applicability is ambiguous. The general HK profile is context, not a Concrete Code fallback.
+4. **Deterministic adapters** produce traceable `CheckResult` objects only for a matched code basis and supported fact type. The first v0.17 adapter is deliberately narrow and remains below the general review UI.
 5. **AI narrative** reviews omissions and constructability. The optional critic is a second observation pass; neither AI path can create or override engineering `PASS`/`FAIL`.
 6. **Persistence and review** store runs, facts, results, edits, decisions, and audit events in SQLite.
 7. **Delivery adapters** preserve CLI, OCR CLI, GUIs, Flask server, Word/JSON reports, QA batch mode, Docker, and four executable entrypoints.
@@ -42,4 +42,4 @@ Long documents are split on page-aware boundaries. Oversized pages are explicitl
 
 ## Extension Route
 
-New jurisdictions provide a unique manifest and rule file. A loader validates the pack ID, jurisdiction, dates, hashes, and declared rule IDs. A selected non-HK pack must load successfully or the run stops; it never substitutes the HK pack.
+New jurisdictions provide a unique manifest and rule file. A loader validates the pack ID, jurisdiction, dates, hashes, and declared rule IDs. Detection alone never substitutes a rule pack. A reviewer-pinned non-HK pack must load successfully or the run stops; it never substitutes an HK pack.

@@ -42,10 +42,14 @@ class SourceEvidence:
 @dataclass(slots=True)
 class CodeBasis:
     jurisdiction: str = "HK"
-    authority: str = "Hong Kong Buildings Department"
-    code_pack_id: str = "hk-bd-concrete-2020-amd-2024-04"
-    edition: str = "2013 Code (2020 Edition)"
+    authority: str = "Project-declared authorities"
+    code_pack_id: str = "hk-report-declared-default"
+    deterministic_rule_pack_id: str | None = None
+    edition: str = "Report-declared code basis"
     amendments: list[str] = field(default_factory=list)
+    selection_mode: str = "report-declared"
+    declared_codes: list[str] = field(default_factory=list)
+    unresolved_codes: list[str] = field(default_factory=list)
     as_of_date: str | None = None
     rule_set_version: str = "1.0.0"
     engineering_approved: bool = False

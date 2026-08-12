@@ -79,11 +79,11 @@ flowchart TD
 6. A QA/QC reviewer checks the register and exceptions before project acceptance.
 # v0.17 Layered Review Workflow
 
-1. Pin jurisdiction, code pack, and basis date.
+1. Read and preserve every code declared in the submitted report; confirm jurisdiction and basis date. Pin a specific pack only when applicability is unambiguous.
 2. Ingest every page and review extraction/OCR coverage.
 3. Confirm units, material strengths, ULS action provenance, scope declarations, and page evidence.
 4. Resolve missing or conflicting facts; unresolved facts cannot produce deterministic `PASS`.
-5. Run the scoped deterministic beam rules and review formula/citation/demand/capacity/utilisation records.
+5. Run every installed deterministic adapter that matches the confirmed basis and facts; review formula/citation/demand/capacity/utilisation records.
 6. Review AI observations separately. They cannot override deterministic results.
 7. Record fact edits with reviewer, reason, and new evidence. Any edit invalidates prior results and returns the run to `DRAFT`.
 8. Rerun checks, then record a signed approval or rejection.

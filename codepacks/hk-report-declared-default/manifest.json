@@ -1,0 +1,19 @@
+{
+  "id": "hk-report-declared-default",
+  "jurisdiction": "HK",
+  "authority": "Project-declared authorities with Hong Kong review context",
+  "title": "Hong Kong Report-Declared Code Basis Profile",
+  "edition": "Report-declared code basis; reviewer confirmation required",
+  "amendments": [],
+  "effective_from": "2011-01-01",
+  "rule_set_version": "1.0.0",
+  "engineering_approved": false,
+  "supported_rule_ids": [],
+  "sources": [],
+  "official_index_url": "https://www.bd.gov.hk/en/resources/codes-and-references/codes-and-design-manuals/index.html",
+  "limitations": [
+    "This is a selection profile, not a deterministic engineering rule pack.",
+    "Codes declared in the submitted report take priority and must be confirmed by the reviewer.",
+    "A specific deterministic rule pack is activated only when the applicable basis is unambiguous or reviewer-pinned."
+  ]
+}

@@ -1,8 +1,10 @@
 # Code-Pack Governance
 
-## Default Hong Kong Basis
+## Default Hong Kong Review Profile
 
-The default pack is `hk-bd-concrete-2020-amd-2024-04`: Hong Kong Buildings Department, *Code of Practice for Structural Use of Concrete 2013 (2020 Edition)*, with February 2022, June 2023, and April 2024 amendments. A project pins its pack and optional as-of date; it does not silently migrate when a new amendment is published.
+The default is `hk-report-declared-default`, a selection profile rather than an engineering rule pack. IDC first reads the design codes stated in the submitted report and records all detected HK, BS, EN, GB, and other references. The Hong Kong profile provides review context only when the report is silent; it never silently selects the Concrete Code.
+
+The implemented concrete adapter is separately versioned as `hk-bd-concrete-2020-amd-2024-04`: Hong Kong Buildings Department, *Code of Practice for Structural Use of Concrete 2013 (2020 Edition)*, with February 2022, June 2023, and April 2024 amendments. It activates only when that basis is unambiguous or reviewer-pinned. A project does not silently migrate when a new amendment is published.
 
 ## Manifest Requirements
 
@@ -21,7 +23,7 @@ The v0.17 HK beam rules are intentionally `engineering_approved: false`. Their c
 
 ## Other Jurisdictions
 
-External packs may be supplied through `IDC_CODE_PACK_PATH`. Their jurisdiction must match the requested `--jurisdiction`; validation failure stops the run. A custom pack must not reuse HK rule IDs or imply HK authority.
+External packs may be supplied through `IDC_CODE_PACK_PATH`. Their jurisdiction must match a reviewer-pinned `--jurisdiction`; validation failure stops the run. Auto mode preserves report-declared foreign standards without applying HK rules. A custom pack must not reuse HK rule IDs or imply HK authority, and a deterministic adapter must be installed before it can produce engineering results.
 
 ## Copyright and Confidentiality
 

@@ -89,10 +89,10 @@ class IDC_GUI:
         )
 
         ttk.Label(frame, text="Code basis:").grid(row=6, column=0, sticky="w", pady=5)
-        self.code_pack_var = tk.StringVar(value="hk-bd-concrete-2020-amd-2024-04")
-        ttk.Entry(frame, textvariable=self.code_pack_var, width=50).grid(row=6, column=1, sticky="ew", padx=5)
+        self.code_pack_var = tk.StringVar(value="auto")
+        ttk.Combobox(frame, textvariable=self.code_pack_var, values=["auto"], width=47).grid(row=6, column=1, sticky="ew", padx=5)
 
-        ttk.Label(frame, text="Beam facts:").grid(row=7, column=0, sticky="w", pady=5)
+        ttk.Label(frame, text="Reviewed facts:").grid(row=7, column=0, sticky="w", pady=5)
         self.overrides_var = tk.StringVar()
         ttk.Entry(frame, textvariable=self.overrides_var, width=50).grid(row=7, column=1, sticky="ew", padx=5)
         ttk.Button(frame, text="Browse JSON...", command=self.browse_overrides).grid(row=7, column=2)

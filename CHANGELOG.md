@@ -57,7 +57,7 @@
 
 - Added page-preserving ingestion, OCR diagnostics, source hashing, and complete coverage disclosure.
 - Added public evidence, code-basis, fact, result, run, and audit contracts.
-- Added the HK-default external code-pack registry with exact-jurisdiction validation and official-source hashes.
+- Added a general HK report-declared default profile that preserves mixed HK/BS/EN/GB references, plus exact-pack validation and official-source hashes.
 - Added the evidence-gated RC beam flexure/shear vertical slice; engineering approval remains pending.
 - Added reviewer-confirmed unit conversion, ULS action provenance, applicability evidence, and conflict handling.
 - Added structured JSON/Word reporting and optional non-authoritative AI critic observations.

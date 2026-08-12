@@ -1,4 +1,4 @@
-# IDC User Guide v0.16
+# IDC User Guide v0.17
 
 ## Quick Start
 
@@ -131,11 +131,24 @@ If the run fails, check:
 For OCR issues, also check that Tesseract is installed.
 
 For server mode, contact IT if the upload page is unavailable, the access token is rejected, or the job remains queued for a long time.
-# IDC v0.17 Evidence Workflow
+## Evidence and Code-Basis Workflow
 
-Hong Kong is the default jurisdiction. Always confirm the code-pack ID and basis date shown in the report. If no reviewed beam-fact file is supplied, IDC produces narrative observations and an explicit statement that no deterministic `PASS` or `FAIL` was produced.
+Hong Kong is the default review context, but the submitted report's declared codes take priority. Keep code selection at `auto` for normal review: IDC records all detected HK, BS, EN, GB, and other references. If competing member codes are detected, a reviewer must pin the applicable validated pack; IDC does not silently choose the HK Concrete Code.
 
-Reviewer-confirmed beam input uses this sanitized structure:
+Generic reviewer-confirmed facts use this structure and remain reviewable even when no deterministic adapter is installed:
+
+```json
+{
+  "facts": [{
+    "fact_id": "design-basis:wind-code",
+    "name": "wind_design_code",
+    "value": "Code of Practice on Wind Effects in Hong Kong 2019",
+    "evidence": [{"source_file": "design.pdf", "page": 8, "quote": "Wind Code 2019"}]
+  }]
+}
+```
+
+The first narrow deterministic adapter additionally accepts this sanitized member-specific structure:
 
 ```json
 {
@@ -165,6 +178,6 @@ Reviewer-confirmed beam input uses this sanitized structure:
 }
 ```
 
-Every required field needs at least one page-evidence item. Add every field to `evidence`; the shortened example shows only one. Use `conflict_fields` when submitted values disagree. Do not resolve a conflict merely by choosing the convenient value.
+For a deterministic adapter, every required field needs page evidence. Add every field to `evidence`; the shortened example shows only one. Use `conflict_fields` when submitted values disagree. Do not resolve a conflict merely by choosing the convenient value.
 
 Review structured results before the AI narrative. Confirm code basis, source hash, page coverage, applicability, units, demand, capacity, utilisation, clauses, formula version, and limitations. The bundled rules are pending responsible engineer approval.
