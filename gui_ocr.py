@@ -100,6 +100,8 @@ class IDC_GUI_OCR:
         ttk.Label(frame, text="Code basis:").grid(row=7, column=0, sticky="w", pady=5)
         self.code_pack_var = tk.StringVar(value="auto")
         ttk.Combobox(frame, textvariable=self.code_pack_var, values=["auto"], width=47).grid(row=7, column=1, sticky="ew", padx=5)
+        self.jurisdiction_var = tk.StringVar(value="HK")
+        ttk.Combobox(frame, textvariable=self.jurisdiction_var, values=["HK", "BS", "GB"], width=10).grid(row=7, column=2, sticky="w")
 
         ttk.Label(frame, text="Reviewed facts:").grid(row=8, column=0, sticky="w", pady=5)
         self.overrides_var = tk.StringVar()
@@ -214,19 +216,19 @@ class IDC_GUI_OCR:
 
         worker = threading.Thread(
             target=self.check,
-            args=(pdf_path, self.type_var.get(), self.output_var.get(), self.model_var.get(), self.provider_var.get(), force_ocr, use_ocr, self.code_pack_var.get(), self.overrides_var.get(), self.critic_var.get(), self.json_var.get()),
+            args=(pdf_path, self.type_var.get(), self.output_var.get(), self.model_var.get(), self.provider_var.get(), force_ocr, use_ocr, self.jurisdiction_var.get(), self.code_pack_var.get(), self.overrides_var.get(), self.critic_var.get(), self.json_var.get()),
         )
         worker.daemon = True
         worker.start()
 
-    def check(self, pdf_path, structure_type, output_dir, model, provider, force_ocr, use_ocr, code_pack, overrides, critic, export_json):
+    def check(self, pdf_path, structure_type, output_dir, model, provider, force_ocr, use_ocr, jurisdiction, code_pack, overrides, critic, export_json):
         try:
             os.makedirs(output_dir, exist_ok=True)
             checker = CheckerOCR(model_name=model, provider=provider, use_ocr=use_ocr)
 
             capture = StringIO()
             with redirect_stdout(capture):
-                success = checker.check(pdf_path, structure_type, output_dir, force_ocr=force_ocr, code_pack=code_pack, input_overrides=overrides or None, critic=critic, export_json=export_json)
+                success = checker.check(pdf_path, structure_type, output_dir, force_ocr=force_ocr, jurisdiction=jurisdiction, code_pack=code_pack, input_overrides=overrides or None, critic=critic, export_json=export_json)
             report_file = checker.last_report_file
 
             out_text = capture.getvalue()

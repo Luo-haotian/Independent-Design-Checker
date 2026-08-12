@@ -14,7 +14,6 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
-
 MARKDOWN_HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)")
 NUMBERED_HEADING_RE = re.compile(r"^(\d+(?:\.\d+)*\.?)\s+(.+)$")
 INLINE_BOLD_RE = re.compile(r"(\*\*.+?\*\*)")

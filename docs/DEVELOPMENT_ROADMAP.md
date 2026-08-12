@@ -28,7 +28,7 @@ IDC v0.17 adds page-level evidence, report-declared multi-code basis resolution,
 - M04 - Implemented the first small deterministic adapter for a normal-depth rectangular singly reinforced RC member vertical slice.
   - Scope: applicability, flexural demand/capacity, required/provided tension steel, longitudinal reinforcement limits, shear stress/capacity, required/provided links, minimum links, and link spacing.
   - Traceability: every result records rule ID, citations, formula version, units, evidence pages, demand, capacity, utilisation, status, message, and limitations.
-  - Interfaces: CLI, OCR CLI, and both desktop GUIs accept a pinned code pack, reviewer-confirmed beam-fact JSON, JSON export, and the optional critic toggle.
+  - Interfaces: CLI, OCR CLI, and both desktop GUIs accept a jurisdiction, automatic or reviewer-pinned code basis, generic reviewed-fact JSON, JSON export, and the optional critic toggle. Member-specific facts are accepted only by a matching installed adapter.
   - Verification: sanitized pass/fail, missing-evidence, conflict, deep-beam, boundary, and JSON loader cases passed locally.
   - Engineering status: formulas and scope remain pending responsible structural engineer approval.
   - Commit: `f45069c`.

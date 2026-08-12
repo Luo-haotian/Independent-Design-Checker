@@ -7,7 +7,6 @@ import shutil
 
 import PyInstaller.__main__
 
-
 DIST_DIR = "./dist"
 BUILD_DIR = "./build"
 SPEC_DIR = "./spec_files"

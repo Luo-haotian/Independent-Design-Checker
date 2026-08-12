@@ -37,6 +37,7 @@ $staleNames = @(
     "2026-08-12-v0.17-release-candidates.prefinal",
     "2026-08-12-v0.17-release-candidates.stale2",
     "2026-08-12-v0.17-release-candidates.stale3",
+    "2026-08-12-v0.17-release-candidates.superseded-concrete-default",
     "idc-v0.17-build-env"
 )
 foreach ($name in $staleNames) {
