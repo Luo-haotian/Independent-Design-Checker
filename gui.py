@@ -88,24 +88,38 @@ class IDC_GUI:
             padx=(100, 0),
         )
 
-        ttk.Label(frame, text="Output:").grid(row=6, column=0, sticky="w", pady=5)
+        ttk.Label(frame, text="Code basis:").grid(row=6, column=0, sticky="w", pady=5)
+        self.code_pack_var = tk.StringVar(value="hk-bd-concrete-2020-amd-2024-04")
+        ttk.Entry(frame, textvariable=self.code_pack_var, width=50).grid(row=6, column=1, sticky="ew", padx=5)
+
+        ttk.Label(frame, text="Beam facts:").grid(row=7, column=0, sticky="w", pady=5)
+        self.overrides_var = tk.StringVar()
+        ttk.Entry(frame, textvariable=self.overrides_var, width=50).grid(row=7, column=1, sticky="ew", padx=5)
+        ttk.Button(frame, text="Browse JSON...", command=self.browse_overrides).grid(row=7, column=2)
+
+        self.critic_var = tk.BooleanVar(value=False)
+        self.json_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(frame, text="AI critic (non-authoritative)", variable=self.critic_var).grid(row=8, column=1, sticky="w")
+        ttk.Checkbutton(frame, text="Export structured JSON", variable=self.json_var).grid(row=8, column=2, sticky="w")
+
+        ttk.Label(frame, text="Output:").grid(row=9, column=0, sticky="w", pady=5)
         self.output_var = tk.StringVar(value="./reports")
-        ttk.Entry(frame, textvariable=self.output_var, width=50).grid(row=6, column=1, sticky="ew", padx=5)
-        ttk.Button(frame, text="Browse...", command=self.browse_output).grid(row=6, column=2)
+        ttk.Entry(frame, textvariable=self.output_var, width=50).grid(row=9, column=1, sticky="ew", padx=5)
+        ttk.Button(frame, text="Browse...", command=self.browse_output).grid(row=9, column=2)
 
         self.progress = ttk.Progressbar(frame, mode="indeterminate")
-        self.progress.grid(row=7, column=0, columnspan=3, sticky="ew", pady=10)
+        self.progress.grid(row=10, column=0, columnspan=3, sticky="ew", pady=10)
 
         out_frame = ttk.LabelFrame(frame, text="Output", padding=5)
-        out_frame.grid(row=8, column=0, columnspan=3, sticky="nsew", pady=10)
+        out_frame.grid(row=11, column=0, columnspan=3, sticky="nsew", pady=10)
         out_frame.columnconfigure(0, weight=1)
         out_frame.rowconfigure(0, weight=1)
         self.output = scrolledtext.ScrolledText(out_frame, height=25, width=85)
         self.output.grid(row=0, column=0, sticky="nsew")
-        frame.rowconfigure(8, weight=1)
+        frame.rowconfigure(11, weight=1)
 
         button_frame = ttk.Frame(frame)
-        button_frame.grid(row=9, column=0, columnspan=3, pady=10)
+        button_frame.grid(row=12, column=0, columnspan=3, pady=10)
         self.check_btn = ttk.Button(button_frame, text="Check Design", command=self.start)
         self.check_btn.pack(side="left", padx=5)
         ttk.Button(button_frame, text="Clear", command=self.clear).pack(side="left", padx=5)
@@ -134,6 +148,11 @@ class IDC_GUI:
         if selected_dir:
             self.output_var.set(selected_dir)
 
+    def browse_overrides(self):
+        selected_file = filedialog.askopenfilename(filetypes=[("JSON", "*.json")])
+        if selected_file:
+            self.overrides_var.set(selected_file)
+
     def log(self, text):
         self.output.insert("end", text + "\n")
         self.output.see("end")
@@ -155,19 +174,19 @@ class IDC_GUI:
 
         worker = threading.Thread(
             target=self.check,
-            args=(pdf_path, self.type_var.get(), self.output_var.get(), self.model_var.get(), self.provider_var.get()),
+            args=(pdf_path, self.type_var.get(), self.output_var.get(), self.model_var.get(), self.provider_var.get(), self.code_pack_var.get(), self.overrides_var.get(), self.critic_var.get(), self.json_var.get()),
         )
         worker.daemon = True
         worker.start()
 
-    def check(self, pdf_path, structure_type, output_dir, model, provider):
+    def check(self, pdf_path, structure_type, output_dir, model, provider, code_pack, overrides, critic, export_json):
         try:
             os.makedirs(output_dir, exist_ok=True)
             checker = Checker(model_name=model, provider=provider)
 
             capture = StringIO()
             with redirect_stdout(capture):
-                success = checker.check(pdf_path, structure_type, output_dir)
+                success = checker.check(pdf_path, structure_type, output_dir, code_pack=code_pack, input_overrides=overrides or None, critic=critic, export_json=export_json)
             report_file = checker.last_report_file
 
             out_text = capture.getvalue()

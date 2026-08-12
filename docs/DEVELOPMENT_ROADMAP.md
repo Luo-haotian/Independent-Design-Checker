@@ -24,15 +24,21 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
 - M03 - Added the HK-default code-pack registry, source-hash verification, effective-date pinning, external code-library support, exact-jurisdiction validation, and deterministic evidence/conflict gates.
   - Verification: the HK pack and all four external local sources were hash-verified; an attempted non-HK selection failed without fallback.
   - Engineering status: rule mappings remain pending responsible structural engineer approval.
-  - Commit: recorded in the M03 milestone commit.
+  - Commit: `f49ed66`.
+- M04 - Implemented the deterministic normal-depth rectangular singly reinforced RC beam vertical slice.
+  - Scope: applicability, flexural demand/capacity, required/provided tension steel, longitudinal reinforcement limits, shear stress/capacity, required/provided links, minimum links, and link spacing.
+  - Traceability: every result records rule ID, citations, formula version, units, evidence pages, demand, capacity, utilisation, status, message, and limitations.
+  - Interfaces: CLI, OCR CLI, and both desktop GUIs accept a pinned code pack, reviewer-confirmed beam-fact JSON, JSON export, and the optional critic toggle.
+  - Verification: sanitized pass/fail, missing-evidence, conflict, deep-beam, boundary, and JSON loader cases passed locally.
+  - Engineering status: formulas and scope remain pending responsible structural engineer approval.
+  - Commit: recorded in the M04 milestone commit.
 
 ## In Progress
 
-- M04 - Add deterministic RC beam flexure and shear checks with evidence and clause traceability.
+- M05 - Add persistent jobs, signed reviewer decisions, audit events, retention, and server security hardening.
 
 ## Planned
 
-- M05 - Add persistent jobs, signed reviewer decisions, audit events, retention, and server security hardening.
 - M06 - Extend CLI, GUI, server, JSON, and Word outputs; add tests, CI, packaging verification, and documentation.
 - M07 - Push the branch and open a draft pull request for review.
 

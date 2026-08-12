@@ -19,6 +19,7 @@ from config import (
 )
 from idc.ingestion import DocumentExtraction, ingest_pdf
 from idc.llm_review import review_document
+from idc.pipeline import create_review_run, deterministic_summary, export_review_json
 
 logging.basicConfig(
     level=logging.INFO,
@@ -229,6 +230,8 @@ class CheckerOCR:
         self.last_report_file: str | None = None
         self.last_extraction: DocumentExtraction | None = None
         self.last_ai_observations: list[str] = []
+        self.last_review_run = None
+        self.last_json_file: str | None = None
 
         self.ocr_extractor = OCRExtractor() if use_ocr else None
 
@@ -341,6 +344,11 @@ class CheckerOCR:
         force_ocr: bool = False,
         critic: bool = False,
         critic_provider: str | None = None,
+        jurisdiction: str = "HK",
+        code_pack: str = "hk-bd-concrete-2020-amd-2024-04",
+        code_as_of: str | None = None,
+        export_json: bool = False,
+        input_overrides: str | None = None,
     ) -> bool:
         """Run the full OCR analysis flow."""
         self.last_report_file = None
@@ -374,6 +382,28 @@ class CheckerOCR:
         os.makedirs(report_dir, exist_ok=True)
         base_name = os.path.splitext(os.path.basename(pdf_path))[0]
         report_file = os.path.join(report_dir, f"{base_name}_OCR_report.docx")
+
+        try:
+            review_run = create_review_run(
+                extraction,
+                jurisdiction=jurisdiction,
+                code_pack_id=code_pack,
+                code_as_of=code_as_of,
+                input_overrides=input_overrides,
+                ai_observations=self.last_ai_observations,
+                provider=self.provider,
+                model=self.model,
+            )
+        except (FileNotFoundError, ValueError, TypeError) as exc:
+            print(f"ERROR: Code basis or deterministic input is invalid: {exc}")
+            return False
+        self.last_review_run = review_run
+        result = deterministic_summary(review_run) + result
+        if export_json:
+            json_path = os.path.join(report_dir, f"{base_name}_OCR_review.json")
+            export_review_json(review_run, json_path)
+            self.last_json_file = json_path
+            print(f"[OK] Structured result saved: {json_path}")
 
         try:
             from report_generator import generate_report_docx
@@ -442,6 +472,13 @@ OCR requires Tesseract:
     parser.add_argument("--provider", choices=["grok", "kimi"], default=None, help="API provider to use")
     parser.add_argument("--force-ocr", action="store_true", help="Force OCR for all pages")
     parser.add_argument("--no-ocr", action="store_true", help="Disable OCR and use only text extraction")
+    parser.add_argument("--jurisdiction", default="HK")
+    parser.add_argument("--code-pack", default="hk-bd-concrete-2020-amd-2024-04")
+    parser.add_argument("--code-as-of", default=None, help="Pinned code-basis date (YYYY-MM-DD)")
+    parser.add_argument("--export-json", action="store_true", help="Write a structured review JSON file")
+    parser.add_argument("--input-overrides", default=None, help="Reviewer-confirmed beam facts JSON")
+    parser.add_argument("--critic", action="store_true", help="Enable a non-authoritative second AI review")
+    parser.add_argument("--critic-provider", choices=["grok", "kimi"], default=None)
     args = parser.parse_args()
 
     if not TESSERACT_AVAILABLE and not args.no_ocr:
@@ -461,6 +498,13 @@ OCR requires Tesseract:
             args.type,
             args.output_dir,
             force_ocr=args.force_ocr,
+            critic=args.critic,
+            critic_provider=args.critic_provider,
+            jurisdiction=args.jurisdiction,
+            code_pack=args.code_pack,
+            code_as_of=args.code_as_of,
+            export_json=args.export_json,
+            input_overrides=args.input_overrides,
         )
         sys.exit(0 if success else 1)
     except Exception as exc:
