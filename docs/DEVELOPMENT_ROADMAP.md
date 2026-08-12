@@ -18,14 +18,20 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
   - Verification: Git bundle and SHA-256 payload verification passed.
   - Cleanup: repository workspace reduced to approximately 0.5 MiB; `.env` remained ignored and was not archived.
   - Commit: `88d092a`.
+- M02 - Added the `idc` package, public evidence/review contracts, page-preserving ingestion, page-aware LLM chunking, full coverage disclosure, and the optional non-authoritative critic pass.
+  - Verification: Python static compilation and a three-page ingestion smoke test passed.
+  - Commit: `61a2f6d`.
+- M03 - Added the HK-default code-pack registry, source-hash verification, effective-date pinning, external code-library support, exact-jurisdiction validation, and deterministic evidence/conflict gates.
+  - Verification: the HK pack and all four external local sources were hash-verified; an attempted non-HK selection failed without fallback.
+  - Engineering status: rule mappings remain pending responsible structural engineer approval.
+  - Commit: recorded in the M03 milestone commit.
 
 ## In Progress
 
-- M03 - Add page-preserving evidence models, coverage reporting, and HK-default code-pack governance.
+- M04 - Add deterministic RC beam flexure and shear checks with evidence and clause traceability.
 
 ## Planned
 
-- M04 - Add deterministic RC beam flexure and shear checks with evidence and clause traceability.
 - M05 - Add persistent jobs, signed reviewer decisions, audit events, retention, and server security hardening.
 - M06 - Extend CLI, GUI, server, JSON, and Word outputs; add tests, CI, packaging verification, and documentation.
 - M07 - Push the branch and open a draft pull request for review.
@@ -48,4 +54,4 @@ IDC v0.17 adds page-level evidence, versioned code packs, deterministic Hong Kon
 
 Milestone completion entries will include the commit ID, tests, build results, archive size, repository size, and remaining limitations.
 
-- M02 completed: introduced the `idc` package, public evidence/review contracts, page-preserving PDF ingestion, context-safe page chunking, coverage disclosure, and optional non-authoritative critic observations. Compatibility entrypoints remain available. Static parse and a three-page ingestion smoke test passed. Commit recorded in the M02 milestone commit.
+- M03 acceptance evidence is recorded above. Public manifests contain source hashes and official URLs, while raw code PDFs remain external through `IDC_CODE_LIBRARY`.
