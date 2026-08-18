@@ -215,3 +215,8 @@ Deferred:
 - What project specifications should pass/fail checks compare against?
 - Should QA records be stored after processing, or deleted after export?
 - Who is allowed to upload, review, approve, and download batch QA outputs?
+# v0.17 Product Addendum
+
+The product objective is trustworthy layered checking: document coverage, report-declared code-basis recognition, evidence/conflict gating, deterministic engineering adapters, non-authoritative AI observations, and signed human review. Hong Kong remains the default review context, but report-declared HK/BS/EN/GB/other standards take priority and are retained together without silent fallback.
+
+The v0.17 release criterion includes one narrow deterministic flexure/shear adapter as proof of the layer architecture; it is not the product's UI or overall scope. The authoritative scope and pending work are maintained in `docs/DEVELOPMENT_ROADMAP.md`.

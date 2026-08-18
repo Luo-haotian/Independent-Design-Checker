@@ -53,3 +53,20 @@
 
 - published the first source version of IDC
 - included standard GUI, OCR GUI, CLI, and OCR CLI tools
+# v0.17.0 - Evidence and Deterministic Checking Evolution
+
+- Added page-preserving ingestion, OCR diagnostics, source hashing, and complete coverage disclosure.
+- Added public evidence, code-basis, fact, result, run, and audit contracts.
+- Added a general HK report-declared default profile that preserves mixed HK/BS/EN/GB references, plus exact-pack validation and official-source hashes.
+- Added the evidence-gated RC beam flexure/shear vertical slice; engineering approval remains pending.
+- Added reviewer-confirmed unit conversion, ULS action provenance, applicability evidence, and conflict handling.
+- Added calculation-first submission normalization: every PDF page is classified before review, drawing pages are deferred, and only calculation/supporting/uncertain candidates enter the engineering review context.
+- Added structured, actionable review comments with page location, submitted issue, basis, required action, assessment, evidence confidence, and validated local code evidence.
+- Added text-only runtime indexes for the supplied Concrete 2013 (2020 Edition), Foundation 2017 (2024 Edition), and Steel 2011 (2023 Edition) references; undeclared or unverified code citations cannot produce an acceptable assessment.
+- Replaced maintenance-heavy Word body sections with a reviewer-facing scope, executive summary, five-column comment schedule, and overall notes. Technical provenance remains in JSON and the downloadable standard package.
+- Added Server review-profile guidance, classified page ranges, and standard-package download.
+- Added structured JSON/Word reporting and optional non-authoritative AI critic observations.
+- Added SQLite job/run/fact/result/audit persistence, result invalidation after fact edits, and signed decisions.
+- Replaced URL tokens with login/session exchange, added CSRF, retention cleanup, and ZIP resource limits.
+- Added Python 3.11/3.12 tooling, controlled dependencies, 31 sanitized tests, Ruff, Windows/Linux CI, Docker updates, and external PyInstaller output support.
+- Release packaging and merge remain pending review and explicit approval.

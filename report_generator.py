@@ -14,6 +14,8 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
+from idc.models import CommentAssessment, ReviewRun
+from idc.submission import format_page_ranges
 
 MARKDOWN_HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)")
 NUMBERED_HEADING_RE = re.compile(r"^(\d+(?:\.\d+)*\.?)\s+(.+)$")
@@ -107,6 +109,39 @@ def _set_table_width(table, width_cm: float):
     table.autofit = False
     for column in table.columns:
         column.width = Cm(width_cm / len(table.columns))
+
+
+def _set_table_column_widths(table, widths_cm: list[float]):
+    """Apply fixed, content-specific widths to every table grid and cell."""
+    table.autofit = False
+    grid = table._tbl.tblGrid
+    for grid_col, width in zip(grid.gridCol_lst, widths_cm):
+        grid_col.w = Cm(width)
+    for row in table.rows:
+        for index, width in enumerate(widths_cm):
+            row.cells[index].width = Cm(width)
+            tc_pr = row.cells[index]._tc.get_or_add_tcPr()
+            tc_w = tc_pr.first_child_found_in("w:tcW")
+            if tc_w is None:
+                tc_w = OxmlElement("w:tcW")
+                tc_pr.append(tc_w)
+            tc_w.set(qn("w:w"), str(round(Cm(width).emu / 635)))
+            tc_w.set(qn("w:type"), "dxa")
+
+
+def _set_cell_margins(cell, *, top: int = 80, start: int = 100, bottom: int = 80, end: int = 100):
+    tc_pr = cell._tc.get_or_add_tcPr()
+    margins = tc_pr.first_child_found_in("w:tcMar")
+    if margins is None:
+        margins = OxmlElement("w:tcMar")
+        tc_pr.append(margins)
+    for name, value in (("top", top), ("start", start), ("bottom", bottom), ("end", end)):
+        node = margins.find(qn(f"w:{name}"))
+        if node is None:
+            node = OxmlElement(f"w:{name}")
+            margins.append(node)
+        node.set(qn("w:w"), str(value))
+        node.set(qn("w:type"), "dxa")
 
 
 def _set_page_layout(section):
@@ -753,6 +788,122 @@ def _parse_and_add_content(doc: Document, content: str):
         _add_normal_paragraph(doc, stripped)
 
 
+def _add_cell_lines(cell, lines: list[str], *, size: float = 8.5, bold_first: bool = False):
+    cell.text = ""
+    cell.vertical_alignment = WD_ALIGN_VERTICAL.TOP
+    _set_cell_margins(cell)
+    for index, text in enumerate(lines):
+        paragraph = cell.paragraphs[0] if index == 0 else cell.add_paragraph()
+        paragraph.paragraph_format.space_after = Pt(2)
+        paragraph.paragraph_format.line_spacing = 1.05
+        _set_run_font(paragraph.add_run(text), size, bold=bold_first and index == 0)
+
+
+def _add_comment_schedule(doc: Document, run: ReviewRun):
+    actionable = [
+        comment
+        for comment in run.comments
+        if comment.assessment
+        in {
+            CommentAssessment.REQUIRES_CORRECTION,
+            CommentAssessment.INFORMATION_REQUIRED,
+            CommentAssessment.PENDING_CONFIRMATION,
+        }
+    ]
+    if not actionable:
+        _add_normal_paragraph(doc, "No actionable calculation comments were generated. Reviewer confirmation is still required before issue.")
+        return
+
+    table = doc.add_table(rows=1, cols=5)
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    widths = [1.3, 2.5, 4.0, 5.8, 4.6]
+    _set_table_column_widths(table, widths)
+    headers = ["No.", "Where", "Submitted content / issue", "Basis and IDC comment", "Required action / assessment / confidence"]
+    header_row = table.rows[0]
+    header_props = header_row._tr.get_or_add_trPr()
+    repeat = OxmlElement("w:tblHeader")
+    repeat.set(qn("w:val"), "true")
+    header_props.append(repeat)
+    for index, label in enumerate(headers):
+        cell = header_row.cells[index]
+        _set_cell_shading(cell, MEINHARDT_BLUE)
+        _set_cell_borders(cell, color="FFFFFF", size=6)
+        cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+        _set_cell_margins(cell, top=90, bottom=90)
+        paragraph = cell.paragraphs[0]
+        paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        _set_run_font(paragraph.add_run(label), 8.2, bold=True, color=RGBColor(255, 255, 255))
+
+    for comment in actionable:
+        cells = table.add_row().cells
+        confidence_label = "High" if comment.confidence >= 0.8 else "Medium" if comment.confidence >= 0.5 else "Low"
+        evidence_pages = sorted({item.page for item in comment.evidence if item.page})
+        location = comment.location
+        if evidence_pages and "page" not in location.lower():
+            location = f"PDF page {format_page_ranges(evidence_pages)}\n{location}"
+        basis_lines = [comment.basis_and_comment]
+        for evidence in comment.code_evidence:
+            if evidence.verified and evidence.code_name not in comment.basis_and_comment:
+                basis_lines.append(
+                    f"Verified reference: {evidence.code_name}, {evidence.edition}, Clause {evidence.clause}, code page {evidence.printed_page}."
+                )
+        action_lines = [
+            comment.required_action,
+            f"Assessment: {comment.assessment.value.replace('_', ' ').title()}",
+            f"Evidence confidence: {confidence_label} ({comment.confidence:.0%})",
+        ]
+        if comment.note:
+            action_lines.append(f"Note: {comment.note.split(' | Candidate code:')[0]}")
+        values = [
+            [f"C{comment.comment_no:03d}"],
+            location.splitlines(),
+            [comment.submitted_content],
+            basis_lines,
+            action_lines,
+        ]
+        for index, lines in enumerate(values):
+            _set_cell_borders(cells[index], color="B8C4D2", size=5)
+            _add_cell_lines(cells[index], lines, size=8.3, bold_first=index == 0)
+
+
+def _add_structured_content(doc: Document, run: ReviewRun):
+    structure = run.submission_structure
+    _apply_heading_style(doc, doc.add_paragraph(), 1, "1. Review Scope")
+    if structure:
+        scope_lines = [
+            f"Calculation pages reviewed: {format_page_ranges(structure.calculation_pages)}.",
+            f"Supporting information used: {format_page_ranges(structure.supporting_pages)}.",
+            f"Drawing pages identified: {format_page_ranges(structure.drawing_pages)} - not assessed in v0.17.",
+            f"Pages requiring classification confirmation: {format_page_ranges(structure.uncertain_pages)}.",
+        ]
+        for line in scope_lines:
+            _add_normal_paragraph(doc, line)
+    else:
+        _add_normal_paragraph(doc, "Calculation page classification was not available for this run.")
+
+    _apply_heading_style(doc, doc.add_paragraph(), 1, "2. Executive Summary")
+    _add_normal_paragraph(
+        doc,
+        run.executive_summary
+        or "IDC reviewed the identified calculation pages and records actionable or uncertain matters in the comment schedule below.",
+    )
+
+    _apply_heading_style(doc, doc.add_paragraph(), 1, "3. IDC Review Comments")
+    _add_normal_paragraph(doc, "Only items requiring correction, information or confirmation are listed.")
+    _add_comment_schedule(doc, run)
+
+    _apply_heading_style(doc, doc.add_paragraph(), 1, "4. Overall Notes")
+    _add_normal_paragraph(
+        doc,
+        "Evidence confidence describes the reliability of the extracted source information; it is not a structural safety rating.",
+    )
+    _add_normal_paragraph(
+        doc,
+        "An unresolved item remains pending and must not be interpreted as acceptable or not acceptable until the requested information is reviewed.",
+    )
+    _add_normal_paragraph(doc, "Drawing engineering checks are outside the current v0.17 scope and remain a future development item.")
+
+
 def generate_report_docx(
     content: str,
     pdf_path: str,
@@ -765,6 +916,7 @@ def generate_report_docx(
     project_title: str | None = None,
     checked_item: str | None = None,
     job_reference: str | None = None,
+    review_run: ReviewRun | None = None,
 ) -> str:
     """Generate a professional .docx report and return the output path."""
     doc = Document()
@@ -777,7 +929,11 @@ def generate_report_docx(
     subject = _display_subject(checked_item, project_title, pdf_path)
     project_title = _clean_text(project_title) or subject
     job_reference = _clean_text(job_reference) or _fallback_title_from_pdf(pdf_path)[:30].upper()
-    normalized_content, toc_entries = _normalize_content(content)
+    if review_run:
+        toc_source = "# Review Scope\n# Executive Summary\n# IDC Review Comments\n# Overall Notes"
+        normalized_content, toc_entries = _normalize_content(toc_source)
+    else:
+        normalized_content, toc_entries = _normalize_content(content)
 
     first_section = doc.sections[0]
     _set_page_layout(first_section)
@@ -796,18 +952,18 @@ def generate_report_docx(
     _add_toc_page(doc, toc_entries)
 
     doc.add_page_break()
-    _parse_and_add_content(doc, normalized_content)
+    if review_run:
+        _add_structured_content(doc, review_run)
+    else:
+        _parse_and_add_content(doc, normalized_content)
 
     footer = doc.add_paragraph()
     footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
     footer.paragraph_format.space_before = Pt(18)
-    run = footer.add_run(
-        f"Generated by IDC on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | "
-        f"Provider: {provider.upper()} | Model: {model}"
-    )
+    run = footer.add_run(f"Generated by IDC on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     _set_run_font(run, 9, italic=True, color=LIGHT_GREY)
 
-    if used_ocr:
+    if used_ocr and not review_run:
         run.add_break(WD_BREAK.LINE)
         ocr_run = footer.add_run("OCR-assisted extraction used for this submission.")
         _set_run_font(ocr_run, 9, italic=True, color=LIGHT_GREY)

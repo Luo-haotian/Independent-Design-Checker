@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=69,<76"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "independent-design-checker"
+version = "0.17.0"
+description = "Evidence-aware independent structural design review tooling"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "Flask>=3.0,<4",
+  "Pillow>=10,<12",
+  "PyMuPDF>=1.24,<2",
+  "python-docx>=1.1,<2",
+  "requests>=2.31,<3",
+]
+
+[project.optional-dependencies]
+ocr = ["numpy>=1.24,<3", "pytesseract>=0.3.10,<1"]
+server = ["waitress>=3,<4"]
+dev = ["pytest>=8,<9", "pytest-cov>=5,<7", "ruff>=0.8,<1", "pyinstaller>=6,<7"]
+
+[tool.setuptools]
+packages = ["idc"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+exclude = ["scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]

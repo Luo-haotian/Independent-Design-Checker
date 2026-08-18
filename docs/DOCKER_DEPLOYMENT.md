@@ -95,3 +95,6 @@ http://localhost:8080/healthz
 ```
 
 The JSON should show `ok: true`, OCR availability, and whether Grok/Kimi keys are configured.
+# v0.17 Volumes
+
+The Compose definition persists `/data/idc` for SQLite, `/data/uploads` and `/data/reports` for retention-controlled raw files, and mounts the host `IDC_CODE_LIBRARY` read-only at `/codes`. Configure a production `IDC_SERVER_SECRET_KEY` in `.env` before starting the service.

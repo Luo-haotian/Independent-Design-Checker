@@ -1,0 +1,56 @@
+{
+  "id": "hk-bd-concrete-2020-amd-2024-04",
+  "jurisdiction": "HK",
+  "authority": "Hong Kong Buildings Department",
+  "title": "Code of Practice for Structural Use of Concrete 2013",
+  "edition": "2013 Code (2020 Edition)",
+  "amendments": [
+    {
+      "title": "Amendments of February 2022",
+      "published": "2022-02-01"
+    },
+    {
+      "title": "Amendments of June 2023",
+      "published": "2023-06-01"
+    },
+    {
+      "title": "Amendments of April 2024",
+      "published": "2024-04-01"
+    }
+  ],
+  "effective_from": "2024-04-01",
+  "rule_set_version": "1.0.0",
+  "engineering_approved": false,
+  "supported_rule_ids": [
+    "HK-RC-BEAM-APP-001",
+    "HK-RC-BEAM-FLX-001",
+    "HK-RC-BEAM-REINF-001",
+    "HK-RC-BEAM-SHR-001"
+  ],
+  "sources": [
+    {
+      "filename": "CoP_SUC2013e.pdf",
+      "official_url": "https://www.bd.gov.hk/doc/en/resources/codes-and-references/code-and-design-manuals/CoP_SUC2013e.pdf",
+      "sha256": "2af81851e1db0a7ce9bdd96d6714885d7d6fc408861060aeec247935da1e5664"
+    },
+    {
+      "filename": "Amendment_2022-02.pdf",
+      "official_url": "https://www.bd.gov.hk/en/resources/codes-and-references/codes-and-design-manuals/index.html",
+      "sha256": "a824ca1fa850faae8eb390e66f246eb19970449a7f72a93528114b7433338edb"
+    },
+    {
+      "filename": "Amendment_2023-06.pdf",
+      "official_url": "https://www.bd.gov.hk/en/resources/codes-and-references/codes-and-design-manuals/index.html",
+      "sha256": "84e1254130abbc70a3d36e316750e712389ebaa875e353c8a86b6e9780620bdd"
+    },
+    {
+      "filename": "Amendment_2024-04.pdf",
+      "official_url": "https://www.bd.gov.hk/en/resources/codes-and-references/codes-and-design-manuals/index.html",
+      "sha256": "19835165b297115767c08c2b57ae4acfbbebdbbec41c0b7501e315640a713e7e"
+    }
+  ],
+  "limitations": [
+    "Rule implementations require responsible structural engineer approval before certified use.",
+    "This pack does not include the source PDFs; set IDC_CODE_LIBRARY for local source verification."
+  ]
+}

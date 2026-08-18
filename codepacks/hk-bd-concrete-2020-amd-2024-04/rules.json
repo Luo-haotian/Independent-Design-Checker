@@ -1,0 +1,45 @@
+{
+  "rules": {
+    "HK-RC-BEAM-APP-001": {
+      "title": "Normal beam applicability",
+      "citations": ["Clause 6.1.2.1", "Clause 6.9", "April 2024 amendment"],
+      "formula_version": "1.0.0",
+      "normal_depth_span_ratio_limit": 2.0
+    },
+    "HK-RC-BEAM-FLX-001": {
+      "title": "Singly reinforced rectangular beam flexure",
+      "citations": ["Clause 6.1.2.4", "Equations 6.7 to 6.16"],
+      "formula_version": "1.0.0",
+      "k_limit": 0.156,
+      "lever_arm_limit": 0.95,
+      "steel_design_factor": 0.87,
+      "stress_block_force_factor": 0.405,
+      "stress_block_lever_factor": 0.45
+    },
+    "HK-RC-BEAM-REINF-001": {
+      "title": "Beam longitudinal reinforcement limits",
+      "citations": ["Clause 9.2.1.1", "Table 9.1", "Clause 9.2.1.3"],
+      "formula_version": "1.0.0",
+      "minimum_tension_ratio": 0.0013,
+      "maximum_total_ratio": 0.04
+    },
+    "HK-RC-BEAM-SHR-001": {
+      "title": "Beam shear resistance and links",
+      "citations": ["Clause 6.1.2.5", "Equation 6.19", "Tables 6.2 and 6.3", "Clause 9.2.2", "Equation 9.4"],
+      "formula_version": "1.0.0",
+      "concrete_shear_coefficient": 0.79,
+      "concrete_material_factor": 1.25,
+      "reinforcement_ratio_min_percent": 0.15,
+      "reinforcement_ratio_max_percent": 3.0,
+      "concrete_strength_reference_mpa": 25.0,
+      "concrete_strength_cap_mpa": 80.0,
+      "depth_reference_mm": 400.0,
+      "minimum_link_stress_mpa": 0.4,
+      "steel_design_factor": 0.87,
+      "maximum_shear_stress_coefficient": 0.8,
+      "maximum_shear_stress_cap_mpa": 7.0,
+      "maximum_link_spacing_mm": 300.0,
+      "maximum_link_spacing_depth_factor": 0.75
+    }
+  }
+}

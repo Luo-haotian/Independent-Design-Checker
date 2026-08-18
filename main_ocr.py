@@ -8,15 +8,20 @@ import sys
 from datetime import datetime
 from typing import Optional
 
-import fitz
 from PIL import Image
 
 from config import (
-    MODEL_CONFIGS,
     call_chat_completion,
     get_llm_config,
     get_provider_label,
 )
+from idc.artifacts import create_standard_package
+from idc.code_basis import resolve_code_basis
+from idc.ingestion import DocumentExtraction, ingest_pdf
+from idc.llm_review import review_document
+from idc.pipeline import create_review_run, export_review_json
+from idc.profiles import profile_prompt
+from idc.submission import normalize_submission, review_extraction
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,12 +47,12 @@ Requirements:
 - Include an Executive Summary.
 - Classify any issues found as Critical, Major, or Minor.
 - Provide actionable Recommendations.
-- For each design check, state whether it is Satisfactory or Unsatisfactory with brief justification.
+- Do not issue engineering PASS/FAIL or Satisfactory/Unsatisfactory conclusions. Use "AI Observation: Appears adequate / Requires review / Insufficient information" with brief justification.
 - Do not keep the report high-level only. For every major section, include specific IDC reviewer comments on adequacy, assumptions, missing information, and follow-up actions.
 - Even where the design appears generally acceptable, provide multiple concrete review comments rather than only saying it is satisfactory.
 - Use this reporting pattern for each major section where supported by the submitted material:
   ## Section Title
-  **IDC Check:** Satisfactory / Unsatisfactory
+  **AI Observation:** Appears adequate / Requires review / Insufficient information
   **IDC Reviewer Comments:**
   - at least 3 concrete review comments
   - each comment must mention actual submitted parameters, member names, drawings, calculations, assumptions, or missing information whenever available
@@ -68,13 +73,13 @@ Requirements:
 - Include an Executive Summary.
 - Classify any issues found as Critical, Major, or Minor.
 - Provide actionable Recommendations.
-- For each design check, state whether it is Satisfactory or Unsatisfactory with brief justification.
+- Do not issue engineering PASS/FAIL or Satisfactory/Unsatisfactory conclusions. Use "AI Observation: Appears adequate / Requires review / Insufficient information" with brief justification.
 - Do not keep the report high-level only. For every major section, include specific IDC reviewer comments on adequacy, assumptions, missing information, and follow-up actions.
 - Even where the design appears generally acceptable, provide multiple concrete review comments rather than only saying it is satisfactory.
 - Cover the temporary works review in a practical IDC sequence where supported by the submission: Executive Summary, Reference Codes, Design Parameters and Assumptions, Loading, Member Checks, Stability/Bracing, Bearing/Support/Connection Checks, Construction or usage limitations, Recommendations, and Conclusion.
 - Use this reporting pattern for each major section:
   ## Section Title
-  **IDC Check:** Satisfactory / Unsatisfactory
+  **AI Observation:** Appears adequate / Requires review / Insufficient information
   **IDC Reviewer Comments:**
   - at least 3 concrete review comments
   - each comment must mention actual submitted parameters, member names, drawings, calculations, assumptions, or missing information whenever available
@@ -225,6 +230,14 @@ class CheckerOCR:
         self.max_context = self.llm_config.max_context
         self.max_output = self.llm_config.max_output
         self.last_report_file: str | None = None
+        self.last_extraction: DocumentExtraction | None = None
+        self.last_ai_observations: list[str] = []
+        self.last_review_run = None
+        self.last_json_file: str | None = None
+        self.last_standard_package_file: str | None = None
+        self.last_normalized_submission = None
+        self.last_comments = []
+        self.last_executive_summary = ""
 
         self.ocr_extractor = OCRExtractor() if use_ocr else None
 
@@ -233,43 +246,20 @@ class CheckerOCR:
         logger.info("OCR Enabled: %s", bool(self.ocr_extractor and self.ocr_extractor.available))
 
     def extract(self, pdf_path: str, force_ocr: bool = False) -> tuple[Optional[str], int, bool]:
-        """Extract text from PDF, using OCR when needed."""
+        """Compatibility wrapper around page-preserving OCR extraction."""
         try:
-            doc = fitz.open(pdf_path)
-            text_parts = []
-            images = 0
-            used_ocr = False
-            total_pages = len(doc)
-
-            print(f"Processing {total_pages} pages...")
-
-            for page_num, page in enumerate(doc, 1):
-                page_text = page.get_text()
-                should_use_ocr = force_ocr or len(page_text.strip()) < 50
-
-                if should_use_ocr and self.ocr_extractor and self.ocr_extractor.available:
-                    print(f"  Page {page_num}/{total_pages}: Using OCR...")
-                    pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
-                    image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-                    ocr_text = self.ocr_extractor.extract_text_from_image(image)
-                    if ocr_text.strip():
-                        text_parts.append(f"--- Page {page_num} (OCR) ---\n{ocr_text}")
-                        used_ocr = True
-                    images += 1
-                else:
-                    if page_text.strip():
-                        text_parts.append(f"--- Page {page_num} ---\n{page_text}")
-                    print(f"  Page {page_num}/{total_pages}: Text extracted ({len(page_text)} chars)")
-
-                images += len(page.get_images())
-
-            doc.close()
-
-            if used_ocr:
+            self.last_extraction = ingest_pdf(
+                pdf_path,
+                ocr=self.ocr_extractor,
+                force_ocr=force_ocr,
+            )
+            if self.last_extraction.used_ocr:
                 print("OCR was used for some pages.")
-
-            text = "\n\n".join(text_parts)
-            return (text if text.strip() else None), images, used_ocr
+            return (
+                self.last_extraction.full_text or None,
+                self.last_extraction.embedded_images,
+                self.last_extraction.used_ocr,
+            )
         except Exception as exc:
             logger.error("Extraction error: %s", exc)
             return None, 0, False
@@ -315,23 +305,80 @@ class CheckerOCR:
 
         return self.call_api(prompt.format(content=truncated))
 
+    def analyze_document(
+        self,
+        extraction: DocumentExtraction,
+        struct_type: str,
+        *,
+        critic: bool = False,
+        critic_provider: str | None = None,
+    ) -> Optional[str]:
+        """Classify the submission, then review calculation/supporting pages only."""
+        self.last_normalized_submission = normalize_submission(extraction, struct_type)
+        calculation_extraction = review_extraction(extraction, self.last_normalized_submission)
+        prompt = profile_prompt(struct_type)
+        max_chars = get_safe_length(calculation_extraction.full_text, self.max_context, prompt)
+        critic_call = None
+        if critic:
+            selected_provider = critic_provider or self.provider
+
+            def critic_call(critic_prompt: str) -> str | None:
+                message, _result = call_chat_completion(
+                    critic_prompt,
+                    provider=selected_provider,
+                    max_tokens=self.max_output,
+                )
+                return message
+
+        result, observations, covered, missing, executive_summary, comments = review_document(
+            calculation_extraction,
+            prompt,
+            self.call_api,
+            max_input_chars=max_chars,
+            critic=critic,
+            call_critic=critic_call,
+            declared_code_text=extraction.full_text,
+        )
+        self.last_ai_observations = observations
+        self.last_comments = comments
+        self.last_executive_summary = executive_summary
+        if missing:
+            logger.warning("Unprocessed or unreadable PDF pages: %s", missing)
+        logger.info("Calculation-focused PDF pages: %s", covered)
+        return result
+
     def check(
         self,
         pdf_path: str,
         struct_type: str = "building",
         output_dir: str | None = None,
         force_ocr: bool = False,
+        critic: bool = False,
+        critic_provider: str | None = None,
+        jurisdiction: str = "HK",
+        code_pack: str = "auto",
+        code_as_of: str | None = None,
+        export_json: bool = False,
+        input_overrides: str | None = None,
     ) -> bool:
         """Run the full OCR analysis flow."""
         self.last_report_file = None
+        self.last_standard_package_file = None
         print(f"\nAnalyzing: {pdf_path}")
         if not os.path.exists(pdf_path):
             print(f"ERROR: File not found: {pdf_path}")
             return False
 
         content, images, used_ocr = self.extract(pdf_path, force_ocr)
-        if not content:
+        extraction = self.last_extraction
+        if not content or not extraction:
             print("ERROR: Could not extract text from the PDF.")
+            return False
+
+        try:
+            resolve_code_basis(extraction, jurisdiction=jurisdiction, requested_pack_id=code_pack, code_as_of=code_as_of)
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"ERROR: Code basis is invalid: {exc}")
             return False
 
         print(f"Content: {len(content):,} chars, {images} images")
@@ -339,7 +386,13 @@ class CheckerOCR:
         print(f"Estimated: ~{estimate_tokens(len(content)):,} tokens")
         metadata = extract_report_metadata(content, pdf_path)
 
-        result = self.analyze(content, struct_type)
+        print(f"Pages: {extraction.page_count}; readable: {len(extraction.processed_pages)}")
+        result = self.analyze_document(
+            extraction,
+            struct_type,
+            critic=critic,
+            critic_provider=critic_provider,
+        )
         if not result:
             return False
 
@@ -347,6 +400,34 @@ class CheckerOCR:
         os.makedirs(report_dir, exist_ok=True)
         base_name = os.path.splitext(os.path.basename(pdf_path))[0]
         report_file = os.path.join(report_dir, f"{base_name}_OCR_report.docx")
+
+        try:
+            review_run = create_review_run(
+                extraction,
+                jurisdiction=jurisdiction,
+                code_pack_id=code_pack,
+                code_as_of=code_as_of,
+                input_overrides=input_overrides,
+                ai_observations=self.last_ai_observations,
+                submission_structure=self.last_normalized_submission,
+                comments=self.last_comments,
+                executive_summary=self.last_executive_summary,
+                provider=self.provider,
+                model=self.model,
+            )
+        except (FileNotFoundError, ValueError, TypeError) as exc:
+            print(f"ERROR: Code basis or deterministic input is invalid: {exc}")
+            return False
+        self.last_review_run = review_run
+        package_path = os.path.join(report_dir, f"{base_name}_OCR_standard_package.zip")
+        create_standard_package(review_run, extraction, package_path)
+        self.last_standard_package_file = package_path
+        print(f"[OK] Standard package saved: {package_path}")
+        if export_json:
+            json_path = os.path.join(report_dir, f"{base_name}_OCR_review.json")
+            export_review_json(review_run, json_path)
+            self.last_json_file = json_path
+            print(f"[OK] Structured result saved: {json_path}")
 
         try:
             from report_generator import generate_report_docx
@@ -362,6 +443,7 @@ class CheckerOCR:
                 project_title=metadata["project_title"],
                 checked_item=metadata["checked_item"],
                 job_reference=metadata["job_reference"],
+                review_run=review_run,
             )
             self.last_report_file = report_file
             print(f"\n[OK] Report saved: {report_file}")
@@ -415,6 +497,13 @@ OCR requires Tesseract:
     parser.add_argument("--provider", choices=["grok", "kimi"], default=None, help="API provider to use")
     parser.add_argument("--force-ocr", action="store_true", help="Force OCR for all pages")
     parser.add_argument("--no-ocr", action="store_true", help="Disable OCR and use only text extraction")
+    parser.add_argument("--jurisdiction", default="HK")
+    parser.add_argument("--code-pack", default="auto", help="auto prefers report-declared codes; or pin an exact pack ID")
+    parser.add_argument("--code-as-of", default=None, help="Pinned code-basis date (YYYY-MM-DD)")
+    parser.add_argument("--export-json", action="store_true", help="Write a structured review JSON file")
+    parser.add_argument("--input-overrides", default=None, help="Reviewer-confirmed facts/evidence JSON")
+    parser.add_argument("--critic", action="store_true", help="Enable a non-authoritative second AI review")
+    parser.add_argument("--critic-provider", choices=["grok", "kimi"], default=None)
     args = parser.parse_args()
 
     if not TESSERACT_AVAILABLE and not args.no_ocr:
@@ -434,6 +523,13 @@ OCR requires Tesseract:
             args.type,
             args.output_dir,
             force_ocr=args.force_ocr,
+            critic=args.critic,
+            critic_provider=args.critic_provider,
+            jurisdiction=args.jurisdiction,
+            code_pack=args.code_pack,
+            code_as_of=args.code_as_of,
+            export_json=args.export_json,
+            input_overrides=args.input_overrides,
         )
         sys.exit(0 if success else 1)
     except Exception as exc:

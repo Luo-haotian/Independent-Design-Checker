@@ -1,4 +1,4 @@
-# IDC User Guide v0.16
+# IDC User Guide v0.17
 
 ## Quick Start
 
@@ -27,6 +27,13 @@ That is the default workflow.
 ## What The Tool Produces
 
 IDC reads the PDF and writes a Word report that usually includes:
+
+- calculation and supporting page ranges reviewed
+- drawing pages identified but not assessed in v0.17
+- a concise executive summary
+- an actionable IDC comment table with page location, basis, required action, assessment and evidence confidence
+
+The Server also provides a Standard Package ZIP. It contains the normalized calculation text, page classification, structured comments, code evidence and maintenance processing record. Hashes, model details and rule-pack diagnostics are kept there rather than in the human Word report.
 
 - executive summary
 - technical review comments
@@ -131,3 +138,55 @@ If the run fails, check:
 For OCR issues, also check that Tesseract is installed.
 
 For server mode, contact IT if the upload page is unavailable, the access token is rejected, or the job remains queued for a long time.
+## Evidence and Code-Basis Workflow
+
+Hong Kong is the default review context, but the submitted report's declared codes take priority. Keep code selection at `auto` for normal review: IDC records all detected HK, BS, EN, GB, and other references. If competing member codes are detected, a reviewer must pin the applicable validated pack; IDC does not silently choose the HK Concrete Code.
+
+For Concrete 2013, Foundation 2017 and Steel 2011 declarations, IDC can validate candidate clauses against the local text indexes. If the submission omits the edition, any edition-sensitive item remains pending confirmation. If no applicable code is stated, IDC asks the designer to provide the code, edition and clause instead of assuming an HK code.
+
+Generic reviewer-confirmed facts use this structure and remain reviewable even when no deterministic adapter is installed:
+
+```json
+{
+  "facts": [{
+    "fact_id": "design-basis:wind-code",
+    "name": "wind_design_code",
+    "value": "Code of Practice on Wind Effects in Hong Kong 2019",
+    "evidence": [{"source_file": "design.pdf", "page": 8, "quote": "Wind Code 2019"}]
+  }]
+}
+```
+
+The first narrow deterministic adapter additionally accepts this sanitized member-specific structure:
+
+```json
+{
+  "beams": [{
+    "beam_id": "B1",
+    "span_mm": 6000,
+    "width_mm": 300,
+    "overall_depth_mm": 550,
+    "effective_depth_mm": 500,
+    "concrete_strength_mpa": 40,
+    "steel_strength_mpa": 500,
+    "link_strength_mpa": 500,
+    "design_moment_knm": 250,
+    "design_shear_kn": 160,
+    "design_action_basis": "ULS",
+    "tension_steel_mm2": 1800,
+    "link_area_mm2": 201,
+    "link_spacing_mm": 200,
+    "section_type": "rectangular",
+    "prestressed": false,
+    "axial_force_kn": 0,
+    "torsion_knm": 0,
+    "evidence": {
+      "width_mm": [{"source_file": "design.pdf", "page": 12, "quote": "B1 300 x 550"}]
+    }
+  }]
+}
+```
+
+For a deterministic adapter, every required field needs page evidence. Add every field to `evidence`; the shortened example shows only one. Use `conflict_fields` when submitted values disagree. Do not resolve a conflict merely by choosing the convenient value.
+
+Review structured results before the AI narrative. Confirm code basis, source hash, page coverage, applicability, units, demand, capacity, utilisation, clauses, formula version, and limitations. The bundled rules are pending responsible engineer approval.
